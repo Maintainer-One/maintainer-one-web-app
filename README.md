@@ -43,20 +43,20 @@ This repository contains the **Web Application** (The League Interface).
 ### 2. Environment Setup
 Copy the example environment file and fill in your Supabase credentials.
 
-'''bash
+```bash
 cp .env.example .env
-'''
+```
 
 ### 3. Installation & Run
 Install dependencies and start the development server using Deno.
 
-'''bash
+```bash
 # Cache dependencies
 deno install
 
 # Start the dev server
 deno task dev
-'''
+```
 
 ### 4. The Loop
 1.  Navigate to `http://localhost:5173`.
