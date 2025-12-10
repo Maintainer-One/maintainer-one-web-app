@@ -25,7 +25,7 @@
   },
   "unstable": ["fmt-component"],
   "imports": {
-    "svelte-adapter-deno": "npm:svelte-adapter-deno",
+    "@deno/svelte-adapter": "npm:@deno/svelte-adapter@^0.1.0",
     "@sveltejs/kit": "npm:@sveltejs/kit",
     "@sveltejs/vite-plugin-svelte": "npm:@sveltejs/vite-plugin-svelte",
     "@tailwindcss/vite": "npm:@tailwindcss/vite",
