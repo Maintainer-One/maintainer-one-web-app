@@ -1,0 +1,37 @@
+{
+  "name": "maintainer-one",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "tasks": {
+    "dev": "deno run -A npm:vite dev",
+    "build": "deno run -A npm:vite build",
+    "preview": "deno run -A npm:vite preview",
+    "prepare": "svelte-kit sync || echo ''",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "format": "deno fmt",
+    "lint": "deno lint",
+    "lint:fix": "deno lint --fix"
+  },
+  "nodeModulesDir": "auto",
+  "exports": {},
+  "lint": {
+    "include": ["src/**/*.{ts,js,svelte}"],
+    "exclude": ["node_modules", ".svelte-kit", ".vite", "dist", "build"],
+    "rules": {
+      "tags": ["recommended"]
+    }
+  },
+  "unstable": ["fmt-component"],
+  "imports": {
+    "svelte-adapter-deno": "npm:svelte-adapter-deno",
+    "@sveltejs/kit": "npm:@sveltejs/kit",
+    "@sveltejs/vite-plugin-svelte": "npm:@sveltejs/vite-plugin-svelte",
+    "@tailwindcss/vite": "npm:@tailwindcss/vite",
+    "svelte": "npm:svelte",
+    "svelte-check": "npm:svelte-check",
+    "tailwindcss": "npm:tailwindcss",
+    "vite": "npm:vite"
+  }
+}
