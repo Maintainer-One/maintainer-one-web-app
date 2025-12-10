@@ -4,6 +4,7 @@
 
   // --- STATE ---
   let timeLeft = $state({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  let canvas: HTMLCanvasElement;
 
   // TARGET DATE: Jan 1, 2026 (Local Time)
   const TARGET_DATE = new Date("2026-01-01T00:00:00").getTime();
@@ -26,10 +27,170 @@
     };
   }
 
+  // --- BACKGROUND SIMULATION LOGIC ---
+  function initSimulation() {
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let width = 0;
+    let height = 0;
+    const cellSize = 32; // Slightly larger grid for visibility
+
+    // Bot Definition
+    interface Bot {
+      prevX: number; // Grid Coordinate
+      prevY: number;
+      nextX: number;
+      nextY: number;
+      color: string;
+    }
+
+    const bots: Bot[] = [];
+
+    // Resize handler
+    const resize = () => {
+      width = canvas.parentElement?.clientWidth || window.innerWidth;
+      height = canvas.parentElement?.clientHeight || window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+
+      // Spawn bots - LOWER DENSITY
+      bots.length = 0;
+      const botCount = Math.floor((width * height) / 50000); // Much fewer bots
+      const gridW = Math.ceil(width / cellSize);
+      const gridH = Math.ceil(height / cellSize);
+
+      for (let i = 0; i < botCount; i++) {
+        const startX = Math.floor(Math.random() * gridW);
+        const startY = Math.floor(Math.random() * gridH);
+        bots.push({
+          prevX: startX,
+          prevY: startY,
+          nextX: startX, // Start stationary
+          nextY: startY,
+          color: Math.random() > 0.8 ? '#dc2626' : '#6b7280' // Red vs Gray
+        });
+      }
+    };
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    // The Animation Loop
+    let tickProgress = 0;
+    const tickDuration = 60; // Frames per tick (1 second @ 60fps)
+
+    function draw() {
+        if (!ctx) return;
+
+        // 1. Clear Screen
+        ctx.clearRect(0, 0, width, height);
+
+        // 2. Draw Grid (Subtle)
+        ctx.strokeStyle = "rgba(50, 50, 50, 0.2)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let x = 0; x <= width; x += cellSize) {
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, height);
+        }
+        for (let y = 0; y <= height; y += cellSize) {
+            ctx.moveTo(0, y);
+            ctx.lineTo(width, y);
+        }
+        ctx.stroke();
+
+        // 3. Update Tick Logic
+        tickProgress++;
+        if (tickProgress >= tickDuration) {
+            tickProgress = 0;
+            // "Server Tick": Decide next move for all bots
+            const gridW = Math.ceil(width / cellSize);
+            const gridH = Math.ceil(height / cellSize);
+
+            bots.forEach(bot => {
+                // Commit previous move
+                bot.prevX = bot.nextX;
+                bot.prevY = bot.nextY;
+
+                // Pick new random direction
+                const dir = Math.floor(Math.random() * 5); // 0-3 move, 4 wait
+                let dx = 0;
+                let dy = 0;
+                if (dir === 0) dy = -1; // N
+                if (dir === 1) dx = 1;  // E
+                if (dir === 2) dy = 1;  // S
+                if (dir === 3) dx = -1; // W
+
+                // Check bounds (Bounce logic)
+                const targetX = bot.prevX + dx;
+                const targetY = bot.prevY + dy;
+
+                if (targetX >= 0 && targetX < gridW && targetY >= 0 && targetY < gridH) {
+                    bot.nextX = targetX;
+                    bot.nextY = targetY;
+                } else {
+                    // Hit wall, stay put
+                    bot.nextX = bot.prevX;
+                    bot.nextY = bot.prevY;
+                }
+            });
+        }
+
+        // 4. Interpolate & Draw Bots
+        // Ease-in-out function for smoother movement
+        const t = tickProgress / tickDuration;
+        const ease = t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+
+        bots.forEach(bot => {
+            // LERP: Linear Interpolation between Previous and Next
+            const curX = bot.prevX + (bot.nextX - bot.prevX) * ease;
+            const curY = bot.prevY + (bot.nextY - bot.prevY) * ease;
+
+            // Convert grid coords to pixel coords (Center of tile)
+            const pixelX = (curX * cellSize) + (cellSize / 2);
+            const pixelY = (curY * cellSize) + (cellSize / 2);
+
+            ctx.beginPath();
+            ctx.fillStyle = bot.color;
+            // Draw Circle
+            ctx.arc(pixelX, pixelY, cellSize * 0.35, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Optional: Glow effect
+            if (bot.color === '#dc2626') {
+                 ctx.shadowColor = '#dc2626';
+                 ctx.shadowBlur = 10;
+            } else {
+                ctx.shadowBlur = 0;
+            }
+        });
+
+        // Reset shadow for next frame/grid
+        ctx.shadowBlur = 0;
+
+        requestAnimationFrame(draw);
+    }
+
+    const animId = requestAnimationFrame(draw);
+    return () => {
+        window.removeEventListener('resize', resize);
+        cancelAnimationFrame(animId);
+    };
+  }
+
   onMount(() => {
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
-    return () => clearInterval(interval);
+
+    // Start the Canvas Sim
+    const cleanupSim = initSimulation();
+
+    return () => {
+        clearInterval(interval);
+        if (cleanupSim) cleanupSim();
+    };
   });
 </script>
 
@@ -38,16 +199,18 @@
   <meta name="description" content="Competitive Engineering. Open Source Strategy. Protocol T launches Jan 1, 2026." />
 </svelte:head>
 
-<div class="bg-black min-h-screen text-gray-200 font-mono selection:bg-red-900 selection:text-white overflow-x-hidden">
+<div class="bg-black min-h-screen text-gray-200 font-mono selection:bg-red-900 selection:text-white overflow-x-hidden flex flex-col">
 
-  <section class="relative h-screen flex flex-col items-center justify-center p-6 border-b border-gray-800">
-    <div class="absolute inset-0 opacity-10 pointer-events-none"
-         style="background-image: linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px); background-size: 24px 24px;">
-    </div>
+  <section class="relative flex-grow flex flex-col items-center justify-center p-6 border-b border-gray-800 min-h-[calc(100vh-3rem)] overflow-hidden">
 
-    <div class="absolute inset-0 pointer-events-none opacity-5 bg-gradient-to-b from-transparent via-white/5 to-transparent bg-[length:100%_4px]"></div>
+    <canvas
+        bind:this={canvas}
+        class="absolute inset-0 z-0 opacity-40 pointer-events-none"
+    ></canvas>
 
-    <div class="z-10 text-center space-y-6 max-w-4xl w-full">
+    <div class="absolute inset-0 pointer-events-none z-10 opacity-5 bg-gradient-to-b from-transparent via-white/5 to-transparent bg-[length:100%_4px]"></div>
+
+    <div class="z-20 text-center space-y-6 max-w-4xl w-full">
       <div class="inline-block border border-red-900/50 bg-red-900/10 px-3 py-1 rounded text-red-500 text-xs tracking-widest mb-4">
         STATUS: PRE-ALPHA
       </div>
@@ -100,10 +263,10 @@
     </div>
   </section>
 
-  <section class="max-w-5xl mx-auto py-24 px-6 grid md:grid-cols-2 gap-16">
+  <section class="max-w-5xl mx-auto py-24 px-6 grid md:grid-cols-2 gap-16 relative z-10 bg-black">
 
     <div class="space-y-8">
-      <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">The Pitch</h2>
+      <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">The Philosophy</h2>
       <p class="leading-relaxed text-gray-400">
         Most coding games are puzzles. <strong>Maintainer One</strong> is a sport.
         <br><br>
@@ -121,7 +284,7 @@
           <span class="text-red-600 font-bold font-mono">02.</span>
           <div>
             <strong class="text-white block mb-1">Code Lock</strong>
-            <span class="text-gray-500 text-sm">Code is frozen before each Match week with limited ability to push changes to encourage robust code bases. No human intervention. Your architecture must survive the chaos alone.</span>
+            <span class="text-gray-500 text-sm">Code is frozen before each match week to encourage robust, automated code. No human intervention. Your architecture must survive the chaos alone.</span>
           </div>
         </li>
         <li class="flex gap-4 items-start">
@@ -176,13 +339,12 @@
 
   </section>
 
-  <footer class="text-center py-12 text-gray-600 text-xs border-t border-gray-900 font-mono">
+  <footer class="text-center py-12 text-gray-600 text-xs border-t border-gray-900 font-mono relative z-10 bg-black">
     <p>INIT: 2026-01-01 // MAINTAINER ONE</p>
   </footer>
 </div>
 
 <style>
-  /* Optional: Simple glow effect for the Protocol T text */
   .glow-text {
     text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
   }
