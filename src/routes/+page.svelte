@@ -4,21 +4,20 @@
 
   // --- STATE ---
   let timeLeft = $state({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  let scores = $state({ red: 0, gray: 0 });
+  let hoveredBot = $state<any>(null);
   let canvas: HTMLCanvasElement;
 
   // TARGET DATE: Jan 1, 2026 (Local Time)
   const TARGET_DATE = new Date("2026-01-01T00:00:00").getTime();
 
-  // --- COUNTDOWN LOGIC ---
   function updateTimer() {
     const now = new Date().getTime();
     const distance = TARGET_DATE - now;
-
     if (distance < 0) {
         timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
         return;
     }
-
     timeLeft = {
       days: Math.floor(distance / (1000 * 60 * 60 * 24)),
       hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
@@ -27,7 +26,7 @@
     };
   }
 
-  // --- BACKGROUND SIMULATION LOGIC ---
+  // --- ENGINE SIMULATION LOGIC ---
   function initSimulation() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -35,29 +34,46 @@
 
     let width = 0;
     let height = 0;
-    const cellSize = 32; // Slightly larger grid for visibility
+    const cellSize = 32;
+    let mouseX = -100;
+    let mouseY = -100;
 
-    // Bot Definition
+    // --- ENTITIES ---
     interface Bot {
-      prevX: number; // Grid Coordinate
-      prevY: number;
-      nextX: number;
-      nextY: number;
+      id: string;
+      team: 'red' | 'gray';
+      prevX: number; prevY: number;
+      nextX: number; nextY: number;
+      intent: string;
+    }
+
+    interface Hotspot {
+      x: number;
+      y: number;
+    }
+
+    interface Explosion {
+      x: number;
+      y: number;
+      age: number; // 0 to 1
       color: string;
     }
 
     const bots: Bot[] = [];
+    let hotspot: Hotspot | null = null;
+    let explosions: Explosion[] = [];
 
-    // Resize handler
+    const genId = () => Math.random().toString(36).substring(2, 6).toUpperCase();
+
+    // --- RESIZE & SPAWN ---
     const resize = () => {
       width = canvas.parentElement?.clientWidth || window.innerWidth;
       height = canvas.parentElement?.clientHeight || window.innerHeight;
       canvas.width = width;
       canvas.height = height;
 
-      // Spawn bots - LOWER DENSITY
       bots.length = 0;
-      const botCount = Math.floor((width * height) / 50000); // Much fewer bots
+      const botCount = Math.floor((width * height) / 35000);
       const gridW = Math.ceil(width / cellSize);
       const gridH = Math.ceil(height / cellSize);
 
@@ -65,11 +81,11 @@
         const startX = Math.floor(Math.random() * gridW);
         const startY = Math.floor(Math.random() * gridH);
         bots.push({
-          prevX: startX,
-          prevY: startY,
-          nextX: startX, // Start stationary
-          nextY: startY,
-          color: Math.random() > 0.8 ? '#dc2626' : '#6b7280' // Red vs Gray
+          id: genId(),
+          team: Math.random() > 0.5 ? 'red' : 'gray', // Even split for race
+          prevX: startX, prevY: startY,
+          nextX: startX, nextY: startY,
+          intent: 'IDLE'
         });
       }
     };
@@ -77,99 +93,222 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // The Animation Loop
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    });
+
+    // --- GAME LOOP ---
     let tickProgress = 0;
-    const tickDuration = 60; // Frames per tick (1 second @ 60fps)
+    const tickDuration = 40; // Slightly faster for "Race" feel
 
     function draw() {
         if (!ctx) return;
 
-        // 1. Clear Screen
+        // 1. Clear & Draw Grid
         ctx.clearRect(0, 0, width, height);
-
-        // 2. Draw Grid (Subtle)
         ctx.strokeStyle = "rgba(50, 50, 50, 0.2)";
         ctx.lineWidth = 1;
         ctx.beginPath();
         for (let x = 0; x <= width; x += cellSize) {
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x, height);
+            ctx.moveTo(x, 0); ctx.lineTo(x, height);
         }
         for (let y = 0; y <= height; y += cellSize) {
-            ctx.moveTo(0, y);
-            ctx.lineTo(width, y);
+            ctx.moveTo(0, y); ctx.lineTo(width, y);
         }
         ctx.stroke();
 
-        // 3. Update Tick Logic
+        // 2. LOGIC UPDATE
         tickProgress++;
         if (tickProgress >= tickDuration) {
             tickProgress = 0;
-            // "Server Tick": Decide next move for all bots
             const gridW = Math.ceil(width / cellSize);
             const gridH = Math.ceil(height / cellSize);
 
+            // A. Manage Hotspot
+            if (!hotspot && Math.random() > 0.1) {
+                hotspot = {
+                    x: Math.floor(Math.random() * gridW),
+                    y: Math.floor(Math.random() * gridH)
+                };
+            }
+
+            // B. Determine Chasers (The "Closest" Logic)
+            let chaserIds = new Set<string>();
+            if (hotspot) {
+                // Calculate distances
+                const distances = bots.map(b => ({
+                    id: b.id,
+                    dist: Math.abs(b.prevX - hotspot!.x) + Math.abs(b.prevY - hotspot!.y) // Manhattan Dist
+                }));
+                // Sort by distance
+                distances.sort((a, b) => a.dist - b.dist);
+                // Top 4 bots get the "Contract" to score
+                distances.slice(0, 4).forEach(d => chaserIds.add(d.id));
+            }
+
+            // C. Bot Movement
+            const occupied = new Set<string>();
+            bots.forEach(b => occupied.add(`${b.nextX},${b.nextY}`));
+
             bots.forEach(bot => {
-                // Commit previous move
                 bot.prevX = bot.nextX;
                 bot.prevY = bot.nextY;
 
-                // Pick new random direction
-                const dir = Math.floor(Math.random() * 5); // 0-3 move, 4 wait
                 let dx = 0;
                 let dy = 0;
-                if (dir === 0) dy = -1; // N
-                if (dir === 1) dx = 1;  // E
-                if (dir === 2) dy = 1;  // S
-                if (dir === 3) dx = -1; // W
 
-                // Check bounds (Bounce logic)
+                // Move Logic
+                if (hotspot && chaserIds.has(bot.id)) {
+                    bot.intent = 'RACING';
+                    // Greedy pathing
+                    if (hotspot.x > bot.prevX) dx = 1;
+                    else if (hotspot.x < bot.prevX) dx = -1;
+                    else if (hotspot.y > bot.prevY) dy = 1;
+                    else if (hotspot.y < bot.prevY) dy = -1;
+                } else {
+                    bot.intent = 'IDLE';
+                    // Random Wander (Lower chance to move, makes chasers stand out)
+                    if (Math.random() > 0.3) {
+                        const r = Math.floor(Math.random() * 4);
+                        if (r === 0) dy = -1;
+                        if (r === 1) dx = 1;
+                        if (r === 2) dy = 1;
+                        if (r === 3) dx = -1;
+                    }
+                }
+
                 const targetX = bot.prevX + dx;
                 const targetY = bot.prevY + dy;
+                const key = `${targetX},${targetY}`;
 
-                if (targetX >= 0 && targetX < gridW && targetY >= 0 && targetY < gridH) {
+                // Collision
+                if (
+                    targetX >= 0 && targetX < gridW &&
+                    targetY >= 0 && targetY < gridH &&
+                    !occupied.has(key)
+                ) {
                     bot.nextX = targetX;
                     bot.nextY = targetY;
+                    occupied.add(key);
+                    occupied.delete(`${bot.prevX},${bot.prevY}`);
+
+                    // CHECK CAPTURE
+                    if (hotspot && bot.nextX === hotspot.x && bot.nextY === hotspot.y) {
+                        // SCORE!
+                        scores[bot.team] += 1;
+
+                        // Spawn Explosion
+                        explosions.push({
+                            x: (hotspot.x * cellSize) + (cellSize/2),
+                            y: (hotspot.y * cellSize) + (cellSize/2),
+                            age: 0,
+                            color: bot.team === 'red' ? '#dc2626' : '#6b7280'
+                        });
+
+                        // Remove Hotspot
+                        hotspot = null;
+                    }
+
                 } else {
-                    // Hit wall, stay put
                     bot.nextX = bot.prevX;
                     bot.nextY = bot.prevY;
                 }
             });
         }
 
-        // 4. Interpolate & Draw Bots
-        // Ease-in-out function for smoother movement
+        // 3. RENDER
         const t = tickProgress / tickDuration;
         const ease = t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
+        // Draw Hotspot
+        if (hotspot) {
+            const hx = (hotspot.x * cellSize) + (cellSize/2);
+            const hy = (hotspot.y * cellSize) + (cellSize/2);
+
+            // Pulse effect
+            const pulse = 1 + Math.sin(Date.now() / 150) * 0.3;
+
+            ctx.fillStyle = "rgba(234, 179, 8, 0.2)";
+            ctx.beginPath();
+            ctx.arc(hx, hy, (cellSize/2) * pulse * 1.5, 0, Math.PI*2);
+            ctx.fill();
+
+            // Inner Square (Target)
+            ctx.fillStyle = "#eab308";
+            const size = (cellSize/3);
+            ctx.fillRect(hx - size/2, hy - size/2, size, size);
+        }
+
+        // Draw Explosions
+        for (let i = explosions.length - 1; i >= 0; i--) {
+            const exp = explosions[i];
+            exp.age += 0.05; // Fade speed
+
+            ctx.beginPath();
+            ctx.strokeStyle = exp.color;
+            ctx.lineWidth = 2;
+            ctx.globalAlpha = 1 - exp.age;
+            // Expanding Ring
+            ctx.arc(exp.x, exp.y, cellSize * exp.age * 3, 0, Math.PI*2);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+
+            if (exp.age >= 1) explosions.splice(i, 1);
+        }
+
+        let foundHover = null;
+
+        // Draw Bots
         bots.forEach(bot => {
-            // LERP: Linear Interpolation between Previous and Next
             const curX = bot.prevX + (bot.nextX - bot.prevX) * ease;
             const curY = bot.prevY + (bot.nextY - bot.prevY) * ease;
 
-            // Convert grid coords to pixel coords (Center of tile)
-            const pixelX = (curX * cellSize) + (cellSize / 2);
-            const pixelY = (curY * cellSize) + (cellSize / 2);
+            const px = (curX * cellSize) + (cellSize / 2);
+            const py = (curY * cellSize) + (cellSize / 2);
 
             ctx.beginPath();
-            ctx.fillStyle = bot.color;
-            // Draw Circle
-            ctx.arc(pixelX, pixelY, cellSize * 0.35, 0, Math.PI * 2);
+            ctx.fillStyle = bot.team === 'red' ? '#dc2626' : '#6b7280';
+            ctx.arc(px, py, cellSize * 0.35, 0, Math.PI * 2);
             ctx.fill();
 
-            // Optional: Glow effect
-            if (bot.color === '#dc2626') {
+            // Visual indicator for "Racing" bots
+            if (bot.intent === 'RACING') {
+                ctx.strokeStyle = bot.team === 'red' ? 'rgba(220, 38, 38, 0.5)' : 'rgba(107, 114, 128, 0.5)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(px, py);
+                // Draw line to hotspot if exists (optional visual aid)
+                // ctx.stroke();
+
+                // Or just a small dot to show they are "Active"
+                ctx.fillStyle = "#fff";
+                ctx.beginPath();
+                ctx.arc(px, py, 2, 0, Math.PI*2);
+                ctx.fill();
+            }
+
+            // Red Glow
+            if (bot.team === 'red') {
                  ctx.shadowColor = '#dc2626';
-                 ctx.shadowBlur = 10;
+                 ctx.shadowBlur = 15;
             } else {
                 ctx.shadowBlur = 0;
             }
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            const dist = Math.hypot(px - mouseX, py - mouseY);
+            if (dist < cellSize / 2) {
+                foundHover = bot;
+                ctx.strokeStyle = "white";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
         });
 
-        // Reset shadow for next frame/grid
-        ctx.shadowBlur = 0;
-
+        hoveredBot = foundHover;
         requestAnimationFrame(draw);
     }
 
@@ -183,10 +322,7 @@
   onMount(() => {
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
-
-    // Start the Canvas Sim
     const cleanupSim = initSimulation();
-
     return () => {
         clearInterval(interval);
         if (cleanupSim) cleanupSim();
@@ -201,17 +337,48 @@
 
 <div class="bg-black min-h-screen text-gray-200 font-mono selection:bg-red-900 selection:text-white overflow-x-hidden flex flex-col">
 
+  <div class="fixed top-4 left-4 z-40 flex flex-col gap-2 pointer-events-none">
+    <div class="flex items-center gap-2">
+        <div class="w-3 h-3 bg-red-600 rounded-full shadow-[0_0_10px_red]"></div>
+        <span class="text-xl font-bold text-white tracking-widest">{String(scores.red).padStart(3, '0')}</span>
+    </div>
+    <div class="flex items-center gap-2">
+        <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
+        <span class="text-xl font-bold text-gray-400 tracking-widest">{String(scores.gray).padStart(3, '0')}</span>
+    </div>
+  </div>
+
+  {#if hoveredBot}
+    <div
+        class="fixed z-50 bg-black/90 border border-gray-700 p-3 rounded pointer-events-none backdrop-blur shadow-xl"
+        style="left: 20px; bottom: 80px;"
+        transition:fade={{ duration: 100 }}
+    >
+        <div class="text-xs text-gray-500 uppercase tracking-widest mb-1">Unit Info</div>
+        <div class="text-lg font-bold text-white mb-1">ID: {hoveredBot.id}</div>
+        <div class="flex items-center gap-2 text-xs mb-2">
+            Team:
+            <span class={hoveredBot.team === 'red' ? "text-red-500 font-bold" : "text-gray-400 font-bold"}>
+                {hoveredBot.team.toUpperCase()}
+            </span>
+        </div>
+        <div class="text-xs font-mono bg-gray-900 p-1 rounded border border-gray-800">
+            > INTENT: {hoveredBot.intent}
+        </div>
+    </div>
+  {/if}
+
   <section class="relative flex-grow flex flex-col items-center justify-center p-6 border-b border-gray-800 min-h-[calc(100vh-3rem)] overflow-hidden">
 
     <canvas
         bind:this={canvas}
-        class="absolute inset-0 z-0 opacity-40 pointer-events-none"
+        class="absolute inset-0 z-0 opacity-50"
     ></canvas>
 
     <div class="absolute inset-0 pointer-events-none z-10 opacity-5 bg-gradient-to-b from-transparent via-white/5 to-transparent bg-[length:100%_4px]"></div>
 
-    <div class="z-20 text-center space-y-6 max-w-4xl w-full">
-      <div class="inline-block border border-red-900/50 bg-red-900/10 px-3 py-1 rounded text-red-500 text-xs tracking-widest mb-4">
+    <div class="z-20 text-center space-y-6 max-w-4xl w-full pointer-events-none">
+      <div class="inline-block border border-red-900/50 bg-red-900/10 px-3 py-1 rounded text-red-500 text-xs tracking-widest mb-4 pointer-events-auto">
         STATUS: PRE-ALPHA
       </div>
 
@@ -223,7 +390,7 @@
         Write Code. Deploy Logic. <span class="text-white">Dominate the Grid.</span>
       </p>
 
-      <div class="grid grid-cols-4 gap-2 md:gap-4 text-center py-8 max-w-2xl mx-auto">
+      <div class="grid grid-cols-4 gap-2 md:gap-4 text-center py-8 max-w-2xl mx-auto pointer-events-auto">
         {#each Object.entries(timeLeft) as [label, value]}
           <div class="border border-gray-800 p-3 md:p-4 rounded bg-gray-900/80 backdrop-blur-sm">
             <div class="text-2xl md:text-5xl font-bold text-white font-mono">{String(value).padStart(2, '0')}</div>
@@ -236,7 +403,7 @@
         Time until <span class="text-red-500 font-bold glow-text">Protocol T</span> Launch
       </p>
 
-      <div class="pt-8 w-full flex justify-center" transition:fade>
+      <div class="pt-8 w-full flex justify-center pointer-events-auto" transition:fade>
         <a
           href="https://github.com/Maintainer-One"
           target="_blank"
