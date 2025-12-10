@@ -68,7 +68,7 @@ deno task dev
 Teams are GitHub repositories. Matches are Pull Requests. The "Meta" (The Protocol) changes based on community proposals (RFCs).
 
 1.  **Write the Logic:** Code your team's AI in TypeScript.
-2.  **Parc Fermé:** Code is frozen before the match. No human intervention allowed during runtime.
+2.  **Code Lock** Code is frozen with limited code push during match weeks to encourage robust code bases. No human intervention allowed during runtime.
 3.  **Open Source Espionage:** All team repos are public. Forking is allowed. Winning requires understanding your opponent's architecture.
 
 ## 🔗 Links

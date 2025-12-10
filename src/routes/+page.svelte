@@ -120,8 +120,8 @@
         <li class="flex gap-4 items-start">
           <span class="text-red-600 font-bold font-mono">02.</span>
           <div>
-            <strong class="text-white block mb-1">Parc Fermé Rules</strong>
-            <span class="text-gray-500 text-sm">Code is frozen before the match. No human intervention. Your architecture must survive the chaos alone.</span>
+            <strong class="text-white block mb-1">Code Lock</strong>
+            <span class="text-gray-500 text-sm">Code is frozen before each Match week with limited ability to push changes to encourage robust code bases. No human intervention. Your architecture must survive the chaos alone.</span>
           </div>
         </li>
         <li class="flex gap-4 items-start">
