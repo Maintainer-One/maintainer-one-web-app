@@ -386,7 +386,7 @@
       </div>
 
       <p class="text-sm text-gray-500 tracking-wide uppercase">
-        Time until <span class="text-red-500 font-bold glow-text">Protocol T</span> Launch
+        Time until <span class="text-red-500 font-bold">Protocol T</span> Launch
       </p>
 
       <div class="pt-8 w-full flex justify-center pointer-events-auto" transition:fade>
@@ -496,9 +496,3 @@
     <p>INIT: 2026-01-01 // MAINTAINER ONE</p>
   </footer>
 </div>
-
-<style>
-  .glow-text {
-    text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
-  }
-</style>
