@@ -9,6 +9,9 @@
    id="svg1"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    sodipodi:docname="inkscape-logo.svg"
+   inkscape:export-filename="inkscape-logo.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -23,9 +26,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
-     inkscape:zoom="0.5375"
-     inkscape:cx="305.11628"
-     inkscape:cy="369.30233"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="110.30866"
+     inkscape:cy="355.67471"
      inkscape:window-width="1920"
      inkscape:window-height="1057"
      inkscape:window-x="1912"
@@ -48,7 +51,7 @@
        sodipodi:nodetypes="cccccccccccccccc" />
     <path
        id="path15"
-       style="display:inline;fill:#db2525;fill-opacity:1;stroke:#dc2323;stroke-width:1.11702;stroke-linecap:round;stroke-opacity:1"
+       style="display:inline;fill:#c10007;fill-opacity:1;stroke:#dc2323;stroke-width:1.11702;stroke-linecap:round;stroke-opacity:1"
        inkscape:label="solid-one"
        d="m 110.99372,64.677049 -7.53017,22.763017 16.62011,0.122471 -0.13653,40.339673 c -0.55064,7.32872 6.49154,12.80895 13.5106,12.86529 3.65889,-0.0475 7.35055,-0.0104 11.01102,-7.8e-4 l 0.14829,-63.702897 c -0.30417,-7.308288 -6.69238,-12.175345 -13.9951,-12.445978 z"
        sodipodi:nodetypes="ccccccccc" />
@@ -70,7 +73,7 @@
        sodipodi:nodetypes="ccccccccccccccscccccccscccsccccccccccccccccc"
        inkscape:label="m-outline" />
     <path
-       style="display:inline;fill:#dc2626;stroke-linecap:round;fill-opacity:1"
+       style="display:inline;fill:#c10007;stroke-linecap:round;fill-opacity:1"
        d="m 110.99372,64.677049 -7.53017,22.763017 16.62011,0.122471 -0.13653,40.339673 c -0.55064,7.32872 6.49154,12.80895 13.5106,12.86529 3.65889,-0.0475 7.35055,-0.0104 11.01102,-7.8e-4 l 0.14829,-63.702897 c -0.30417,-7.308288 -6.69238,-12.175345 -13.9951,-12.445978 z"
        id="path22"
        inkscape:label="one-fill" />

@@ -373,7 +373,7 @@
       </h1>
 
       <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
-        Write Code. Deploy Logic. <span class="text-white">Dominate the Grid.</span>
+        Code. Community. <span class="text-white">Championships.</span>
       </p>
 
       <div class="grid grid-cols-4 gap-2 md:gap-4 text-center py-8 max-w-2xl mx-auto pointer-events-auto">
@@ -419,11 +419,11 @@
   <section class="max-w-5xl mx-auto py-24 px-6 grid md:grid-cols-2 gap-16 relative z-10 bg-black">
 
     <div class="space-y-8">
-      <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">The Philosophy</h2>
+      <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">The Pitch</h2>
       <p class="leading-relaxed text-gray-400">
-        Most coding games are puzzles. <strong>Maintainer One</strong> is a sport.
+        <strong>Maintainer One</strong> is a code and community driven sports management simulation game.
         <br><br>
-        We don't test if you can reverse a binary tree. We test if you can architect a resilient system that executes under strict CPU constraints and aggressive competition.
+        The Training Protocol is planned to launch January 2026.
       </p>
       <ul class="space-y-6 mt-8">
         <li class="flex gap-4 items-start">
