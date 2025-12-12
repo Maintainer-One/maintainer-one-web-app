@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
+	import logo from '$lib/assets/outlined-logo.svg';
 
   // --- STATE ---
   let timeLeft = $state({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -378,15 +379,16 @@
     <div class="absolute inset-0 pointer-events-none z-10 opacity-5 bg-gradient-to-b from-transparent via-white/5 to-transparent bg-[length:100%_4px]"></div>
 
     <div class="z-20 text-center space-y-6 max-w-4xl w-full pointer-events-none">
+      <img class="w-24 h-24 mx-auto mb-8 drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" alt="Maintainer One Logo" src={logo}/>
       <div class="inline-block border border-red-900/50 bg-red-900/10 px-3 py-1 rounded text-red-500 text-xs tracking-widest mb-4 pointer-events-auto">
         STATUS: PRE-ALPHA
       </div>
 
-      <h1 class="text-6xl md:text-8xl font-bold tracking-tighter text-white">
+      <h1 class="text-4xl md:text-6xl font-bold tracking-tighter text-white">
         MAINTAINER<span class="text-red-600">.</span>ONE
       </h1>
 
-      <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto">
+      <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
         Write Code. Deploy Logic. <span class="text-white">Dominate the Grid.</span>
       </p>
 
