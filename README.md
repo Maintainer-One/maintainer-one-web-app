@@ -10,7 +10,7 @@
 
 ## 📡 The Transmission
 
-**Maintainer One** is a competitive engineering platform launching **January 1, 2026**.
+**Maintainer One** is a competitive engineering platform launching **Q1 2026**.
 
 At its heart, it is a coding league where every action a team makes is automated through code. Humans write the logic; the bots execute the protocol.
 
@@ -30,7 +30,6 @@ This repository contains the landing page and the core simulation engine visuali
 
 * **Framework:** SvelteKit (Svelte 5 Runes)
 * **Styling:** Tailwind CSS
-* **Font:** JetBrains Mono
 * **Simulation:** HTML5 Canvas + TypeScript
 
 
@@ -45,10 +44,10 @@ The landing page features a live simulation of the game engine:
 
 We are currently in **Pre-Alpha**. To run the landing page locally:
 
-1.  **Clone the frequency:**
+1.  **Clone:**
     ```bash
-    git clone [https://github.com/Maintainer-One/platform.git](https://github.com/Maintainer-One/platform.git)
-    cd platform
+    git clone [https://github.com/Maintainer-One/platform.git](https://github.com/Maintainer-One/maintainer-one-web-app.git)
+    cd maintainer-one-web-app
     ```
 
 2.  **Install dependencies:**
@@ -64,14 +63,14 @@ We are currently in **Pre-Alpha**. To run the landing page locally:
 4.  **Visualize:**
     Open `http://localhost:5173` in your browser.
 
-## 📅 Roadmap: Protocol 1X
+## 📅 Roadmap: Protocol One
 
 | Phase | Milestone | Status |
 | :--- | :--- | :--- |
 | **Phase 0** | Engine Simulation & Landing Page | ✅ **Active** |
 | **Phase 1** | Bot API Definition | 🚧 In Progress |
 | **Phase 2** | Team Registration Protocols | ⏳ Pending |
-| **Phase 3** | **Protocol One Launch** (Jan 1, 2026) | ⏳ Pending |
+| **Phase 3** | **Protocol One Launch** (Q1 2026) | ⏳ Pending |
 
 ## 🤝 Contributing
 
@@ -92,5 +91,5 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ---
 
 <div align="center">
-  <sub>2026-01-01 // MAINTAINER ONE</sub>
+  <sub>MAINTAINER ONE // 2026</sub>
 </div>
