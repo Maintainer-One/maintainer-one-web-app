@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
-  import BrandLogo from '$lib/components/M1Logo.svelte';
+  import M1Logo from '$lib/components/M1Logo.svelte';
 
   // --- ENTITIES ---
   interface Bot {
@@ -413,7 +413,7 @@
     </div>
 
     <div class="z-30 text-center space-y-6 max-w-4xl w-full pointer-events-none">
-      <BrandLogo class="w-24 h-24 text-red-700 mx-auto mb-8 drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" />
+      <M1Logo class="w-24 h-24 text-red-700 mx-auto mb-8 drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" />
 
       <h1 class="text-4xl md:text-6xl font-bold tracking-tighter text-white">
         MAINTAINER<span class="text-red-700">.</span>ONE
@@ -428,17 +428,17 @@
       </div>
 
       <p class="text-sm text-gray-500 tracking-wide uppercase pt-4">
-        Time to <span class="text-red-500 font-bold">Protocol 1X</span> Launch
+        Coming Q1 2026
       </p>
 
-      <div class="grid grid-cols-4 gap-2 md:gap-4 text-center pb-8 max-w-2xl mx-auto pointer-events-auto">
+      <!-- <div class="grid grid-cols-4 gap-2 md:gap-4 text-center pb-8 max-w-2xl mx-auto pointer-events-auto">
         {#each Object.entries(timeLeft) as [label, value]}
           <div class="border border-gray-800 p-3 md:p-4 rounded bg-gray-900/80 backdrop-blur-sm">
             <div class="text-2xl md:text-5xl font-bold text-white font-mono">{String(value).padStart(2, '0')}</div>
             <div class="text-[10px] md:text-xs uppercase tracking-widest text-gray-500 mt-1">{label}</div>
           </div>
         {/each}
-      </div>
+      </div> -->
 
     </div>
   </section>
@@ -471,24 +471,6 @@
 
     <div class="space-y-8">
       <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">Upcoming</h2>
-
-      <div class="p-6 border border-gray-800 bg-gray-900/30 text-sm space-y-4">
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Name</span>
-            <span class="text-white">Protocol 1X</span>
-          </div>
-          <div>
-            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Launch Date</span>
-            <span class="text-green-400">Jan '26</span>
-          </div>
-          <div class="col-span-2">
-            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Description</span>
-            <span class="text-white">The experimental league for Protocol One that will be used to prepare <strong>for Season 1</strong> (Feb '26)</span>
-          </div>
-        </div>
-      </div>
-
       <div class="p-6 border border-gray-800 bg-gray-900/30 text-sm space-y-4">
         <div class="grid grid-cols-2 gap-4">
           <div>
@@ -496,8 +478,8 @@
             <span class="text-white">Protocol One</span>
           </div>
           <div>
-            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Launch Date</span>
-            <span class="text-green-400">Feb '26</span>
+            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Launch</span>
+            <span class="text-green-400">TBD</span>
           </div>
           <div class="col-span-2">
             <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Description</span>
@@ -505,7 +487,7 @@
           </div>
           <div class="col-span-2">
             <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Maintainer One</span>
-            <span class="text-white">The first Maintainer One will be crowned end of Season 1 (End of February)</span>
+            <span class="text-white">The first Maintainer One will be crowned end of Season 1</span>
           </div>
         </div>
       </div>
