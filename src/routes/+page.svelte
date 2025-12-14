@@ -1,16 +1,42 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
-  import logo from '$lib/assets/outlined-logo.svg';
+  import BrandLogo from '$lib/components/M1Logo.svelte';
+
+  // --- ENTITIES ---
+  interface Bot {
+    id: string;
+    team: 'red' | 'gray';
+    prevX: number; prevY: number;
+    nextX: number; nextY: number;
+    intent: string;
+  }
+
+  interface Hotspot {
+    x: number;
+    y: number;
+  }
+
+  interface Explosion {
+    x: number;
+    y: number;
+    age: number; // 0 to 1
+    color: string;
+  }
+
+  // --- CONFIG ---
+  const TARGET_DATE = new Date("2026-01-01T00:00:00").getTime();
+  const MAX_BOTS = 150;
+  const TOOLTIP_OFFSET = 16;
+  const TOOLTIP_WIDTH_EST = 220;
+  const TOOLTIP_HEIGHT_EST = 140;
 
   // --- STATE ---
   let timeLeft = $state({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   let scores = $state({ red: 0, gray: 0 });
-  let hoveredBot = $state<any>(null);
+  let hoveredBot = $state<Bot | null>(null);
+  let tooltipPos = $state({ x: 0, y: 0 });
   let canvas: HTMLCanvasElement;
-
-  // TARGET DATE: Jan 1, 2026 (Local Time)
-  const TARGET_DATE = new Date("2026-01-01T00:00:00").getTime();
 
   function updateTimer() {
     const now = new Date().getTime();
@@ -33,32 +59,16 @@
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let width = 0;
-    let height = 0;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let width = 0; // CSS Pixels
+    let height = 0; // CSS Pixels
     const cellSize = 32;
+
+    // Mouse State
     let mouseX = -100;
     let mouseY = -100;
-
-    // --- ENTITIES ---
-    interface Bot {
-      id: string;
-      team: 'red' | 'gray';
-      prevX: number; prevY: number;
-      nextX: number; nextY: number;
-      intent: string;
-    }
-
-    interface Hotspot {
-      x: number;
-      y: number;
-    }
-
-    interface Explosion {
-      x: number;
-      y: number;
-      age: number; // 0 to 1
-      color: string;
-    }
+    let isMouseOverCanvas = false;
 
     const bots: Bot[] = [];
     let hotspot: Hotspot | null = null;
@@ -68,13 +78,22 @@
 
     // --- RESIZE & SPAWN ---
     const resize = () => {
-      width = canvas.parentElement?.clientWidth || window.innerWidth;
-      height = canvas.parentElement?.clientHeight || window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
+      const dpr = window.devicePixelRatio || 1;
+      const displayWidth = canvas.parentElement?.clientWidth || window.innerWidth;
+      const displayHeight = canvas.parentElement?.clientHeight || window.innerHeight;
+
+      width = displayWidth;
+      height = displayHeight;
+
+      canvas.width = displayWidth * dpr;
+      canvas.height = displayHeight * dpr;
+
+      ctx.scale(dpr, dpr);
 
       bots.length = 0;
-      const botCount = Math.floor((width * height) / 35000);
+      const densityCount = Math.floor((width * height) / 35000);
+      const botCount = Math.min(MAX_BOTS, densityCount);
+
       const gridW = Math.ceil(width / cellSize);
       const gridH = Math.ceil(height / cellSize);
 
@@ -83,7 +102,7 @@
         const startY = Math.floor(Math.random() * gridH);
         bots.push({
           id: genId(),
-          team: Math.random() > 0.5 ? 'red' : 'gray', // Even split for race
+          team: Math.random() > 0.5 ? 'red' : 'gray',
           prevX: startX, prevY: startY,
           nextX: startX, nextY: startY,
           intent: 'IDLE'
@@ -91,18 +110,49 @@
       }
     };
 
-    window.addEventListener('resize', resize);
-    resize();
+    // --- MOUSE TRACKING ---
+    const handleMouseMove = (e: MouseEvent) => {
+      if (e.target instanceof HTMLElement && e.target.closest('section:not(:first-child)')) {
+        isMouseOverCanvas = false;
+        hoveredBot = null;
+        return;
+      }
 
-    canvas.addEventListener('mousemove', (e) => {
       const rect = canvas.getBoundingClientRect();
+
       mouseX = e.clientX - rect.left;
       mouseY = e.clientY - rect.top;
-    });
+
+      // Check if we are physically over the canvas area
+      // (Using a small buffer so edge cases don't flicker)
+      isMouseOverCanvas = (
+        mouseX >= 0 &&
+        mouseX <= width &&
+        mouseY >= 0 &&
+        mouseY <= height
+      );
+
+      // Tooltip positioning (Screen relative)
+      let tx = e.clientX + TOOLTIP_OFFSET;
+      let ty = e.clientY + TOOLTIP_OFFSET;
+
+      if (tx + TOOLTIP_WIDTH_EST > window.innerWidth) {
+        tx = e.clientX - TOOLTIP_WIDTH_EST - TOOLTIP_OFFSET;
+      }
+      if (ty + TOOLTIP_HEIGHT_EST > window.innerHeight) {
+        ty = e.clientY - TOOLTIP_HEIGHT_EST - TOOLTIP_OFFSET;
+      }
+      tooltipPos = { x: tx, y: ty };
+    };
+
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', handleMouseMove);
+    resize();
 
     // --- GAME LOOP ---
     let tickProgress = 0;
-    const tickDuration = 40; // Slightly faster for "Race" feel
+    const tickDuration = 40;
+    let animId: number;
 
     function draw() {
         if (!ctx) return;
@@ -127,7 +177,6 @@
             const gridW = Math.ceil(width / cellSize);
             const gridH = Math.ceil(height / cellSize);
 
-            // A. Manage Hotspot
             if (!hotspot && Math.random() > 0.1) {
                 hotspot = {
                     x: Math.floor(Math.random() * gridW),
@@ -135,7 +184,6 @@
                 };
             }
 
-            // B. Determine Chasers (The "Closest" Logic)
             let chaserIds = new Set<string>();
             if (hotspot) {
                 const distances = bots.map(b => ({
@@ -146,7 +194,6 @@
                 distances.slice(0, 4).forEach(d => chaserIds.add(d.id));
             }
 
-            // C. Bot Movement
             const occupied = new Set<string>();
             bots.forEach(b => occupied.add(`${b.nextX},${b.nextY}`));
 
@@ -157,7 +204,6 @@
                 let dx = 0;
                 let dy = 0;
 
-                // Move Logic
                 if (hotspot && chaserIds.has(bot.id)) {
                     bot.intent = 'RACING';
                     if (hotspot.x > bot.prevX) dx = 1;
@@ -179,7 +225,6 @@
                 const targetY = bot.prevY + dy;
                 const key = `${targetX},${targetY}`;
 
-                // Collision
                 if (
                     targetX >= 0 && targetX < gridW &&
                     targetY >= 0 && targetY < gridH &&
@@ -190,20 +235,16 @@
                     occupied.add(key);
                     occupied.delete(`${bot.prevX},${bot.prevY}`);
 
-                    // CHECK CAPTURE
                     if (hotspot && bot.nextX === hotspot.x && bot.nextY === hotspot.y) {
                         scores[bot.team] += 1;
-
                         explosions.push({
                             x: (hotspot.x * cellSize) + (cellSize/2),
                             y: (hotspot.y * cellSize) + (cellSize/2),
                             age: 0,
                             color: bot.team === 'red' ? '#dc2626' : '#6b7280'
                         });
-
                         hotspot = null;
                     }
-
                 } else {
                     bot.nextX = bot.prevX;
                     bot.nextY = bot.prevY;
@@ -215,27 +256,22 @@
         const t = tickProgress / tickDuration;
         const ease = t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
-        // Draw Hotspot
         if (hotspot) {
             const hx = (hotspot.x * cellSize) + (cellSize/2);
             const hy = (hotspot.y * cellSize) + (cellSize/2);
             const pulse = 1 + Math.sin(Date.now() / 150) * 0.3;
-
             ctx.fillStyle = "rgba(234, 179, 8, 0.2)";
             ctx.beginPath();
             ctx.arc(hx, hy, (cellSize/2) * pulse * 1.5, 0, Math.PI*2);
             ctx.fill();
-
             ctx.fillStyle = "#eab308";
             const size = (cellSize/3);
             ctx.fillRect(hx - size/2, hy - size/2, size, size);
         }
 
-        // Draw Explosions
         for (let i = explosions.length - 1; i >= 0; i--) {
             const exp = explosions[i];
             exp.age += 0.05;
-
             ctx.beginPath();
             ctx.strokeStyle = exp.color;
             ctx.lineWidth = 2;
@@ -243,17 +279,14 @@
             ctx.arc(exp.x, exp.y, cellSize * exp.age * 3, 0, Math.PI*2);
             ctx.stroke();
             ctx.globalAlpha = 1;
-
             if (exp.age >= 1) explosions.splice(i, 1);
         }
 
-        let foundHover = null;
+        let newFoundBot: Bot | null = null;
 
-        // Draw Bots
         bots.forEach(bot => {
-            const curX = bot.prevX + (bot.nextX - bot.prevX) * ease;
-            const curY = bot.prevY + (bot.nextY - bot.prevY) * ease;
-
+            const curX = prefersReducedMotion ? bot.nextX : bot.prevX + (bot.nextX - bot.prevX) * ease;
+            const curY = prefersReducedMotion ? bot.nextY : bot.prevY + (bot.nextY - bot.prevY) * ease;
             const px = (curX * cellSize) + (cellSize / 2);
             const py = (curY * cellSize) + (cellSize / 2);
 
@@ -278,28 +311,42 @@
             ctx.fill();
             ctx.shadowBlur = 0;
 
+            // HOVER CHECK (Hit Test)
             const dist = Math.hypot(px - mouseX, py - mouseY);
             if (dist < cellSize / 2) {
-                foundHover = bot;
+                newFoundBot = bot;
+            }
+
+            // SELECTION HIGHLIGHT (Draw ring if this bot is the active one)
+            // Note: We check against the STATE variable 'hoveredBot', not the hit test
+            if (hoveredBot && bot.id === hoveredBot.id) {
                 ctx.strokeStyle = "white";
                 ctx.lineWidth = 2;
                 ctx.stroke();
             }
         });
 
-        // STICKY HOVER LOGIC
-        // Only update hoveredBot if we actually hit something.
-        // This keeps the last bot active if the user moves mouse away.
-        if (foundHover) {
-            hoveredBot = foundHover;
+        // --- SELECTION STATE LOGIC ---
+        // 1. If we found a new bot under the mouse, it becomes the active one
+        if (newFoundBot) {
+            hoveredBot = newFoundBot;
         }
+        // 2. If we didn't find a bot, AND we are off-canvas (lower screen), clear selection
+        else if (!isMouseOverCanvas) {
+            hoveredBot = null;
+        }
+        // 3. Otherwise (didn't find a bot, but still on canvas), KEEP the previous hoveredBot
 
-        requestAnimationFrame(draw);
+        if (!prefersReducedMotion) {
+           animId = requestAnimationFrame(draw);
+        }
     }
 
-    const animId = requestAnimationFrame(draw);
+    draw();
+
     return () => {
         window.removeEventListener('resize', resize);
+        window.removeEventListener('mousemove', handleMouseMove);
         cancelAnimationFrame(animId);
     };
   }
@@ -316,36 +363,26 @@
 </script>
 
 <svelte:head>
-  <title>Maintainer One | Protocol T</title>
-  <meta name="description" content="Competitive Engineering. Open Source Strategy. Protocol T launches Jan 1, 2026." />
+  <title>Maintainer One</title>
+  <meta name="description" content="Competitive Engineering. Open Source Strategy. Protocol 1X launches Jan 1, 2026." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </svelte:head>
 
-<div class="bg-black min-h-screen text-gray-200 font-mono selection:bg-red-900 selection:text-white overflow-x-hidden flex flex-col">
+<div class="bg-black min-h-screen text-gray-200 selection:bg-red-900 selection:text-white overflow-x-hidden flex flex-col" style="font-family: 'JetBrains Mono', monospace;">
 
-  <section class="relative flex-grow flex flex-col items-center justify-center p-6 border-b border-gray-800 min-h-[calc(100vh-3rem)] overflow-hidden">
+  <section class="relative grow flex flex-col items-center justify-center p-6 border-b border-gray-800 min-h-[calc(100vh-3rem)] overflow-hidden">
 
     <canvas
         bind:this={canvas}
         class="absolute inset-0 z-0 opacity-50"
     ></canvas>
 
-    <div class="absolute inset-0 pointer-events-none z-10 opacity-5 bg-gradient-to-b from-transparent via-white/5 to-transparent bg-[length:100%_4px]"></div>
-
-    <div class="absolute top-4 left-4 z-10 flex flex-col gap-2 pointer-events-none opacity-80">
-        <div class="flex items-center gap-2">
-            <div class="w-3 h-3 bg-red-700 rounded-full shadow-[0_0_10px_red]"></div>
-            <span class="text-xl font-bold text-white tracking-widest">{String(scores.red).padStart(3, '0')}</span>
-        </div>
-        <div class="flex items-center gap-2">
-            <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
-            <span class="text-xl font-bold text-gray-400 tracking-widest">{String(scores.gray).padStart(3, '0')}</span>
-        </div>
-    </div>
-
     {#if hoveredBot}
         <div
-            class="absolute z-20 bg-black/90 border border-gray-700 p-3 rounded pointer-events-none backdrop-blur shadow-xl"
-            style="left: 20px; bottom: 40px;"
+            class="absolute z-10 bg-black/95 border border-gray-700 p-3 rounded pointer-events-none backdrop-blur shadow-2xl transition-opacity duration-75"
+            style="left: {tooltipPos.x}px; top: {tooltipPos.y}px;"
             transition:fade={{ duration: 100 }}
         >
             <div class="text-xs text-gray-500 uppercase tracking-widest mb-1">Unit Info</div>
@@ -362,21 +399,39 @@
         </div>
     {/if}
 
-    <div class="z-20 text-center space-y-6 max-w-4xl w-full pointer-events-none">
-      <img class="w-24 h-24 mx-auto mb-8 drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" alt="Maintainer One Logo" src={logo}/>
-      <div class="inline-block border border-red-900/50 bg-red-900/10 px-3 py-1 rounded text-red-500 text-xs tracking-widest mb-4 pointer-events-auto">
-        STATUS: PRE-ALPHA
-      </div>
+    <div class="absolute inset-0 pointer-events-none z-20 opacity-5 bg-gradient-to-b from-transparent via-white/5 to-transparent bg-[length:100%_4px]"></div>
+
+    <div class="absolute top-4 left-4 z-30 flex flex-col gap-2 pointer-events-none opacity-80">
+        <div class="flex items-center gap-2">
+            <div class="w-3 h-3 bg-red-700 rounded-full shadow-[0_0_10px_red]"></div>
+            <span class="text-xl font-bold text-white tracking-widest">{String(scores.red).padStart(3, '0')}</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
+            <span class="text-xl font-bold text-gray-400 tracking-widest">{String(scores.gray).padStart(3, '0')}</span>
+        </div>
+    </div>
+
+    <div class="z-30 text-center space-y-6 max-w-4xl w-full pointer-events-none">
+      <BrandLogo class="w-24 h-24 text-red-700 mx-auto mb-8 drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" />
 
       <h1 class="text-4xl md:text-6xl font-bold tracking-tighter text-white">
         MAINTAINER<span class="text-red-700">.</span>ONE
       </h1>
 
-      <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
+      <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto pb-8">
         Code. Community. <span class="text-white">Championships.</span>
       </p>
 
-      <div class="grid grid-cols-4 gap-2 md:gap-4 text-center py-8 max-w-2xl mx-auto pointer-events-auto">
+      <div class="inline-block border border-red-900/50 bg-red-900/10 px-3 py-1 rounded text-red-500 text-xs tracking-widest mb-4 pointer-events-auto">
+        STATUS: PRE-ALPHA
+      </div>
+
+      <p class="text-sm text-gray-500 tracking-wide uppercase pt-4">
+        Time to <span class="text-red-500 font-bold">Protocol 1X</span> Launch
+      </p>
+
+      <div class="grid grid-cols-4 gap-2 md:gap-4 text-center pb-8 max-w-2xl mx-auto pointer-events-auto">
         {#each Object.entries(timeLeft) as [label, value]}
           <div class="border border-gray-800 p-3 md:p-4 rounded bg-gray-900/80 backdrop-blur-sm">
             <div class="text-2xl md:text-5xl font-bold text-white font-mono">{String(value).padStart(2, '0')}</div>
@@ -385,34 +440,6 @@
         {/each}
       </div>
 
-      <p class="text-sm text-gray-500 tracking-wide uppercase">
-        Time until <span class="text-red-500 font-bold">Protocol T</span> Launch
-      </p>
-
-      <div class="pt-8 w-full flex justify-center pointer-events-auto" transition:fade>
-        <a
-          href="https://github.com/Maintainer-One"
-          target="_blank"
-          rel="noreferrer"
-          class="group relative inline-flex items-center gap-4 bg-white text-black hover:bg-red-700 hover:text-white px-8 py-5 font-bold tracking-wide transition-all duration-300"
-        >
-          <svg viewBox="0 0 24 24" class="w-6 h-6 fill-current transition-transform group-hover:scale-110" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-          </svg>
-
-          <div class="flex flex-col text-left">
-            <span class="text-xs uppercase tracking-wider opacity-60 group-hover:text-white/80">Organization Link</span>
-            <span class="text-lg">VIEW_REPOSITORIES();</span>
-          </div>
-
-          <span class="text-2xl group-hover:translate-x-1 transition-transform">→</span>
-        </a>
-      </div>
-
-      <p class="text-xs text-gray-600 pt-4">
-        * Repositories initializing. Follow the org for updates.
-      </p>
-
     </div>
   </section>
 
@@ -420,79 +447,100 @@
 
     <div class="space-y-8">
       <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">The Pitch</h2>
-      <p class="leading-relaxed text-gray-400">
-        <strong>Maintainer One</strong> is a code and community driven sports management simulation game.
-        <br><br>
-        The Training Protocol is planned to launch January 2026.
-      </p>
       <ul class="space-y-6 mt-8">
         <li class="flex gap-4 items-start">
-          <span class="text-red-700 font-bold font-mono">01.</span>
           <div>
-            <strong class="text-white block mb-1">Community as Engine</strong>
-            <span class="text-gray-500 text-sm">Teams are GitHub Repos. Matches are PRs. The meta evolves via community proposals.</span>
+            <strong class="text-white block mb-1">Code</strong>
+            <span class="text-gray-500 text-sm">At its heart, Maintainer One is a coding game where <strong>every</strong> action a team makes is automated through code. Each league has an evolving protocol that determines the rules and constraints each team must play under.</span>
           </div>
         </li>
         <li class="flex gap-4 items-start">
-          <span class="text-red-700 font-bold font-mono">02.</span>
           <div>
-            <strong class="text-white block mb-1">Code Lock</strong>
-            <span class="text-gray-500 text-sm">Code is frozen before each match week to encourage robust, automated code. No human intervention. Your architecture must survive the chaos alone.</span>
+            <strong class="text-white block mb-1">Community</strong>
+            <span class="text-gray-500 text-sm">Maintainer One is also intended to be open source and community driven. Each team's code will be stored in its own repo and will depend on a maintainer and contributors to adapt to an ever changing protocol.</span>
           </div>
         </li>
         <li class="flex gap-4 items-start">
-          <span class="text-red-700 font-bold font-mono">03.</span>
           <div>
-            <strong class="text-white block mb-1">Open Source Espionage</strong>
-            <span class="text-gray-500 text-sm">Public repos mean public strategies. Forking is allowed. Winning requires understanding.</span>
+            <strong class="text-white block mb-1">Championships</strong>
+            <span class="text-gray-500 text-sm">Only one team can win each season and the maintainer of that team will be crowned Maintainer One.</span>
           </div>
         </li>
       </ul>
     </div>
 
     <div class="space-y-8">
-      <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">Protocol T (Jan '26)</h2>
-      <p class="leading-relaxed text-gray-400">
-        The Exhibition Season. A simplified physics engine designed to stress-test the infrastructure and your intent-handling logic.
-      </p>
+      <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">Upcoming</h2>
 
-      <div class="p-6 border border-gray-800 bg-gray-900/30 font-mono text-sm space-y-4">
-        <div>
-          <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Objective</span>
-          <span class="text-white">Spatial Control (King of the Hill)</span>
-        </div>
-
+      <div class="p-6 border border-gray-800 bg-gray-900/30 text-sm space-y-4">
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Grid Size</span>
-            <span class="text-green-400">24x24 Void</span>
+            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Name</span>
+            <span class="text-white">Protocol 1X</span>
           </div>
           <div>
-            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Vision</span>
-            <span class="text-green-400">God Mode (Full State)</span>
+            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Launch Date</span>
+            <span class="text-green-400">Jan '26</span>
           </div>
-          <div>
-            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Runtime</span>
-            <span class="text-green-400">Deno (Strict Mode)</span>
-          </div>
-          <div>
-            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">API Style</span>
-            <span class="text-green-400">Intent Injection</span>
+          <div class="col-span-2">
+            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Description</span>
+            <span class="text-white">The experimental league for Protocol One that will be used to prepare <strong>for Season 1</strong> (Feb '26)</span>
           </div>
         </div>
+      </div>
 
-        <div class="pt-4 border-t border-gray-800">
-           <span class="text-gray-500 block text-xs uppercase tracking-wider mb-2">Sample Intent</span>
-           <code class="block bg-black p-3 text-gray-300 rounded border border-gray-800">
-             unit.<span class="text-yellow-400">move</span>(Direction.<span class="text-purple-400">North</span>);
-           </code>
+      <div class="p-6 border border-gray-800 bg-gray-900/30 text-sm space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Name</span>
+            <span class="text-white">Protocol One</span>
+          </div>
+          <div>
+            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Launch Date</span>
+            <span class="text-green-400">Feb '26</span>
+          </div>
+          <div class="col-span-2">
+            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Description</span>
+            <span class="text-white">The premier league for Maintainer One with the most complicated protocol to deal with.</span>
+          </div>
+          <div class="col-span-2">
+            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Maintainer One</span>
+            <span class="text-white">The first Maintainer One will be crowned end of Season 1 (End of February)</span>
+          </div>
         </div>
       </div>
     </div>
 
   </section>
 
-  <footer class="text-center py-12 text-gray-600 text-xs border-t border-gray-900 font-mono relative z-10 bg-black">
-    <p>INIT: 2026-01-01 // MAINTAINER ONE</p>
+  <section class="border-t border-gray-900 bg-black py-20 px-6 relative z-10">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-8 text-center">
+            <h2 class="text-xl font-bold text-white mb-2 tracking-widest">Interested?</h2>
+            <p class="text-gray-500 text-sm">Contributions, ideas, and feedback are all appreciated!</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <a href="https://github.com/Maintainer-One" target="_blank" rel="noreferrer" class="group block p-6 border border-gray-800 hover:border-red-900 bg-gray-900/20 hover:bg-red-900/10 transition-all duration-300">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="text-red-500 text-xs font-bold tracking-widest border border-red-900/50 px-2 py-1 bg-red-900/20">CONTRIBUTE</span>
+                    <svg viewBox="0 0 24 24" class="w-6 h-6 fill-gray-400 group-hover:fill-white transition-colors" xmlns="http://www.w3.org/2000/svg"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </div>
+                <p class="text-gray-500 text-sm">Submit PRs, fix bugs, and help build the foundation before Season 1 begins.</p>
+            </a>
+
+            <a href="https://github.com/Maintainer-One" target="_blank" rel="noreferrer" class="group block p-6 border border-gray-800 hover:border-green-900 bg-gray-900/20 hover:bg-green-900/10 transition-all duration-300">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="text-green-500 text-xs font-bold tracking-widest border border-green-900/50 px-2 py-1 bg-green-900/20">DESIGN</span>
+                    <svg viewBox="0 0 24 24" class="w-6 h-6 fill-gray-400 group-hover:fill-white transition-colors" xmlns="http://www.w3.org/2000/svg"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                </div>
+                <p class="text-gray-500 text-sm">Have an idea for a game mechanic? A loophole in the protocol? Open an issue and join the design conversation.</p>
+            </a>
+        </div>
+    </div>
+  </section>
+
+  <footer class="text-center py-12 text-gray-600 text-xs border-t border-gray-900 relative z-10 bg-black">
+    <p>2026-01-01 // MAINTAINER ONE</p>
   </footer>
 </div>
