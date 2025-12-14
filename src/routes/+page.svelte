@@ -364,7 +364,7 @@
 
 <svelte:head>
   <title>Maintainer One</title>
-  <meta name="description" content="Competitive Engineering. Open Source Strategy. Protocol 1X launches Jan 1, 2026." />
+  <meta name="description" content="Competitive Engineering. Open Source Strategy. Protocol One launches Q1 2026." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
