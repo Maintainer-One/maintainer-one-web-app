@@ -1,85 +1,96 @@
-# MAINTAINER<span style="color:red">.</span>ONE
+# MAINTAINER<span style="color:#b91c1c">.</span>ONE
 
-> **Status:** Pre-Alpha (Building for Jan 1, 2026 Launch)
-> **Current Protocol:** Protocol T (The Exhibition)
+> **Code. Community. Championships.**
 
-**Maintainer One** is an open-source, competitive coding sport. It blends the algorithmic strategy of _Screeps_, the strict engineering constraints of _Formula 1_, and the community-driven narrative of _Blaseball_.
-
-The goal is not just to write code, but to architect solutions that survive strictly constrained environments.
+![Status](https://img.shields.io/badge/STATUS-PRE--ALPHA-red?style=for-the-badge)
+![License](https://img.shields.io/badge/LICENSE-MIT-gray?style=for-the-badge)
+![Stack](https://img.shields.io/badge/BUILT_WITH-SVELTE_5-orange?style=for-the-badge)
 
 ---
 
-## 📅 The Deadline
+## 📡 The Transmission
 
-**Launch Date:** January 1, 2026
-**Event:** Protocol T (Exhibition Season)
+**Maintainer One** is a competitive engineering platform launching **January 1, 2026**.
 
-## 📜 Protocol T Specification (Jan '26)
+At its heart, it is a coding league where every action a team makes is automated through code. Humans write the logic; the bots execute the protocol.
 
-The first season is a "Physics Stress Test." It is stripped down to raw spatial management.
 
-- **Objective:** King of the Hill / Spatial Control.
-- **The Grid:** 24x24 Void (No obstacles).
-- **Vision:** God Mode (Full state access).
-- **The Mechanic:** "Hotspots" appear randomly. The single closest unit to the center scores points. Collisions cancel movement.
-- **The API:** Intent Injection.
 
-  // You do not move directly. You request a move.
-  // The Engine resolves conflicts (collisions) after all scripts run.
-  unit.move(Direction.North);
+Unlike standard e-sports or hackathons, you do not control your units directly. You maintain the repository that controls them. Each league operates under a specific **Protocol**—a set of constraints and evolving rules that your codebase must adapt to.
 
-## 🏗 Architecture
+## 🎯 The Objective
 
-This repository contains the **Web Application** (The League Interface).
+* **Code:** Develop autonomous logic for agents (Bots) on a grid-based simulation.
+* **Community:** Open Source strategy. Each team is a repository; success depends on maintainers and contributors adapting to the protocol.
+* **Championships:** Only one team can win each season. The maintainer of that team is crowned **Maintainer One**.
 
-- **Framework:** SvelteKit (Svelte 5 Runes).
-- **Styling:** Tailwind CSS.
-- **Database & Auth:** Supabase.
-- **Runtime:** Deno 2.x.
+## 🛠️ Tech Stack & Architecture
 
-## ⚡ Local Development
+This repository contains the landing page and the core simulation engine visualization.
 
-### 1. Prerequisites
+* **Framework:** SvelteKit (Svelte 5 Runes)
+* **Styling:** Tailwind CSS
+* **Font:** JetBrains Mono
+* **Simulation:** HTML5 Canvas + TypeScript
 
-- [Deno](https://deno.com/) (v2.0+)
-- A local Supabase instance (or a linked remote project).
 
-### 2. Environment Setup
 
-Copy the example environment file and fill in your Supabase credentials.
+### Simulation Logic (Current State)
+The landing page features a live simulation of the game engine:
+1.  **Entities:** Bots (Red vs. Gray) move across a grid.
+2.  **Intents:** Bots enter states (IDLE, RACING) based on `hotspot` generation.
+3.  **Scoring:** Bots race to capture hotspots; successful captures trigger explosions and increment team scores.
 
-```bash
-cp .env.example .env
-```
+## 🚀 Development Setup
 
-### 3. Installation & Run
+We are currently in **Pre-Alpha**. To run the landing page locally:
 
-Install dependencies and start the development server using Deno.
+1.  **Clone the frequency:**
+    ```bash
+    git clone [https://github.com/Maintainer-One/platform.git](https://github.com/Maintainer-One/platform.git)
+    cd platform
+    ```
 
-```bash
-# Cache dependencies
-deno install
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-# Start the dev server
-deno task dev
-```
+3.  **Initiate Protocol:**
+    ```bash
+    npm run dev
+    ```
 
-### 4. The Loop
+4.  **Visualize:**
+    Open `http://localhost:5173` in your browser.
 
-1.  Navigate to `http://localhost:5173`.
-2.  The landing page tracks the countdown to Jan 1, 2026.
-3.  (Coming Soon) The "Team Dashboard" will allow you to submit a GitHub Repo URL for ingestion.
+## 📅 Roadmap: Protocol 1X
 
-## 🤝 The Philosophy
+| Phase | Milestone | Status |
+| :--- | :--- | :--- |
+| **Phase 0** | Engine Simulation & Landing Page | ✅ **Active** |
+| **Phase 1** | Bot API Definition | 🚧 In Progress |
+| **Phase 2** | Team Registration Protocols | ⏳ Pending |
+| **Phase 3** | **Protocol One Launch** (Jan 1, 2026) | ⏳ Pending |
 
-**Community as Engine.**
-Teams are GitHub repositories. Matches are Pull Requests. The "Meta" (The Protocol) changes based on community proposals (RFCs).
+## 🤝 Contributing
 
-1.  **Write the Logic:** Code your team's AI in TypeScript.
-2.  **Code Lock** Code is frozen with limited code push during match weeks to encourage robust code bases. No human intervention allowed during runtime.
-3.  **Open Source Espionage:** All team repos are public. Forking is allowed. Winning requires understanding your opponent's architecture.
+We need Engineers, Designers, and Strategists.
 
-## 🔗 Links
+### 💻 For Developers
+Submit PRs to fix bugs in the simulation engine or optimize the rendering loop.
+* *Current Focus:* Optimizing the `draw()` loop and `Explosion` particle management.
 
-- **Organization:** [github.com/Maintainer-One](https://github.com/Maintainer-One)
-- **License:** MIT
+### 🎨 For Designers
+Have an idea for a game mechanic? A loophole in the protocol?
+* Open an Issue labeled `discussion` to join the design conversation.
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+<div align="center">
+  <sub>2026-01-01 // MAINTAINER ONE</sub>
+</div>
