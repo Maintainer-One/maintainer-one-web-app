@@ -32,26 +32,10 @@
   const TOOLTIP_HEIGHT_EST = 140;
 
   // --- STATE ---
-  let timeLeft = $state({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   let scores = $state({ red: 0, gray: 0 });
   let hoveredBot = $state<Bot | null>(null);
   let tooltipPos = $state({ x: 0, y: 0 });
   let canvas: HTMLCanvasElement;
-
-  function updateTimer() {
-    const now = new Date().getTime();
-    const distance = TARGET_DATE - now;
-    if (distance < 0) {
-        timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
-        return;
-    }
-    timeLeft = {
-      days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-      minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-      seconds: Math.floor((distance % (1000 * 60)) / 1000),
-    };
-  }
 
   // --- ENGINE SIMULATION LOGIC ---
   function initSimulation() {
@@ -352,11 +336,8 @@
   }
 
   onMount(() => {
-    updateTimer();
-    const interval = setInterval(updateTimer, 1000);
     const cleanupSim = initSimulation();
     return () => {
-        clearInterval(interval);
         if (cleanupSim) cleanupSim();
     };
   });
@@ -430,15 +411,6 @@
       <p class="text-sm text-gray-500 tracking-wide uppercase pt-4">
         Coming Q1 2026
       </p>
-
-      <!-- <div class="grid grid-cols-4 gap-2 md:gap-4 text-center pb-8 max-w-2xl mx-auto pointer-events-auto">
-        {#each Object.entries(timeLeft) as [label, value]}
-          <div class="border border-gray-800 p-3 md:p-4 rounded bg-gray-900/80 backdrop-blur-sm">
-            <div class="text-2xl md:text-5xl font-bold text-white font-mono">{String(value).padStart(2, '0')}</div>
-            <div class="text-[10px] md:text-xs uppercase tracking-widest text-gray-500 mt-1">{label}</div>
-          </div>
-        {/each}
-      </div> -->
 
     </div>
   </section>
