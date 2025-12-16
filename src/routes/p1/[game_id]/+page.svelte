@@ -10,9 +10,9 @@
   let height = 300;
   const cellSize = 30;
 
-  let tick = 1;
+  let tick = $state(0);
 
-  function draw() {
+  $effect(() => {
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
@@ -35,8 +35,7 @@
     }
     ctx.stroke();
 
-    data.game.ticks[0].a.players.forEach((player) => {
-      console.log(player);
+    data.game.ticks[tick][0].players.forEach((player) => {
       ctx.beginPath();
       ctx.fillStyle = "#dc2626";
       ctx.arc(
@@ -49,8 +48,7 @@
       ctx.fill();
     });
 
-    data.game.ticks[0].b.players.forEach((player) => {
-      console.log(player);
+    data.game.ticks[tick][1].players.forEach((player) => {
       ctx.beginPath();
       ctx.fillStyle = "#6b7280";
       ctx.arc(
@@ -62,36 +60,59 @@
       );
       ctx.fill();
     });
-  }
-
-  onMount(() => {
-    draw();
   });
 </script>
 
 <div
-  class="bg-black min-h-screen text-gray-200 selection:bg-red-900 selection:text-white pt-8 flex items-center flex-wrap flex-row justify-around"
+  class="min-h-screen flex flex-col space-around bg-black text-gray-200 selection:bg-red-900 selection:text-white justify-around"
 >
-  <aside>
-    <h2>Red Team</h2>
-    <ul>
-      {#each data.game.ticks[tick].a.players as player}
-        <li>{player.name}</li>
-      {/each}
-    </ul>
-  </aside>
   <div
-    class="flex flex-col items-center gap-4"
+    class="flex flex-wrap flex-row justify-around"
   >
-    <p>Score</p>
-    <canvas {width} {height} bind:this={canvas}></canvas>
+    <aside>
+      <h2>{data.game.ticks[tick][0].name} Players</h2>
+      <ul>
+        {#each data.game.ticks[tick][0].players as player}
+          <li>{player.name}</li>
+        {/each}
+      </ul>
+    </aside>
+    <div
+      class="flex flex-col items-center gap-4"
+    >
+      <div class="flex justify-around w-full">
+        <div class="flex flex-col">
+          <p>{data.game.ticks[tick][0].name}</p>
+          <p>{data.game.ticks[tick][0].score}</p>
+        </div>
+        <div class="flex flex-col">
+          <p>Tick</p>
+          <p>{tick}</p>
+        </div>
+        <div class="flex flex-col">
+          <p>{data.game.ticks[tick][1].name}</p>
+          <p>{data.game.ticks[tick][1].score}</p>
+        </div>
+      </div>
+      <canvas {width} {height} bind:this={canvas}></canvas>
+      <div class="flex w-full justify-around">
+        <p>Play</p>
+        <input
+          class="grow ml-4"
+          bind:value={tick}
+          type="range"
+          min={0}
+          max={data.game.ticks.length - 1}
+        >
+      </div>
+    </div>
+    <aside>
+      <h2>{data.game.ticks[tick][1].name} Players</h2>
+      <ul>
+        {#each data.game.ticks[tick][1].players as player}
+          <li>{player.name}</li>
+        {/each}
+      </ul>
+    </aside>
   </div>
-  <aside>
-    <h2>Gray Team</h2>
-    <ul>
-      {#each data.game.ticks[tick].b.players as player}
-        <li>{player.name}</li>
-      {/each}
-    </ul>
-  </aside>
 </div>

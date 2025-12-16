@@ -5,26 +5,42 @@ export const load: PageServerLoad = async ({ params }) => {
     game: {
       seed: 123,
       ticks: [
-        {
-          a: {
+        [
+          {
+            name: "A's",
             score: 0,
-            players: [{ name: "bob", x: 1, y: 5 }],
+            players: [{ name: "bob", x: 5, y: 1 }],
           },
-          b: {
+          {
+            name: "B's",
             score: 0,
-            players: [{ name: "frank", x: 10, y: 5 }],
+            players: [{ name: "frank", x: 5, y: 10 }],
           },
-        },
-        {
-          a: {
+        ],
+        [
+          {
+            name: "A's",
             score: 0,
-            players: [{ name: "bob", x: 2, y: 5 }],
+            players: [{ name: "bob", x: 5, y: 2 }],
           },
-          b: {
+          {
+            name: "B's",
             score: 3,
-            players: [{ name: "frank", x: 9, y: 5 }],
+            players: [{ name: "frank", x: 5, y: 9 }],
           },
-        },
+        ],
+        [
+          {
+            name: "A's",
+            score: 0,
+            players: [{ name: "bob", x: 5, y: 3 }],
+          },
+          {
+            name: "B's",
+            score: 3,
+            players: [{ name: "frank", x: 5, y: 8 }],
+          },
+        ],
       ],
     },
   };
