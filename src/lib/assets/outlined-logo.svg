@@ -10,8 +10,6 @@
       stroke-linecap="square"
       vector-effect="non-scaling-stroke"
     />
-
-    <!-- RED 1 with slightly less “pillowy” outline behavior -->
     <path
       d="m110.99 64.677-7.5302 22.763 16.62 0.12247-0.13653 40.34c-0.55064 7.3287 6.4915 12.809 13.511 12.865 3.6589-0.0475 7.3506-0.0104 11.011-7.8e-4l0.14829-63.703c-0.30417-7.3083-6.6924-12.175-13.995-12.446z"
       fill="#c10007"
