@@ -35,12 +35,13 @@
     }
     ctx.stroke();
 
-    data.game.ticks[tick][0].players.forEach((player) => {
+    data.game.ticks[tick].teamActions[0].players.forEach((player) => {
+      $inspect(player);
       ctx.beginPath();
       ctx.fillStyle = "#dc2626";
       ctx.arc(
-        player.x * cellSize - (cellSize / 2),
-        player.y * cellSize - (cellSize / 2),
+        player.x * cellSize + (cellSize / 2),
+        player.y * cellSize + (cellSize / 2),
         cellSize * 0.35,
         0,
         Math.PI * 2,
@@ -48,12 +49,13 @@
       ctx.fill();
     });
 
-    data.game.ticks[tick][1].players.forEach((player) => {
+    data.game.ticks[tick].teamActions[1].players.forEach((player) => {
+      $inspect(player);
       ctx.beginPath();
       ctx.fillStyle = "#6b7280";
       ctx.arc(
-        player.x * cellSize - (cellSize / 2),
-        player.y * cellSize - (cellSize / 2),
+        player.x * cellSize + (cellSize / 2),
+        player.y * cellSize + (cellSize / 2),
         cellSize * 0.35,
         0,
         Math.PI * 2,
@@ -70,9 +72,9 @@
     class="flex flex-wrap flex-row justify-around"
   >
     <aside>
-      <h2>{data.game.ticks[tick][0].name} Players</h2>
+      <h2>{data.game.ticks[tick].teamActions[0].name} Players</h2>
       <ul>
-        {#each data.game.ticks[tick][0].players as player}
+        {#each data.game.ticks[tick].teamActions[0].players as player}
           <li>{player.name}</li>
         {/each}
       </ul>
@@ -82,16 +84,16 @@
     >
       <div class="flex justify-around w-full">
         <div class="flex flex-col">
-          <p>{data.game.ticks[tick][0].name}</p>
-          <p>{data.game.ticks[tick][0].score}</p>
+          <p>{data.game.ticks[tick].teamActions[0].name}</p>
+          <p>{data.game.ticks[tick].teamActions[0].score}</p>
         </div>
         <div class="flex flex-col">
           <p>Tick</p>
           <p>{tick}</p>
         </div>
         <div class="flex flex-col">
-          <p>{data.game.ticks[tick][1].name}</p>
-          <p>{data.game.ticks[tick][1].score}</p>
+          <p>{data.game.ticks[tick].teamActions[1].name}</p>
+          <p>{data.game.ticks[tick].teamActions[1].score}</p>
         </div>
       </div>
       <canvas {width} {height} bind:this={canvas}></canvas>
@@ -107,9 +109,9 @@
       </div>
     </div>
     <aside>
-      <h2>{data.game.ticks[tick][1].name} Players</h2>
+      <h2>{data.game.ticks[tick].teamActions[1].name} Players</h2>
       <ul>
-        {#each data.game.ticks[tick][1].players as player}
+        {#each data.game.ticks[tick].teamActions[1].players as player}
           <li>{player.name}</li>
         {/each}
       </ul>

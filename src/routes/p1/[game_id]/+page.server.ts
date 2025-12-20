@@ -1,47 +1,29 @@
 import type { PageServerLoad } from "./$types";
+import { simGame } from "$lib/server/v1sim.ts";
+import type { Team, Player } from "$lib/server/v1sim.ts";
 
 export const load: PageServerLoad = async ({ params }) => {
+  let teamA: Team = {
+    name: "A's",
+    players: [
+      {
+        name: "Bob",
+      },
+    ],
+  };
+
+  let teamB: Team = {
+    name: "B's",
+    players: [
+      {
+        name: "Anna",
+      },
+    ],
+  };
+
+  let gameReplay = simGame("123", teamA, teamB);
+
   return {
-    game: {
-      seed: 123,
-      ticks: [
-        [
-          {
-            name: "A's",
-            score: 0,
-            players: [{ name: "bob", x: 5, y: 1 }],
-          },
-          {
-            name: "B's",
-            score: 0,
-            players: [{ name: "frank", x: 5, y: 10 }],
-          },
-        ],
-        [
-          {
-            name: "A's",
-            score: 0,
-            players: [{ name: "bob", x: 5, y: 2 }],
-          },
-          {
-            name: "B's",
-            score: 3,
-            players: [{ name: "frank", x: 5, y: 9 }],
-          },
-        ],
-        [
-          {
-            name: "A's",
-            score: 0,
-            players: [{ name: "bob", x: 5, y: 3 }],
-          },
-          {
-            name: "B's",
-            score: 3,
-            players: [{ name: "frank", x: 5, y: 8 }],
-          },
-        ],
-      ],
-    },
+    game: gameReplay,
   };
 };
