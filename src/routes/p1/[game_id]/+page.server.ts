@@ -1,6 +1,6 @@
 import type { PageServerLoad } from "./$types";
 import { simGame } from "$lib/server/v1sim.ts";
-import type { Team, Player } from "$lib/server/v1sim.ts";
+import type { Team } from "$lib/server/v1sim.ts";
 
 export const load: PageServerLoad = async ({ params }) => {
   let teamA: Team = {
@@ -9,6 +9,12 @@ export const load: PageServerLoad = async ({ params }) => {
       {
         name: "Bob",
       },
+      {
+        name: "Frank",
+      },
+      {
+        name: "Ted",
+      },
     ],
   };
 
@@ -16,12 +22,18 @@ export const load: PageServerLoad = async ({ params }) => {
     name: "B's",
     players: [
       {
-        name: "Anna",
+        name: "Addie",
+      },
+      {
+        name: "Nelli",
+      },
+      {
+        name: "Penny",
       },
     ],
   };
 
-  let gameReplay = simGame("123", teamA, teamB);
+  let gameReplay = simGame("123", [teamA, teamB]);
 
   return {
     game: gameReplay,

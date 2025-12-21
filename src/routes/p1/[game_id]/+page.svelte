@@ -46,7 +46,6 @@
     ctx.stroke();
 
     data.game.ticks[tick].teamActions[0].players.forEach((player) => {
-      $inspect(player);
       ctx.beginPath();
       ctx.fillStyle = "#dc2626";
       ctx.arc(
@@ -60,7 +59,6 @@
     });
 
     data.game.ticks[tick].teamActions[1].players.forEach((player) => {
-      $inspect(player);
       ctx.beginPath();
       ctx.fillStyle = "#6b7280";
       ctx.arc(
