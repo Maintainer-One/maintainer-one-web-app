@@ -12,7 +12,17 @@
 
   let tick = $state(0);
 
+  let isPlaying = $state(false);
+
   $effect(() => {
+    if (isPlaying) {
+      setTimeout(() => {
+        tick += 1;
+      }, 1000);
+    }
+    if (tick > data.game.ticks.length) {
+      return;
+    }
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
@@ -98,7 +108,9 @@
       </div>
       <canvas {width} {height} bind:this={canvas}></canvas>
       <div class="flex w-full justify-around">
-        <p>Play</p>
+        <button onclick={() => isPlaying = !isPlaying}>
+          {isPlaying ? "Pause" : "Play"}
+        </button>
         <input
           class="grow ml-4"
           bind:value={tick}

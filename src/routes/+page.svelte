@@ -4,7 +4,7 @@
   import M1Logo from '$lib/components/M1Logo.svelte';
 
   // --- ENTITIES ---
-  interface Bot {
+  interface Player {
     id: string;
     team: 'red' | 'gray';
     prevX: number; prevY: number;
@@ -12,7 +12,7 @@
     intent: string;
   }
 
-  interface Hotspot {
+  interface PointZone {
     x: number;
     y: number;
   }
@@ -25,15 +25,14 @@
   }
 
   // --- CONFIG ---
-  const TARGET_DATE = new Date("2026-01-01T00:00:00").getTime();
-  const MAX_BOTS = 150;
+  const MAX_PLAYERS = 10;
   const TOOLTIP_OFFSET = 16;
   const TOOLTIP_WIDTH_EST = 220;
   const TOOLTIP_HEIGHT_EST = 140;
 
   // --- STATE ---
   let scores = $state({ red: 0, gray: 0 });
-  let hoveredBot = $state<Bot | null>(null);
+  let hoveredPlayer = $state<Player | null>(null);
   let tooltipPos = $state({ x: 0, y: 0 });
   let canvas: HTMLCanvasElement;
 
@@ -54,8 +53,8 @@
     let mouseY = -100;
     let isMouseOverCanvas = false;
 
-    const bots: Bot[] = [];
-    let hotspot: Hotspot | null = null;
+    const players: Player[] = [];
+    let pointzone: PointZone | null = null;
     let explosions: Explosion[] = [];
 
     const genId = () => Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -66,25 +65,29 @@
       const displayWidth = canvas.parentElement?.clientWidth || window.innerWidth;
       const displayHeight = canvas.parentElement?.clientHeight || window.innerHeight;
 
-      width = displayWidth;
-      height = displayHeight;
+      width = displayWidth - displayHeight / 4;
+      height = displayHeight - displayHeight / 4;
+      width = width - width % cellSize
+      height = height - height % cellSize
 
-      canvas.width = displayWidth * dpr;
-      canvas.height = displayHeight * dpr;
+      $inspect({remainderW: width % cellSize, remainderH: height % cellSize})
+
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
 
       ctx.scale(dpr, dpr);
 
-      bots.length = 0;
+      players.length = 0;
       const densityCount = Math.floor((width * height) / 35000);
-      const botCount = Math.min(MAX_BOTS, densityCount);
+      const playerCount = Math.min(MAX_PLAYERS, densityCount);
 
       const gridW = Math.ceil(width / cellSize);
       const gridH = Math.ceil(height / cellSize);
 
-      for (let i = 0; i < botCount; i++) {
+      for (let i = 0; i < playerCount; i++) {
         const startX = Math.floor(Math.random() * gridW);
         const startY = Math.floor(Math.random() * gridH);
-        bots.push({
+        players.push({
           id: genId(),
           team: Math.random() > 0.5 ? 'red' : 'gray',
           prevX: startX, prevY: startY,
@@ -98,7 +101,7 @@
     const handleMouseMove = (e: MouseEvent) => {
       if (e.target instanceof HTMLElement && e.target.closest('section:not(:first-child)')) {
         isMouseOverCanvas = false;
-        hoveredBot = null;
+        hoveredPlayer = null;
         return;
       }
 
@@ -143,7 +146,7 @@
 
         // 1. Clear & Draw Grid
         ctx.clearRect(0, 0, width, height);
-        ctx.strokeStyle = "rgba(50, 50, 50, 0.2)";
+        ctx.strokeStyle = "rgba(50, 50, 50, 0.5)";
         ctx.lineWidth = 1;
         ctx.beginPath();
         for (let x = 0; x <= width; x += cellSize) {
@@ -158,44 +161,44 @@
         tickProgress++;
         if (tickProgress >= tickDuration) {
             tickProgress = 0;
-            const gridW = Math.ceil(width / cellSize);
-            const gridH = Math.ceil(height / cellSize);
+            const gridW = Math.ceil(width / cellSize) - 2;
+            const gridH = Math.ceil(height / cellSize) - 2;
 
-            if (!hotspot && Math.random() > 0.1) {
-                hotspot = {
+            if (!pointzone && Math.random() > 0.1) {
+                pointzone = {
                     x: Math.floor(Math.random() * gridW),
                     y: Math.floor(Math.random() * gridH)
                 };
             }
 
             let chaserIds = new Set<string>();
-            if (hotspot) {
-                const distances = bots.map(b => ({
+            if (pointzone) {
+                const distances = players.map(b => ({
                     id: b.id,
-                    dist: Math.abs(b.prevX - hotspot!.x) + Math.abs(b.prevY - hotspot!.y)
+                    dist: Math.abs(b.prevX - pointzone!.x) + Math.abs(b.prevY - pointzone!.y)
                 }));
                 distances.sort((a, b) => a.dist - b.dist);
                 distances.slice(0, 4).forEach(d => chaserIds.add(d.id));
             }
 
             const occupied = new Set<string>();
-            bots.forEach(b => occupied.add(`${b.nextX},${b.nextY}`));
+            players.forEach(b => occupied.add(`${b.nextX},${b.nextY}`));
 
-            bots.forEach(bot => {
-                bot.prevX = bot.nextX;
-                bot.prevY = bot.nextY;
+            players.forEach(player => {
+                player.prevX = player.nextX;
+                player.prevY = player.nextY;
 
                 let dx = 0;
                 let dy = 0;
 
-                if (hotspot && chaserIds.has(bot.id)) {
-                    bot.intent = 'RACING';
-                    if (hotspot.x > bot.prevX) dx = 1;
-                    else if (hotspot.x < bot.prevX) dx = -1;
-                    else if (hotspot.y > bot.prevY) dy = 1;
-                    else if (hotspot.y < bot.prevY) dy = -1;
+                if (pointzone && chaserIds.has(player.id)) {
+                    player.intent = 'RACING';
+                    if (pointzone.x > player.prevX) dx = 1;
+                    else if (pointzone.x < player.prevX) dx = -1;
+                    else if (pointzone.y > player.prevY) dy = 1;
+                    else if (pointzone.y < player.prevY) dy = -1;
                 } else {
-                    bot.intent = 'IDLE';
+                    player.intent = 'IDLE';
                     if (Math.random() > 0.3) {
                         const r = Math.floor(Math.random() * 4);
                         if (r === 0) dy = -1;
@@ -205,8 +208,8 @@
                     }
                 }
 
-                const targetX = bot.prevX + dx;
-                const targetY = bot.prevY + dy;
+                const targetX = player.prevX + dx;
+                const targetY = player.prevY + dy;
                 const key = `${targetX},${targetY}`;
 
                 if (
@@ -214,24 +217,24 @@
                     targetY >= 0 && targetY < gridH &&
                     !occupied.has(key)
                 ) {
-                    bot.nextX = targetX;
-                    bot.nextY = targetY;
+                    player.nextX = targetX;
+                    player.nextY = targetY;
                     occupied.add(key);
-                    occupied.delete(`${bot.prevX},${bot.prevY}`);
+                    occupied.delete(`${player.prevX},${player.prevY}`);
 
-                    if (hotspot && bot.nextX === hotspot.x && bot.nextY === hotspot.y) {
-                        scores[bot.team] += 1;
+                    if (pointzone && player.nextX === pointzone.x && player.nextY === pointzone.y) {
+                        scores[player.team] += 1;
                         explosions.push({
-                            x: (hotspot.x * cellSize) + (cellSize/2),
-                            y: (hotspot.y * cellSize) + (cellSize/2),
+                            x: (pointzone.x * cellSize) + (cellSize/2),
+                            y: (pointzone.y * cellSize) + (cellSize/2),
                             age: 0,
-                            color: bot.team === 'red' ? '#dc2626' : '#6b7280'
+                            color: player.team === 'red' ? '#dc2626' : '#6b7280'
                         });
-                        hotspot = null;
+                        pointzone = null;
                     }
                 } else {
-                    bot.nextX = bot.prevX;
-                    bot.nextY = bot.prevY;
+                    player.nextX = player.prevX;
+                    player.nextY = player.prevY;
                 }
             });
         }
@@ -240,9 +243,9 @@
         const t = tickProgress / tickDuration;
         const ease = t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
-        if (hotspot) {
-            const hx = (hotspot.x * cellSize) + (cellSize/2);
-            const hy = (hotspot.y * cellSize) + (cellSize/2);
+        if (pointzone) {
+            const hx = (pointzone.x * cellSize) + (cellSize/2);
+            const hy = (pointzone.y * cellSize) + (cellSize/2);
             const pulse = 1 + Math.sin(Date.now() / 150) * 0.3;
             ctx.fillStyle = "rgba(234, 179, 8, 0.2)";
             ctx.beginPath();
@@ -266,27 +269,27 @@
             if (exp.age >= 1) explosions.splice(i, 1);
         }
 
-        let newFoundBot: Bot | null = null;
+        let newFoundPlayer: Player | null = null;
 
-        bots.forEach(bot => {
-            const curX = prefersReducedMotion ? bot.nextX : bot.prevX + (bot.nextX - bot.prevX) * ease;
-            const curY = prefersReducedMotion ? bot.nextY : bot.prevY + (bot.nextY - bot.prevY) * ease;
+        players.forEach(player => {
+            const curX = prefersReducedMotion ? player.nextX : player.prevX + (player.nextX - player.prevX) * ease;
+            const curY = prefersReducedMotion ? player.nextY : player.prevY + (player.nextY - player.prevY) * ease;
             const px = (curX * cellSize) + (cellSize / 2);
             const py = (curY * cellSize) + (cellSize / 2);
 
             ctx.beginPath();
-            ctx.fillStyle = bot.team === 'red' ? '#dc2626' : '#6b7280';
+            ctx.fillStyle = player.team === 'red' ? '#dc2626' : '#6b7280';
             ctx.arc(px, py, cellSize * 0.35, 0, Math.PI * 2);
             ctx.fill();
 
-            if (bot.intent === 'RACING') {
+            if (player.intent === 'RACING') {
                 ctx.fillStyle = "#fff";
                 ctx.beginPath();
                 ctx.arc(px, py, 2, 0, Math.PI*2);
                 ctx.fill();
             }
 
-            if (bot.team === 'red') {
+            if (player.team === 'red') {
                  ctx.shadowColor = '#dc2626';
                  ctx.shadowBlur = 15;
             } else {
@@ -298,12 +301,12 @@
             // HOVER CHECK (Hit Test)
             const dist = Math.hypot(px - mouseX, py - mouseY);
             if (dist < cellSize / 2) {
-                newFoundBot = bot;
+                newFoundPlayer = player;
             }
 
-            // SELECTION HIGHLIGHT (Draw ring if this bot is the active one)
-            // Note: We check against the STATE variable 'hoveredBot', not the hit test
-            if (hoveredBot && bot.id === hoveredBot.id) {
+            // SELECTION HIGHLIGHT (Draw ring if this player is the active one)
+            // Note: We check against the STATE variable 'hoveredPlayer', not the hit test
+            if (hoveredPlayer && player.id === hoveredPlayer.id) {
                 ctx.strokeStyle = "white";
                 ctx.lineWidth = 2;
                 ctx.stroke();
@@ -311,15 +314,15 @@
         });
 
         // --- SELECTION STATE LOGIC ---
-        // 1. If we found a new bot under the mouse, it becomes the active one
-        if (newFoundBot) {
-            hoveredBot = newFoundBot;
+        // 1. If we found a new player under the mouse, it becomes the active one
+        if (newFoundPlayer) {
+            hoveredPlayer = newFoundPlayer;
         }
-        // 2. If we didn't find a bot, AND we are off-canvas (lower screen), clear selection
+        // 2. If we didn't find a player, AND we are off-canvas (lower screen), clear selection
         else if (!isMouseOverCanvas) {
-            hoveredBot = null;
+            hoveredPlayer = null;
         }
-        // 3. Otherwise (didn't find a bot, but still on canvas), KEEP the previous hoveredBot
+        // 3. Otherwise (didn't find a player, but still on canvas), KEEP the previous hoveredPlayer
 
         if (!prefersReducedMotion) {
            animId = requestAnimationFrame(draw);
@@ -353,29 +356,29 @@
 
 <div class="bg-black min-h-screen text-gray-200 selection:bg-red-900 selection:text-white overflow-x-hidden flex flex-col" style="font-family: 'JetBrains Mono', monospace;">
 
-  <section class="relative grow flex flex-col items-center justify-center p-6 border-b border-gray-800 min-h-[calc(100vh-3rem)] overflow-hidden">
+  <section class="relative grow flex flex-col items-center justify-center p-6 border-b border-gray-800 min-h-[calc(100vh-3rem)]">
 
     <canvas
         bind:this={canvas}
-        class="absolute inset-0 z-0 opacity-50"
+        class="absolute inset-20 z-0 opacity-50"
     ></canvas>
 
-    {#if hoveredBot}
+    {#if hoveredPlayer}
         <div
             class="absolute z-10 bg-black/95 border border-gray-700 p-3 rounded pointer-events-none backdrop-blur shadow-2xl transition-opacity duration-75"
             style="left: {tooltipPos.x}px; top: {tooltipPos.y}px;"
             transition:fade={{ duration: 100 }}
         >
             <div class="text-xs text-gray-500 uppercase tracking-widest mb-1">Unit Info</div>
-            <div class="text-lg font-bold text-white mb-1">ID: {hoveredBot.id}</div>
+            <div class="text-lg font-bold text-white mb-1">ID: {hoveredPlayer.id}</div>
             <div class="flex items-center gap-2 text-xs mb-2">
                 Team:
-                <span class={hoveredBot.team === 'red' ? "text-red-500 font-bold" : "text-gray-400 font-bold"}>
-                    {hoveredBot.team.toUpperCase()}
+                <span class={hoveredPlayer.team === 'red' ? "text-red-500 font-bold" : "text-gray-400 font-bold"}>
+                    {hoveredPlayer.team.toUpperCase()}
                 </span>
             </div>
             <div class="text-xs font-mono bg-gray-900 p-1 rounded border border-gray-800">
-                > INTENT: {hoveredBot.intent}
+                > INTENT: {hoveredPlayer.intent}
             </div>
         </div>
     {/if}
