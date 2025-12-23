@@ -1,14 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
-  import M1Logo from '$lib/components/M1Logo.svelte';
+  import M1Logo from "$lib/components/M1Logo.svelte";
 
   // --- ENTITIES ---
   interface Player {
     id: string;
-    team: 'red' | 'gray';
-    prevX: number; prevY: number;
-    nextX: number; nextY: number;
+    team: "red" | "gray";
+    prevX: number;
+    prevY: number;
+    nextX: number;
+    nextY: number;
     intent: string;
   }
 
@@ -26,14 +28,9 @@
 
   // --- CONFIG ---
   const MAX_PLAYERS = 10;
-  const TOOLTIP_OFFSET = 16;
-  const TOOLTIP_WIDTH_EST = 220;
-  const TOOLTIP_HEIGHT_EST = 140;
 
   // --- STATE ---
   let scores = $state({ red: 0, gray: 0 });
-  let hoveredPlayer = $state<Player | null>(null);
-  let tooltipPos = $state({ x: 0, y: 0 });
   let canvas: HTMLCanvasElement;
 
   // --- FIELD DIMENSIONS ---
@@ -45,7 +42,7 @@
     insetHeight: 0,
     displayHeight: 0,
     cellSize: 32,
-  }
+  };
 
   // --- ENGINE SIMULATION LOGIC ---
   function initSimulation() {
@@ -53,7 +50,8 @@
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const prefersReducedMotion =
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     // Mouse State
     let mouseX = -100;
@@ -64,21 +62,28 @@
     let pointzone: PointZone | null = null;
     let explosions: Explosion[] = [];
 
-    const genId = () => Math.random().toString(36).substring(2, 6).toUpperCase();
+    const genId = () =>
+      Math.random().toString(36).substring(2, 6).toUpperCase();
 
     // --- RESIZE & SPAWN ---
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
-      DIMENSIONS.displayWidth = canvas.parentElement?.clientWidth || window.innerWidth;
-      DIMENSIONS.displayHeight = canvas.parentElement?.clientHeight || window.innerHeight;
+      DIMENSIONS.displayWidth = canvas.parentElement?.clientWidth ||
+        window.innerWidth;
+      DIMENSIONS.displayHeight = canvas.parentElement?.clientHeight ||
+        window.innerHeight;
 
       DIMENSIONS.insetWidth = DIMENSIONS.displayWidth / 8;
       DIMENSIONS.insetHeight = DIMENSIONS.displayHeight / 8;
 
-      DIMENSIONS.width = DIMENSIONS.displayWidth - DIMENSIONS.insetWidth * 2;
-      DIMENSIONS.height = DIMENSIONS.displayHeight - DIMENSIONS.insetHeight * 2;
-      DIMENSIONS.width = DIMENSIONS.width - DIMENSIONS.width % DIMENSIONS.cellSize
-      DIMENSIONS.height = DIMENSIONS.height - DIMENSIONS.height % DIMENSIONS.cellSize
+      DIMENSIONS.width = DIMENSIONS.displayWidth -
+        DIMENSIONS.insetWidth * 2;
+      DIMENSIONS.height = DIMENSIONS.displayHeight -
+        DIMENSIONS.insetHeight * 2;
+      DIMENSIONS.width = DIMENSIONS.width -
+        DIMENSIONS.width % DIMENSIONS.cellSize;
+      DIMENSIONS.height = DIMENSIONS.height -
+        DIMENSIONS.height % DIMENSIONS.cellSize;
 
       canvas.width = DIMENSIONS.displayWidth * dpr;
       canvas.height = DIMENSIONS.displayHeight * dpr;
@@ -86,7 +91,9 @@
       ctx.scale(dpr, dpr);
 
       players.length = 0;
-      const densityCount = Math.floor((DIMENSIONS.width * DIMENSIONS.height) / 35000);
+      const densityCount = Math.floor(
+        (DIMENSIONS.width * DIMENSIONS.height) / 35000,
+      );
       const playerCount = Math.min(MAX_PLAYERS, densityCount);
 
       const gridW = Math.ceil(DIMENSIONS.width / DIMENSIONS.cellSize);
@@ -97,51 +104,17 @@
         const startY = Math.floor(Math.random() * gridH);
         players.push({
           id: genId(),
-          team: i % 2 === 0 ? 'red' : 'gray',
-          prevX: startX, prevY: startY,
-          nextX: startX, nextY: startY,
-          intent: 'IDLE'
+          team: i % 2 === 0 ? "red" : "gray",
+          prevX: startX,
+          prevY: startY,
+          nextX: startX,
+          nextY: startY,
+          intent: "IDLE",
         });
       }
     };
 
-    // --- MOUSE TRACKING ---
-    const handleMouseMove = (e: MouseEvent) => {
-      if (e.target instanceof HTMLElement && e.target.closest('section:not(:first-child)')) {
-        isMouseOverCanvas = false;
-        hoveredPlayer = null;
-        return;
-      }
-
-      const rect = canvas.getBoundingClientRect();
-
-      mouseX = e.clientX - rect.left;
-      mouseY = e.clientY - rect.top;
-
-      // Check if we are physically over the canvas area
-      // (Using a small buffer so edge cases don't flicker)
-      isMouseOverCanvas = (
-        mouseX >= 0 &&
-        mouseX <= DIMENSIONS.width &&
-        mouseY >= 0 &&
-        mouseY <= DIMENSIONS.height
-      );
-
-      // Tooltip positioning (Screen relative)
-      let tx = e.clientX + TOOLTIP_OFFSET;
-      let ty = e.clientY + TOOLTIP_OFFSET;
-
-      if (tx + TOOLTIP_WIDTH_EST > window.innerWidth) {
-        tx = e.clientX - TOOLTIP_WIDTH_EST - TOOLTIP_OFFSET;
-      }
-      if (ty + TOOLTIP_HEIGHT_EST > window.innerHeight) {
-        ty = e.clientY - TOOLTIP_HEIGHT_EST - TOOLTIP_OFFSET;
-      }
-      tooltipPos = { x: tx, y: ty };
-    };
-
-    window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener("resize", resize);
     resize();
 
     // --- GAME LOOP ---
@@ -150,262 +123,294 @@
     let animId: number;
 
     function draw() {
-        if (!ctx) return;
+      if (!ctx) return;
 
-        // 1. Clear & Draw Grid
-        ctx.clearRect(0, 0, DIMENSIONS.displayWidth, DIMENSIONS.displayHeight);
-        ctx.strokeStyle = "rgba(50, 50, 50, 0.5)";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        for (let x = DIMENSIONS.insetWidth; x <= DIMENSIONS.width + DIMENSIONS.insetWidth; x += DIMENSIONS.cellSize) {
-            ctx.moveTo(x, 0 + DIMENSIONS.insetHeight); ctx.lineTo(x, DIMENSIONS.height + DIMENSIONS.insetHeight);
-        }
-        for (let y = DIMENSIONS.insetHeight; y <= DIMENSIONS.height + DIMENSIONS.insetHeight; y += DIMENSIONS.cellSize) {
-            ctx.moveTo(0 + DIMENSIONS.insetWidth, y); ctx.lineTo(DIMENSIONS.width + DIMENSIONS.insetWidth, y);
-        }
-        ctx.stroke();
+      // 1. Clear & Draw Grid
+      ctx.clearRect(
+        0,
+        0,
+        DIMENSIONS.displayWidth,
+        DIMENSIONS.displayHeight,
+      );
+      ctx.strokeStyle = "rgba(50, 50, 50, 0.5)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (
+        let x = DIMENSIONS.insetWidth;
+        x <= DIMENSIONS.width + DIMENSIONS.insetWidth;
+        x += DIMENSIONS.cellSize
+      ) {
+        ctx.moveTo(x, 0 + DIMENSIONS.insetHeight);
+        ctx.lineTo(x, DIMENSIONS.height + DIMENSIONS.insetHeight);
+      }
+      for (
+        let y = DIMENSIONS.insetHeight;
+        y <= DIMENSIONS.height + DIMENSIONS.insetHeight;
+        y += DIMENSIONS.cellSize
+      ) {
+        ctx.moveTo(0 + DIMENSIONS.insetWidth, y);
+        ctx.lineTo(DIMENSIONS.width + DIMENSIONS.insetWidth, y);
+      }
+      ctx.stroke();
 
-        // 2. LOGIC UPDATE
-        tickProgress++;
-        if (tickProgress >= tickDuration) {
-            tickProgress = 0;
-            const gridW = Math.ceil(DIMENSIONS.width / DIMENSIONS.cellSize);
-            const gridH = Math.ceil(DIMENSIONS.height / DIMENSIONS.cellSize);
+      // 2. LOGIC UPDATE
+      tickProgress++;
+      if (tickProgress >= tickDuration) {
+        tickProgress = 0;
+        const gridW = Math.ceil(DIMENSIONS.width / DIMENSIONS.cellSize);
+        const gridH = Math.ceil(DIMENSIONS.height / DIMENSIONS.cellSize);
 
-            if (!pointzone && Math.random() > 0.1) {
-                pointzone = {
-                    x: Math.floor(Math.random() * gridW),
-                    y: Math.floor(Math.random() * gridH)
-                };
-            }
-
-            let chaserIds = new Set<string>();
-            if (pointzone) {
-                const distances = players.map(b => ({
-                    id: b.id,
-                    dist: Math.abs(b.prevX - pointzone!.x) + Math.abs(b.prevY - pointzone!.y)
-                }));
-                distances.sort((a, b) => a.dist - b.dist);
-                distances.slice(0, 4).forEach(d => chaserIds.add(d.id));
-            }
-
-            const occupied = new Set<string>();
-            players.forEach(b => occupied.add(`${b.nextX},${b.nextY}`));
-
-            players.forEach(player => {
-                player.prevX = player.nextX;
-                player.prevY = player.nextY;
-
-                let dx = 0;
-                let dy = 0;
-
-                if (pointzone && chaserIds.has(player.id)) {
-                    player.intent = 'RACING';
-                    if (pointzone.x > player.prevX) dx = 1;
-                    else if (pointzone.x < player.prevX) dx = -1;
-                    else if (pointzone.y > player.prevY) dy = 1;
-                    else if (pointzone.y < player.prevY) dy = -1;
-                } else {
-                    player.intent = 'IDLE';
-                    if (Math.random() > 0.3) {
-                        const r = Math.floor(Math.random() * 4);
-                        if (r === 0) dy = -1;
-                        if (r === 1) dx = 1;
-                        if (r === 2) dy = 1;
-                        if (r === 3) dx = -1;
-                    }
-                }
-
-                const targetX = player.prevX + dx;
-                const targetY = player.prevY + dy;
-                const key = `${targetX},${targetY}`;
-
-                if (
-                    targetX >= 0 && targetX < gridW &&
-                    targetY >= 0 && targetY < gridH &&
-                    !occupied.has(key)
-                ) {
-                    player.nextX = targetX;
-                    player.nextY = targetY;
-                    occupied.add(key);
-                    occupied.delete(`${player.prevX},${player.prevY}`);
-
-                    if (pointzone && player.nextX === pointzone.x && player.nextY === pointzone.y) {
-                        scores[player.team] += 1;
-                        explosions.push({
-                            x: (pointzone.x * DIMENSIONS.cellSize + DIMENSIONS.insetWidth) + (DIMENSIONS.cellSize/2),
-                            y: (pointzone.y * DIMENSIONS.cellSize + DIMENSIONS.insetHeight) + (DIMENSIONS.cellSize/2),
-                            age: 0,
-                            color: player.team === 'red' ? '#dc2626' : '#6b7280'
-                        });
-                        pointzone = null;
-                    }
-                } else {
-                    player.nextX = player.prevX;
-                    player.nextY = player.prevY;
-                }
-            });
+        if (!pointzone && Math.random() > 0.1) {
+          pointzone = {
+            x: Math.floor(Math.random() * gridW),
+            y: Math.floor(Math.random() * gridH),
+          };
         }
 
-        // 3. RENDER
-        const t = tickProgress / tickDuration;
-        const ease = t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-
+        let chaserIds = new Set<string>();
         if (pointzone) {
-            const hx = (pointzone.x * DIMENSIONS.cellSize + DIMENSIONS.insetWidth) + (DIMENSIONS.cellSize/2);
-            const hy = (pointzone.y * DIMENSIONS.cellSize + DIMENSIONS.insetHeight) + (DIMENSIONS.cellSize/2);
-            const pulse = 1 + Math.sin(Date.now() / 150) * 0.3;
-            ctx.fillStyle = "rgba(234, 179, 8, 0.2)";
-            ctx.beginPath();
-            ctx.arc(hx, hy, (DIMENSIONS.cellSize/2) * pulse * 1.5, 0, Math.PI*2);
-            ctx.fill();
-            ctx.fillStyle = "#eab308";
-            const size = (DIMENSIONS.cellSize/3);
-            ctx.fillRect(hx - size/2, hy - size/2, size, size);
+          const distances = players.map((b) => ({
+            id: b.id,
+            dist: Math.abs(b.prevX - pointzone!.x) +
+              Math.abs(b.prevY - pointzone!.y),
+          }));
+          distances.sort((a, b) => a.dist - b.dist);
+          distances.slice(0, 4).forEach((d) => chaserIds.add(d.id));
         }
 
-        for (let i = explosions.length - 1; i >= 0; i--) {
-            const exp = explosions[i];
-            exp.age += 0.05;
-            ctx.beginPath();
-            ctx.strokeStyle = exp.color;
-            ctx.lineWidth = 2;
-            ctx.globalAlpha = 1 - exp.age;
-            ctx.arc(exp.x, exp.y, DIMENSIONS.cellSize * exp.age * 3, 0, Math.PI*2);
-            ctx.stroke();
-            ctx.globalAlpha = 1;
-            if (exp.age >= 1) explosions.splice(i, 1);
-        }
+        const occupied = new Set<string>();
+        players.forEach((b) => occupied.add(`${b.nextX},${b.nextY}`));
 
-        let newFoundPlayer: Player | null = null;
+        players.forEach((player) => {
+          player.prevX = player.nextX;
+          player.prevY = player.nextY;
 
-        players.forEach(player => {
-            const curX = prefersReducedMotion ? player.nextX : player.prevX + (player.nextX - player.prevX) * ease;
-            const curY = prefersReducedMotion ? player.nextY : player.prevY + (player.nextY - player.prevY) * ease;
-            const px = (curX * DIMENSIONS.cellSize + DIMENSIONS.insetWidth) + (DIMENSIONS.cellSize / 2);
-            const py = (curY * DIMENSIONS.cellSize + DIMENSIONS.insetHeight) + (DIMENSIONS.cellSize / 2);
+          let dx = 0;
+          let dy = 0;
 
-            ctx.beginPath();
-            ctx.fillStyle = player.team === 'red' ? '#dc2626' : '#6b7280';
-            ctx.arc(px, py, DIMENSIONS.cellSize * 0.35, 0, Math.PI * 2);
-            ctx.fill();
-
-            if (player.intent === 'RACING') {
-                ctx.fillStyle = "#fff";
-                ctx.beginPath();
-                ctx.arc(px, py, 2, 0, Math.PI*2);
-                ctx.fill();
+          if (pointzone && chaserIds.has(player.id)) {
+            player.intent = "RACING";
+            if (pointzone.x > player.prevX) dx = 1;
+            else if (pointzone.x < player.prevX) dx = -1;
+            else if (pointzone.y > player.prevY) dy = 1;
+            else if (pointzone.y < player.prevY) dy = -1;
+          } else {
+            player.intent = "IDLE";
+            if (Math.random() > 0.3) {
+              const r = Math.floor(Math.random() * 4);
+              if (r === 0) dy = -1;
+              if (r === 1) dx = 1;
+              if (r === 2) dy = 1;
+              if (r === 3) dx = -1;
             }
+          }
 
-            if (player.team === 'red') {
-                 ctx.shadowColor = '#dc2626';
-                 ctx.shadowBlur = 15;
-            } else {
-                ctx.shadowBlur = 0;
-            }
-            ctx.fill();
-            ctx.shadowBlur = 0;
+          const targetX = player.prevX + dx;
+          const targetY = player.prevY + dy;
+          const key = `${targetX},${targetY}`;
 
-            // HOVER CHECK (Hit Test)
-            const dist = Math.hypot(px - mouseX, py - mouseY);
-            if (dist < DIMENSIONS.cellSize / 2) {
-                newFoundPlayer = player;
-            }
+          if (
+            targetX >= 0 && targetX < gridW &&
+            targetY >= 0 && targetY < gridH &&
+            !occupied.has(key)
+          ) {
+            player.nextX = targetX;
+            player.nextY = targetY;
+            occupied.add(key);
+            occupied.delete(`${player.prevX},${player.prevY}`);
 
-            // SELECTION HIGHLIGHT (Draw ring if this player is the active one)
-            // Note: We check against the STATE variable 'hoveredPlayer', not the hit test
-            if (hoveredPlayer && player.id === hoveredPlayer.id) {
-                ctx.strokeStyle = "white";
-                ctx.lineWidth = 2;
-                ctx.stroke();
+            if (
+              pointzone && ((player.nextX === pointzone.x &&
+                player.nextY === pointzone.y) ||
+                (player.prevX === pointzone.x &&
+                  player.prevY === pointzone.y))
+            ) {
+              scores[player.team] += 1;
+              explosions.push({
+                x: (pointzone.x * DIMENSIONS.cellSize +
+                  DIMENSIONS.insetWidth) + (DIMENSIONS.cellSize / 2),
+                y: (pointzone.y * DIMENSIONS.cellSize +
+                  DIMENSIONS.insetHeight) + (DIMENSIONS.cellSize / 2),
+                age: 0,
+                color: player.team === "red" ? "#dc2626" : "#6b7280",
+              });
+              pointzone = null;
             }
+          } else {
+            player.nextX = player.prevX;
+            player.nextY = player.prevY;
+          }
         });
+      }
 
-        // --- SELECTION STATE LOGIC ---
-        // 1. If we found a new player under the mouse, it becomes the active one
-        if (newFoundPlayer) {
-            hoveredPlayer = newFoundPlayer;
-        }
-        // 2. If we didn't find a player, AND we are off-canvas (lower screen), clear selection
-        else if (!isMouseOverCanvas) {
-            hoveredPlayer = null;
-        }
-        // 3. Otherwise (didn't find a player, but still on canvas), KEEP the previous hoveredPlayer
+      // 3. RENDER
+      const t = tickProgress / tickDuration;
+      const ease = t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
-        if (!prefersReducedMotion) {
-           animId = requestAnimationFrame(draw);
+      if (pointzone) {
+        const hx =
+          (pointzone.x * DIMENSIONS.cellSize + DIMENSIONS.insetWidth) +
+          (DIMENSIONS.cellSize / 2);
+        const hy =
+          (pointzone.y * DIMENSIONS.cellSize + DIMENSIONS.insetHeight) +
+          (DIMENSIONS.cellSize / 2);
+        const pulse = 1 + Math.sin(Date.now() / 150) * 0.3;
+        ctx.fillStyle = "rgba(234, 179, 8, 0.2)";
+        ctx.beginPath();
+        ctx.arc(
+          hx,
+          hy,
+          (DIMENSIONS.cellSize / 2) * pulse * 1.5,
+          0,
+          Math.PI * 2,
+        );
+        ctx.fill();
+        ctx.fillStyle = "#eab308";
+        const size = DIMENSIONS.cellSize / 3;
+        ctx.fillRect(hx - size / 2, hy - size / 2, size, size);
+      }
+
+      for (let i = explosions.length - 1; i >= 0; i--) {
+        const exp = explosions[i];
+        exp.age += 0.05;
+        ctx.beginPath();
+        ctx.strokeStyle = exp.color;
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = 1 - exp.age;
+        ctx.arc(
+          exp.x,
+          exp.y,
+          DIMENSIONS.cellSize * exp.age * 3,
+          0,
+          Math.PI * 2,
+        );
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+        if (exp.age >= 1) explosions.splice(i, 1);
+      }
+
+      let newFoundPlayer: Player | null = null;
+
+      players.forEach((player) => {
+        const curX = prefersReducedMotion
+          ? player.nextX
+          : player.prevX + (player.nextX - player.prevX) * ease;
+        const curY = prefersReducedMotion
+          ? player.nextY
+          : player.prevY + (player.nextY - player.prevY) * ease;
+        const px = (curX * DIMENSIONS.cellSize + DIMENSIONS.insetWidth) +
+          (DIMENSIONS.cellSize / 2);
+        const py = (curY * DIMENSIONS.cellSize + DIMENSIONS.insetHeight) +
+          (DIMENSIONS.cellSize / 2);
+
+        ctx.beginPath();
+        ctx.fillStyle = player.team === "red" ? "#dc2626" : "#6b7280";
+        ctx.arc(px, py, DIMENSIONS.cellSize * 0.35, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (player.intent === "RACING") {
+          ctx.fillStyle = "#fff";
+          ctx.beginPath();
+          ctx.arc(px, py, 2, 0, Math.PI * 2);
+          ctx.fill();
         }
+
+        if (player.team === "red") {
+          ctx.shadowColor = "#dc2626";
+          ctx.shadowBlur = 15;
+        } else {
+          ctx.shadowBlur = 0;
+        }
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // HOVER CHECK (Hit Test)
+        const dist = Math.hypot(px - mouseX, py - mouseY);
+        if (dist < DIMENSIONS.cellSize / 2) {
+          newFoundPlayer = player;
+        }
+      });
+
+      if (!prefersReducedMotion) {
+        animId = requestAnimationFrame(draw);
+      }
     }
 
     draw();
 
     return () => {
-        window.removeEventListener('resize', resize);
-        window.removeEventListener('mousemove', handleMouseMove);
-        cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(animId);
     };
   }
 
   onMount(() => {
     const cleanupSim = initSimulation();
     return () => {
-        if (cleanupSim) cleanupSim();
+      if (cleanupSim) cleanupSim();
     };
   });
 </script>
 
 <svelte:head>
   <title>Maintainer One</title>
-  <meta name="description" content="Competitive Engineering. Open Source Strategy. Protocol One launches Q1 2026." />
+  <meta
+    name="description"
+    content="Competitive Engineering. Open Source Strategy. Protocol One launches Q1 2026."
+  />
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin="anonymous"
+  >
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet"
+  >
 </svelte:head>
 
-<div class="bg-black min-h-screen text-gray-200 selection:bg-red-900 selection:text-white overflow-x-hidden flex flex-col" style="font-family: 'JetBrains Mono', monospace;">
-
-  <section class="relative grow flex flex-col items-center justify-center p-6 border-b border-gray-800 min-h-[calc(100vh-3rem)]">
-
+<div
+  class="bg-black min-h-screen text-gray-200 selection:bg-red-900 selection:text-white overflow-x-hidden flex flex-col"
+  style="font-family: 'JetBrains Mono', monospace"
+>
+  <section
+    class="relative grow flex flex-col items-center justify-center p-6 border-b border-gray-800 min-h-[calc(100vh-3rem)]"
+  >
     <canvas
-        bind:this={canvas}
-        class="absolute inset-0 z-0 opacity-50"
+      bind:this={canvas}
+      class="absolute inset-0 z-0 opacity-50"
     ></canvas>
 
-    {#if hoveredPlayer}
-        <div
-            class="absolute z-10 bg-black/95 border border-gray-700 p-3 rounded pointer-events-none backdrop-blur shadow-2xl transition-opacity duration-75"
-            style="left: {tooltipPos.x}px; top: {tooltipPos.y}px;"
-            transition:fade={{ duration: 100 }}
-        >
-            <div class="text-xs text-gray-500 uppercase tracking-widest mb-1">Unit Info</div>
-            <div class="text-lg font-bold text-white mb-1">ID: {hoveredPlayer.id}</div>
-            <div class="flex items-center gap-2 text-xs mb-2">
-                Team:
-                <span class={hoveredPlayer.team === 'red' ? "text-red-500 font-bold" : "text-gray-400 font-bold"}>
-                    {hoveredPlayer.team.toUpperCase()}
-                </span>
-            </div>
-            <div class="text-xs font-mono bg-gray-900 p-1 rounded border border-gray-800">
-                > INTENT: {hoveredPlayer.intent}
-            </div>
-        </div>
-    {/if}
-
-    <div class="absolute inset-0 pointer-events-none z-20 opacity-5 bg-gradient-to-b from-transparent via-white/5 to-transparent bg-[length:100%_4px]"></div>
-
-    <div class="absolute top-4 left-4 z-30 flex flex-col gap-2 pointer-events-none opacity-80">
-        <div class="flex items-center gap-2">
-            <div class="w-3 h-3 bg-red-700 rounded-full shadow-[0_0_10px_red]"></div>
-            <span class="text-xl font-bold text-white tracking-widest">{String(scores.red).padStart(3, '0')}</span>
-        </div>
-        <div class="flex items-center gap-2">
-            <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
-            <span class="text-xl font-bold text-gray-400 tracking-widest">{String(scores.gray).padStart(3, '0')}</span>
-        </div>
+    <div
+      class="absolute inset-0 pointer-events-none z-20 opacity-5 bg-gradient-to-b from-transparent via-white/5 to-transparent bg-[length:100%_4px]"
+    >
     </div>
 
-    <div class="z-30 text-center space-y-6 max-w-4xl w-full pointer-events-none">
-      <M1Logo class="w-24 h-24 text-red-700 mx-auto mb-8 drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" />
+    <div
+      class="absolute top-4 left-4 z-30 flex flex-col gap-2 pointer-events-none opacity-80"
+    >
+      <div class="flex items-center gap-2">
+        <div class="w-3 h-3 bg-red-700 rounded-full shadow-[0_0_10px_red]">
+        </div>
+        <span class="text-xl font-bold text-white tracking-widest">{
+          String(scores.red).padStart(3, "0")
+        }</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
+        <span class="text-xl font-bold text-gray-400 tracking-widest">{
+          String(scores.gray).padStart(3, "0")
+        }</span>
+      </div>
+    </div>
+
+    <div
+      class="z-30 text-center space-y-6 max-w-4xl w-full pointer-events-none"
+    >
+      <M1Logo
+        class="w-24 h-24 text-red-700 mx-auto mb-8 drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]"
+      />
 
       <h1 class="text-4xl md:text-6xl font-bold tracking-tighter text-white">
         MAINTAINER<span class="text-red-700">.</span>ONE
@@ -415,97 +420,165 @@
         Code. Community. <span class="text-white">Championships.</span>
       </p>
 
-      <div class="inline-block border border-red-900/50 bg-red-900/10 px-3 py-1 rounded text-red-500 text-xs tracking-widest mb-4 pointer-events-auto">
+      <div
+        class="inline-block border border-red-900/50 bg-red-900/10 px-3 py-1 rounded text-red-500 text-xs tracking-widest mb-4 pointer-events-auto"
+      >
         STATUS: PRE-ALPHA
       </div>
 
       <p class="text-sm text-gray-500 tracking-wide uppercase pt-4">
         Coming Q1 2026
       </p>
-
     </div>
   </section>
 
-  <section class="max-w-5xl mx-auto py-24 px-6 grid md:grid-cols-2 gap-16 relative z-10 bg-black">
-
+  <section
+    class="max-w-5xl mx-auto py-24 px-6 grid md:grid-cols-2 gap-16 relative z-10 bg-black"
+  >
     <div class="space-y-8">
-      <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">The Pitch</h2>
+      <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">
+        The Pitch
+      </h2>
       <ul class="space-y-6 mt-8">
         <li class="flex gap-4 items-start">
           <div>
             <strong class="text-white block mb-1">Code</strong>
-            <span class="text-gray-500 text-sm">At its heart, Maintainer One is a coding game where <strong>every</strong> action a team makes is automated through code. Each league has an evolving protocol that determines the rules and constraints each team must play under.</span>
+            <span class="text-gray-500 text-sm"
+            >At its heart, Maintainer One is a coding game where <strong
+              >every</strong> action a team makes is automated through code.
+              Each league has an evolving protocol that determines the rules and
+              constraints each team must play under.</span>
           </div>
         </li>
         <li class="flex gap-4 items-start">
           <div>
             <strong class="text-white block mb-1">Community</strong>
-            <span class="text-gray-500 text-sm">Maintainer One is also intended to be open source and community driven. Each team's code will be stored in its own repo and will depend on a maintainer and contributors to adapt to an ever changing protocol.</span>
+            <span class="text-gray-500 text-sm"
+            >Maintainer One is also intended to be open source and community
+              driven. Each team's code will be stored in its own repo and will
+              depend on a maintainer and contributors to adapt to an ever
+              changing protocol.</span>
           </div>
         </li>
         <li class="flex gap-4 items-start">
           <div>
             <strong class="text-white block mb-1">Championships</strong>
-            <span class="text-gray-500 text-sm">Only one team can win each season and the maintainer of that team will be crowned Maintainer One.</span>
+            <span class="text-gray-500 text-sm"
+            >Only one team can win each season and the maintainer of that team
+              will be crowned Maintainer One.</span>
           </div>
         </li>
       </ul>
     </div>
 
     <div class="space-y-8">
-      <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">Upcoming</h2>
+      <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">
+        Upcoming
+      </h2>
       <div class="p-6 border border-gray-800 bg-gray-900/30 text-sm space-y-4">
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Name</span>
+            <span
+              class="text-gray-500 block text-xs uppercase tracking-wider mb-1"
+            >Name</span>
             <span class="text-white">Protocol One</span>
           </div>
           <div>
-            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Launch</span>
+            <span
+              class="text-gray-500 block text-xs uppercase tracking-wider mb-1"
+            >Launch</span>
             <span class="text-green-400">TBD</span>
           </div>
           <div class="col-span-2">
-            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Description</span>
-            <span class="text-white">The premier league for Maintainer One with the most complicated protocol to deal with.</span>
+            <span
+              class="text-gray-500 block text-xs uppercase tracking-wider mb-1"
+            >Description</span>
+            <span class="text-white"
+            >The premier league for Maintainer One with the most complicated
+              protocol to deal with.</span>
           </div>
           <div class="col-span-2">
-            <span class="text-gray-500 block text-xs uppercase tracking-wider mb-1">Maintainer One</span>
-            <span class="text-white">The first Maintainer One will be crowned end of Season 1</span>
+            <span
+              class="text-gray-500 block text-xs uppercase tracking-wider mb-1"
+            >Maintainer One</span>
+            <span class="text-white"
+            >The first Maintainer One will be crowned end of Season 1</span>
           </div>
         </div>
       </div>
     </div>
-
   </section>
 
   <section class="border-t border-gray-900 bg-black py-20 px-6 relative z-10">
     <div class="max-w-4xl mx-auto">
-        <div class="mb-8 text-center">
-            <h2 class="text-xl font-bold text-white mb-2 tracking-widest">Interested?</h2>
-            <p class="text-gray-500 text-sm">Contributions, ideas, and feedback are all appreciated!</p>
-        </div>
+      <div class="mb-8 text-center">
+        <h2 class="text-xl font-bold text-white mb-2 tracking-widest">
+          Interested?
+        </h2>
+        <p class="text-gray-500 text-sm">
+          Contributions, ideas, and feedback are all appreciated!
+        </p>
+      </div>
 
-        <div class="grid md:grid-cols-2 gap-6">
-            <a href="https://github.com/Maintainer-One" target="_blank" rel="noreferrer" class="group block p-6 border border-gray-800 hover:border-red-900 bg-gray-900/20 hover:bg-red-900/10 transition-all duration-300">
-                <div class="flex justify-between items-start mb-4">
-                    <span class="text-red-500 text-xs font-bold tracking-widest border border-red-900/50 px-2 py-1 bg-red-900/20">CONTRIBUTE</span>
-                    <svg viewBox="0 0 24 24" class="w-6 h-6 fill-gray-400 group-hover:fill-white transition-colors" xmlns="http://www.w3.org/2000/svg"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                </div>
-                <p class="text-gray-500 text-sm">Submit PRs, fix bugs, and help build the foundation before Season 1 begins.</p>
-            </a>
+      <div class="grid md:grid-cols-2 gap-6">
+        <a
+          href="https://github.com/Maintainer-One"
+          target="_blank"
+          rel="noreferrer"
+          class="group block p-6 border border-gray-800 hover:border-red-900 bg-gray-900/20 hover:bg-red-900/10 transition-all duration-300"
+        >
+          <div class="flex justify-between items-start mb-4">
+            <span
+              class="text-red-500 text-xs font-bold tracking-widest border border-red-900/50 px-2 py-1 bg-red-900/20"
+            >CONTRIBUTE</span>
+            <svg
+              viewBox="0 0 24 24"
+              class="w-6 h-6 fill-gray-400 group-hover:fill-white transition-colors"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+              />
+            </svg>
+          </div>
+          <p class="text-gray-500 text-sm">
+            Submit PRs, fix bugs, and help build the foundation before Season 1
+            begins.
+          </p>
+        </a>
 
-            <a href="https://github.com/Maintainer-One" target="_blank" rel="noreferrer" class="group block p-6 border border-gray-800 hover:border-green-900 bg-gray-900/20 hover:bg-green-900/10 transition-all duration-300">
-                <div class="flex justify-between items-start mb-4">
-                    <span class="text-green-500 text-xs font-bold tracking-widest border border-green-900/50 px-2 py-1 bg-green-900/20">DESIGN</span>
-                    <svg viewBox="0 0 24 24" class="w-6 h-6 fill-gray-400 group-hover:fill-white transition-colors" xmlns="http://www.w3.org/2000/svg"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-                </div>
-                <p class="text-gray-500 text-sm">Have an idea for a game mechanic? A loophole in the protocol? Open an issue and join the design conversation.</p>
-            </a>
-        </div>
+        <a
+          href="https://github.com/Maintainer-One"
+          target="_blank"
+          rel="noreferrer"
+          class="group block p-6 border border-gray-800 hover:border-green-900 bg-gray-900/20 hover:bg-green-900/10 transition-all duration-300"
+        >
+          <div class="flex justify-between items-start mb-4">
+            <span
+              class="text-green-500 text-xs font-bold tracking-widest border border-green-900/50 px-2 py-1 bg-green-900/20"
+            >DESIGN</span>
+            <svg
+              viewBox="0 0 24 24"
+              class="w-6 h-6 fill-gray-400 group-hover:fill-white transition-colors"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"
+              />
+            </svg>
+          </div>
+          <p class="text-gray-500 text-sm">
+            Have an idea for a game mechanic? A loophole in the protocol? Open
+            an issue and join the design conversation.
+          </p>
+        </a>
+      </div>
     </div>
   </section>
 
-  <footer class="text-center py-12 text-gray-600 text-xs border-t border-gray-900 relative z-10 bg-black">
+  <footer
+    class="text-center py-12 text-gray-600 text-xs border-t border-gray-900 relative z-10 bg-black"
+  >
     <p>2026-01-01 // MAINTAINER ONE</p>
   </footer>
 </div>
