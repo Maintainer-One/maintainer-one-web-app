@@ -39,9 +39,11 @@
   // --- FIELD DIMENSIONS ---
   let DIMENSIONS = {
     width: 0,
+    insetWidth: 0,
+    displayWidth: 0,
     height: 0,
     insetHeight: 0,
-    insetWidth: 0,
+    displayHeight: 0,
     cellSize: 32,
   }
 
@@ -67,19 +69,19 @@
     // --- RESIZE & SPAWN ---
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
-      const displayWidth = canvas.parentElement?.clientWidth || window.innerWidth;
-      const displayHeight = canvas.parentElement?.clientHeight || window.innerHeight;
+      DIMENSIONS.displayWidth = canvas.parentElement?.clientWidth || window.innerWidth;
+      DIMENSIONS.displayHeight = canvas.parentElement?.clientHeight || window.innerHeight;
 
-      DIMENSIONS.insetWidth = displayWidth / 8;
-      DIMENSIONS.insetHeight = displayHeight / 8;
+      DIMENSIONS.insetWidth = DIMENSIONS.displayWidth / 8;
+      DIMENSIONS.insetHeight = DIMENSIONS.displayHeight / 8;
 
-      DIMENSIONS.width = displayWidth - DIMENSIONS.insetWidth * 2;
-      DIMENSIONS.height = displayHeight - DIMENSIONS.insetHeight * 2;
+      DIMENSIONS.width = DIMENSIONS.displayWidth - DIMENSIONS.insetWidth * 2;
+      DIMENSIONS.height = DIMENSIONS.displayHeight - DIMENSIONS.insetHeight * 2;
       DIMENSIONS.width = DIMENSIONS.width - DIMENSIONS.width % DIMENSIONS.cellSize
       DIMENSIONS.height = DIMENSIONS.height - DIMENSIONS.height % DIMENSIONS.cellSize
 
-      canvas.width = displayWidth * dpr;
-      canvas.height = displayHeight * dpr;
+      canvas.width = DIMENSIONS.displayWidth * dpr;
+      canvas.height = DIMENSIONS.displayHeight * dpr;
 
       ctx.scale(dpr, dpr);
 
@@ -95,7 +97,7 @@
         const startY = Math.floor(Math.random() * gridH);
         players.push({
           id: genId(),
-          team: Math.random() > 0.5 ? 'red' : 'gray',
+          team: i % 2 === 0 ? 'red' : 'gray',
           prevX: startX, prevY: startY,
           nextX: startX, nextY: startY,
           intent: 'IDLE'
@@ -151,7 +153,7 @@
         if (!ctx) return;
 
         // 1. Clear & Draw Grid
-        ctx.clearRect(0, 0, DIMENSIONS.width, DIMENSIONS.height);
+        ctx.clearRect(0, 0, DIMENSIONS.displayWidth, DIMENSIONS.displayHeight);
         ctx.strokeStyle = "rgba(50, 50, 50, 0.5)";
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -167,8 +169,8 @@
         tickProgress++;
         if (tickProgress >= tickDuration) {
             tickProgress = 0;
-            const gridW = Math.ceil(DIMENSIONS.width / DIMENSIONS.cellSize) - 2;
-            const gridH = Math.ceil(DIMENSIONS.height / DIMENSIONS.cellSize) - 2;
+            const gridW = Math.ceil(DIMENSIONS.width / DIMENSIONS.cellSize);
+            const gridH = Math.ceil(DIMENSIONS.height / DIMENSIONS.cellSize);
 
             if (!pointzone && Math.random() > 0.1) {
                 pointzone = {
@@ -231,8 +233,8 @@
                     if (pointzone && player.nextX === pointzone.x && player.nextY === pointzone.y) {
                         scores[player.team] += 1;
                         explosions.push({
-                            x: (pointzone.x * DIMENSIONS.cellSize) + (DIMENSIONS.cellSize/2),
-                            y: (pointzone.y * DIMENSIONS.cellSize) + (DIMENSIONS.cellSize/2),
+                            x: (pointzone.x * DIMENSIONS.cellSize + DIMENSIONS.insetWidth) + (DIMENSIONS.cellSize/2),
+                            y: (pointzone.y * DIMENSIONS.cellSize + DIMENSIONS.insetHeight) + (DIMENSIONS.cellSize/2),
                             age: 0,
                             color: player.team === 'red' ? '#dc2626' : '#6b7280'
                         });
@@ -250,8 +252,8 @@
         const ease = t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
         if (pointzone) {
-            const hx = (pointzone.x * DIMENSIONS.cellSize) + (DIMENSIONS.cellSize/2);
-            const hy = (pointzone.y * DIMENSIONS.cellSize) + (DIMENSIONS.cellSize/2);
+            const hx = (pointzone.x * DIMENSIONS.cellSize + DIMENSIONS.insetWidth) + (DIMENSIONS.cellSize/2);
+            const hy = (pointzone.y * DIMENSIONS.cellSize + DIMENSIONS.insetHeight) + (DIMENSIONS.cellSize/2);
             const pulse = 1 + Math.sin(Date.now() / 150) * 0.3;
             ctx.fillStyle = "rgba(234, 179, 8, 0.2)";
             ctx.beginPath();
@@ -280,8 +282,8 @@
         players.forEach(player => {
             const curX = prefersReducedMotion ? player.nextX : player.prevX + (player.nextX - player.prevX) * ease;
             const curY = prefersReducedMotion ? player.nextY : player.prevY + (player.nextY - player.prevY) * ease;
-            const px = (curX * DIMENSIONS.cellSize) + (DIMENSIONS.cellSize / 2);
-            const py = (curY * DIMENSIONS.cellSize) + (DIMENSIONS.cellSize / 2);
+            const px = (curX * DIMENSIONS.cellSize + DIMENSIONS.insetWidth) + (DIMENSIONS.cellSize / 2);
+            const py = (curY * DIMENSIONS.cellSize + DIMENSIONS.insetHeight) + (DIMENSIONS.cellSize / 2);
 
             ctx.beginPath();
             ctx.fillStyle = player.team === 'red' ? '#dc2626' : '#6b7280';
