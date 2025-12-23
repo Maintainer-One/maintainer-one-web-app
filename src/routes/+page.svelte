@@ -36,6 +36,15 @@
   let tooltipPos = $state({ x: 0, y: 0 });
   let canvas: HTMLCanvasElement;
 
+  // --- FIELD DIMENSIONS ---
+  let DIMENSIONS = {
+    width: 0,
+    height: 0,
+    insetHeight: 0,
+    insetWidth: 0,
+    cellSize: 32,
+  }
+
   // --- ENGINE SIMULATION LOGIC ---
   function initSimulation() {
     if (!canvas) return;
@@ -43,10 +52,6 @@
     if (!ctx) return;
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    let width = 0; // CSS Pixels
-    let height = 0; // CSS Pixels
-    const cellSize = 32;
 
     // Mouse State
     let mouseX = -100;
@@ -65,24 +70,25 @@
       const displayWidth = canvas.parentElement?.clientWidth || window.innerWidth;
       const displayHeight = canvas.parentElement?.clientHeight || window.innerHeight;
 
-      width = displayWidth - displayHeight / 4;
-      height = displayHeight - displayHeight / 4;
-      width = width - width % cellSize
-      height = height - height % cellSize
+      DIMENSIONS.insetWidth = displayWidth / 8;
+      DIMENSIONS.insetHeight = displayHeight / 8;
 
-      $inspect({remainderW: width % cellSize, remainderH: height % cellSize})
+      DIMENSIONS.width = displayWidth - DIMENSIONS.insetWidth * 2;
+      DIMENSIONS.height = displayHeight - DIMENSIONS.insetHeight * 2;
+      DIMENSIONS.width = DIMENSIONS.width - DIMENSIONS.width % DIMENSIONS.cellSize
+      DIMENSIONS.height = DIMENSIONS.height - DIMENSIONS.height % DIMENSIONS.cellSize
 
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
+      canvas.width = displayWidth * dpr;
+      canvas.height = displayHeight * dpr;
 
       ctx.scale(dpr, dpr);
 
       players.length = 0;
-      const densityCount = Math.floor((width * height) / 35000);
+      const densityCount = Math.floor((DIMENSIONS.width * DIMENSIONS.height) / 35000);
       const playerCount = Math.min(MAX_PLAYERS, densityCount);
 
-      const gridW = Math.ceil(width / cellSize);
-      const gridH = Math.ceil(height / cellSize);
+      const gridW = Math.ceil(DIMENSIONS.width / DIMENSIONS.cellSize);
+      const gridH = Math.ceil(DIMENSIONS.height / DIMENSIONS.cellSize);
 
       for (let i = 0; i < playerCount; i++) {
         const startX = Math.floor(Math.random() * gridW);
@@ -114,9 +120,9 @@
       // (Using a small buffer so edge cases don't flicker)
       isMouseOverCanvas = (
         mouseX >= 0 &&
-        mouseX <= width &&
+        mouseX <= DIMENSIONS.width &&
         mouseY >= 0 &&
-        mouseY <= height
+        mouseY <= DIMENSIONS.height
       );
 
       // Tooltip positioning (Screen relative)
@@ -145,15 +151,15 @@
         if (!ctx) return;
 
         // 1. Clear & Draw Grid
-        ctx.clearRect(0, 0, width, height);
+        ctx.clearRect(0, 0, DIMENSIONS.width, DIMENSIONS.height);
         ctx.strokeStyle = "rgba(50, 50, 50, 0.5)";
         ctx.lineWidth = 1;
         ctx.beginPath();
-        for (let x = 0; x <= width; x += cellSize) {
-            ctx.moveTo(x, 0); ctx.lineTo(x, height);
+        for (let x = DIMENSIONS.insetWidth; x <= DIMENSIONS.width + DIMENSIONS.insetWidth; x += DIMENSIONS.cellSize) {
+            ctx.moveTo(x, 0 + DIMENSIONS.insetHeight); ctx.lineTo(x, DIMENSIONS.height + DIMENSIONS.insetHeight);
         }
-        for (let y = 0; y <= height; y += cellSize) {
-            ctx.moveTo(0, y); ctx.lineTo(width, y);
+        for (let y = DIMENSIONS.insetHeight; y <= DIMENSIONS.height + DIMENSIONS.insetHeight; y += DIMENSIONS.cellSize) {
+            ctx.moveTo(0 + DIMENSIONS.insetWidth, y); ctx.lineTo(DIMENSIONS.width + DIMENSIONS.insetWidth, y);
         }
         ctx.stroke();
 
@@ -161,8 +167,8 @@
         tickProgress++;
         if (tickProgress >= tickDuration) {
             tickProgress = 0;
-            const gridW = Math.ceil(width / cellSize) - 2;
-            const gridH = Math.ceil(height / cellSize) - 2;
+            const gridW = Math.ceil(DIMENSIONS.width / DIMENSIONS.cellSize) - 2;
+            const gridH = Math.ceil(DIMENSIONS.height / DIMENSIONS.cellSize) - 2;
 
             if (!pointzone && Math.random() > 0.1) {
                 pointzone = {
@@ -225,8 +231,8 @@
                     if (pointzone && player.nextX === pointzone.x && player.nextY === pointzone.y) {
                         scores[player.team] += 1;
                         explosions.push({
-                            x: (pointzone.x * cellSize) + (cellSize/2),
-                            y: (pointzone.y * cellSize) + (cellSize/2),
+                            x: (pointzone.x * DIMENSIONS.cellSize) + (DIMENSIONS.cellSize/2),
+                            y: (pointzone.y * DIMENSIONS.cellSize) + (DIMENSIONS.cellSize/2),
                             age: 0,
                             color: player.team === 'red' ? '#dc2626' : '#6b7280'
                         });
@@ -244,15 +250,15 @@
         const ease = t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
         if (pointzone) {
-            const hx = (pointzone.x * cellSize) + (cellSize/2);
-            const hy = (pointzone.y * cellSize) + (cellSize/2);
+            const hx = (pointzone.x * DIMENSIONS.cellSize) + (DIMENSIONS.cellSize/2);
+            const hy = (pointzone.y * DIMENSIONS.cellSize) + (DIMENSIONS.cellSize/2);
             const pulse = 1 + Math.sin(Date.now() / 150) * 0.3;
             ctx.fillStyle = "rgba(234, 179, 8, 0.2)";
             ctx.beginPath();
-            ctx.arc(hx, hy, (cellSize/2) * pulse * 1.5, 0, Math.PI*2);
+            ctx.arc(hx, hy, (DIMENSIONS.cellSize/2) * pulse * 1.5, 0, Math.PI*2);
             ctx.fill();
             ctx.fillStyle = "#eab308";
-            const size = (cellSize/3);
+            const size = (DIMENSIONS.cellSize/3);
             ctx.fillRect(hx - size/2, hy - size/2, size, size);
         }
 
@@ -263,7 +269,7 @@
             ctx.strokeStyle = exp.color;
             ctx.lineWidth = 2;
             ctx.globalAlpha = 1 - exp.age;
-            ctx.arc(exp.x, exp.y, cellSize * exp.age * 3, 0, Math.PI*2);
+            ctx.arc(exp.x, exp.y, DIMENSIONS.cellSize * exp.age * 3, 0, Math.PI*2);
             ctx.stroke();
             ctx.globalAlpha = 1;
             if (exp.age >= 1) explosions.splice(i, 1);
@@ -274,12 +280,12 @@
         players.forEach(player => {
             const curX = prefersReducedMotion ? player.nextX : player.prevX + (player.nextX - player.prevX) * ease;
             const curY = prefersReducedMotion ? player.nextY : player.prevY + (player.nextY - player.prevY) * ease;
-            const px = (curX * cellSize) + (cellSize / 2);
-            const py = (curY * cellSize) + (cellSize / 2);
+            const px = (curX * DIMENSIONS.cellSize) + (DIMENSIONS.cellSize / 2);
+            const py = (curY * DIMENSIONS.cellSize) + (DIMENSIONS.cellSize / 2);
 
             ctx.beginPath();
             ctx.fillStyle = player.team === 'red' ? '#dc2626' : '#6b7280';
-            ctx.arc(px, py, cellSize * 0.35, 0, Math.PI * 2);
+            ctx.arc(px, py, DIMENSIONS.cellSize * 0.35, 0, Math.PI * 2);
             ctx.fill();
 
             if (player.intent === 'RACING') {
@@ -300,7 +306,7 @@
 
             // HOVER CHECK (Hit Test)
             const dist = Math.hypot(px - mouseX, py - mouseY);
-            if (dist < cellSize / 2) {
+            if (dist < DIMENSIONS.cellSize / 2) {
                 newFoundPlayer = player;
             }
 
@@ -360,7 +366,7 @@
 
     <canvas
         bind:this={canvas}
-        class="absolute inset-20 z-0 opacity-50"
+        class="absolute inset-0 z-0 opacity-50"
     ></canvas>
 
     {#if hoveredPlayer}
