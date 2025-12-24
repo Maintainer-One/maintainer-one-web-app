@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import type { PageProps } from "./$types";
 
   let { data }: PageProps = $props();
@@ -11,6 +10,61 @@
   const cellSize = 30;
 
   let tick = $state(0);
+  let controlStats = $derived.by(() => {
+    let left = 0;
+    let right = 0;
+    let none = 0;
+    let map: { x: number; y: number; color: string }[] = [];
+
+    for (let x = 0; x < 10; x++) {
+      for (let y = 0; y < 10; y++) {
+        let control: {
+          color: string | undefined;
+          distance: number | undefined;
+        } = {
+          color: undefined,
+          distance: undefined,
+        };
+
+        for (let teamAction of data.game.ticks[tick].teamActions) {
+          for (let player of teamAction.players) {
+            let distance = Math.abs(player.x - x) + Math.abs(player.y - y);
+
+            if (
+              control.distance === undefined || distance < control.distance
+            ) {
+              control.color = teamAction.color;
+              control.distance = distance;
+            } else if (
+              distance === control.distance &&
+              control.color !== teamAction.color
+            ) {
+              control.color = undefined;
+            }
+          }
+        }
+
+        switch (control.color) {
+          case data.game.ticks[tick].teamActions[0].color:
+            left += 1;
+            break;
+          case data.game.ticks[tick].teamActions[1].color:
+            right += 1;
+            break;
+          default:
+            none += 1;
+            break;
+        }
+
+        if (control.color === undefined || control.distance === undefined) {
+          continue;
+        }
+
+        map.push({ x, y, color: control.color });
+      }
+    }
+    return { left, right, none, map };
+  });
 
   let isPlaying = $state(false);
 
@@ -60,44 +114,15 @@
       });
     }
 
-    for (let x = 0; x < 10; x++) {
-      for (let y = 0; y < 10; y++) {
-        let control: {
-          color: string | undefined;
-          distance: number | undefined;
-        } = {
-          color: undefined,
-          distance: undefined,
-        };
-
-        for (let teamAction of data.game.ticks[tick].teamActions) {
-          for (let player of teamAction.players) {
-            let distance = Math.abs(player.x - x) + Math.abs(player.y - y);
-
-            if (
-              control.distance === undefined || distance < control.distance
-            ) {
-              control.color = teamAction.color;
-              control.distance = distance;
-            } else if (distance === control.distance) {
-              control.color = undefined;
-            }
-          }
-        }
-
-        if (control.color === undefined || control.distance === undefined) {
-          continue;
-        }
-
-        ctx.beginPath();
-        ctx.fillStyle = hexToRgba(control.color, 0.1);
-        ctx.fillRect(
-          x * cellSize,
-          y * cellSize,
-          32,
-          32,
-        );
-      }
+    for (let square of controlStats.map) {
+      ctx.beginPath();
+      ctx.fillStyle = hexToRgba(square.color, 0.1);
+      ctx.fillRect(
+        square.x * cellSize,
+        square.y * cellSize,
+        32,
+        32,
+      );
     }
   });
 
@@ -164,6 +189,30 @@
           max={data.game.ticks.length - 1}
         >
       </div>
+        <div class="mt-4 w-full px-4">
+          <div class="flex h-6 w-full rounded-full overflow-hidden border border-gray-700 bg-gray-900">
+            <div
+              class="h-full transition-all duration-300 ease-in-out"
+              style="width: {controlStats.left}%; background-color: {data.game.ticks[tick].teamActions[0].color};"
+            ></div>
+
+            <div
+              class="h-full bg-gray-700 transition-all duration-300 ease-in-out"
+              style="width: {controlStats.none}%;"
+            ></div>
+
+            <div
+              class="h-full transition-all duration-300 ease-in-out"
+              style="width: {controlStats.right}%; background-color: {data.game.ticks[tick].teamActions[1].color};"
+            ></div>
+          </div>
+
+          <div class="flex justify-between text-sm mt-1 text-gray-400">
+            <span>{controlStats.left}%</span>
+            <span>{controlStats.none}%</span>
+            <span>{controlStats.right}%</span>
+          </div>
+        </div>
     </div>
     <aside>
       <h2 class="text-lg border-b">
