@@ -80,8 +80,6 @@
       canvas.width = DIMENSIONS.displayWidth * dpr;
       canvas.height = DIMENSIONS.displayHeight * dpr;
 
-      ctx.scale(dpr, dpr);
-
       players.length = 0;
       const densityCount = Math.floor(
         (DIMENSIONS.width * DIMENSIONS.height) / 35000,
