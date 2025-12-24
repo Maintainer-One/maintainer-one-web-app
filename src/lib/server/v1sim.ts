@@ -12,6 +12,7 @@ type Tick = {
 
 type TeamAction = {
   name: string;
+  color: string;
   score: number;
   players: PlayerAction[];
 };
@@ -24,6 +25,7 @@ type PlayerAction = {
 
 export type Team = {
   name: string;
+  color: string;
   players: Player[];
 };
 
@@ -52,6 +54,7 @@ export function simGame(seed: string, teams: Team[]): GameReplay {
       }
       let teamAction: TeamAction = {
         name: team.name,
+        color: team.color,
         score,
         players: team.players.map((player) => {
           return {
@@ -61,7 +64,6 @@ export function simGame(seed: string, teams: Team[]): GameReplay {
           };
         }),
       };
-
       tick.teamActions.push(teamAction);
     }
 

@@ -45,31 +45,20 @@
     }
     ctx.stroke();
 
-    data.game.ticks[tick].teamActions[0].players.forEach((player) => {
-      ctx.beginPath();
-      ctx.fillStyle = "#dc2626";
-      ctx.arc(
-        player.x * cellSize + (cellSize / 2),
-        player.y * cellSize + (cellSize / 2),
-        cellSize * 0.35,
-        0,
-        Math.PI * 2,
-      );
-      ctx.fill();
-    });
-
-    data.game.ticks[tick].teamActions[1].players.forEach((player) => {
-      ctx.beginPath();
-      ctx.fillStyle = "#6b7280";
-      ctx.arc(
-        player.x * cellSize + (cellSize / 2),
-        player.y * cellSize + (cellSize / 2),
-        cellSize * 0.35,
-        0,
-        Math.PI * 2,
-      );
-      ctx.fill();
-    });
+    for (let teamAction of data.game.ticks[tick].teamActions) {
+      teamAction.players.forEach((player) => {
+        ctx.beginPath();
+        ctx.fillStyle = teamAction.color;
+        ctx.arc(
+          player.x * cellSize + (cellSize / 2),
+          player.y * cellSize + (cellSize / 2),
+          cellSize * 0.35,
+          0,
+          Math.PI * 2,
+        );
+        ctx.fill();
+      });
+    }
   });
 </script>
 
@@ -80,7 +69,9 @@
     class="flex flex-wrap flex-row justify-around"
   >
     <aside>
-      <h2>{data.game.ticks[tick].teamActions[0].name} Players</h2>
+      <h2 class="text-lg border-b">
+        {data.game.ticks[tick].teamActions[0].name}
+      </h2>
       <ul>
         {#each data.game.ticks[tick].teamActions[0].players as player}
           <li>{player.name}</li>
@@ -119,7 +110,9 @@
       </div>
     </div>
     <aside>
-      <h2>{data.game.ticks[tick].teamActions[1].name} Players</h2>
+      <h2 class="text-lg border-b">
+        {data.game.ticks[tick].teamActions[1].name}
+      </h2>
       <ul>
         {#each data.game.ticks[tick].teamActions[1].players as player}
           <li>{player.name}</li>

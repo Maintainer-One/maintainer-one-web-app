@@ -4,7 +4,8 @@ import type { Team } from "$lib/server/v1sim.ts";
 
 export const load: PageServerLoad = async () => {
   let teamA: Team = {
-    name: "A's",
+    name: "The Amber Team",
+    color: "#FFBF00",
     players: [
       {
         name: "Bob",
@@ -19,7 +20,8 @@ export const load: PageServerLoad = async () => {
   };
 
   let teamB: Team = {
-    name: "B's",
+    name: "The Blue Team",
+    color: "#0018A8",
     players: [
       {
         name: "Addie",
