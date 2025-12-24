@@ -132,9 +132,18 @@
         DIMENSIONS.displayWidth,
         DIMENSIONS.displayHeight,
       );
-      ctx.strokeStyle = "rgba(50, 50, 50, 0.5)";
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(50, 50, 50, 0.3)";
+      ctx.lineWidth = 20;
       ctx.beginPath();
+
+      ctx.strokeRect(
+        DIMENSIONS.insetWidth - 10,
+        DIMENSIONS.insetHeight - 10,
+        DIMENSIONS.width + 20,
+        DIMENSIONS.height + 20,
+      );
+      ctx.strokeStyle = "rgba(50, 50, 50, 0.2)";
+      ctx.lineWidth = 1;
       for (
         let x = DIMENSIONS.insetWidth;
         x <= DIMENSIONS.width + DIMENSIONS.insetWidth;
@@ -371,7 +380,7 @@
 </svelte:head>
 
 <div
-  class="bg-black min-h-screen text-gray-200 selection:bg-red-900 selection:text-white overflow-x-hidden flex flex-col"
+  class="bg-black min-h-screen text-gray-200 selection:bg-red-900 selection:text-stone-200 overflow-x-hidden flex flex-col"
   style="font-family: 'JetBrains Mono', monospace"
 >
   <section
@@ -393,7 +402,7 @@
       <div class="flex items-center gap-2">
         <div class="w-3 h-3 bg-red-700 rounded-full shadow-[0_0_10px_red]">
         </div>
-        <span class="text-xl font-bold text-white tracking-widest">{
+        <span class="text-xl font-bold text-stone-200 tracking-widest">{
           String(scores.red).padStart(3, "0")
         }</span>
       </div>
@@ -413,11 +422,15 @@
       />
 
       <h1 class="text-4xl md:text-6xl font-bold tracking-tighter text-white">
-        MAINTAINER<span class="text-red-700">.</span>ONE
+        MAINTAINER ONE
       </h1>
 
-      <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto pb-8">
-        Code. Community. <span class="text-white">Championships.</span>
+      <p class="text-md md:text-lg text-gray-400 max-w-2xl mx-auto pb-1">
+        The sports sim powered by open source logic.
+      </p>
+
+      <p class="text-sm md:text-md text-gray-400 max-w-2xl mx-auto pb-8">
+        Code. Community. <span class="text-stone-200">Championships.</span>
       </p>
 
       <div
@@ -436,43 +449,43 @@
     class="max-w-5xl mx-auto py-24 px-6 grid md:grid-cols-2 gap-16 relative z-10 bg-black"
   >
     <div class="space-y-8">
-      <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">
+      <h2 class="text-3xl font-bold text-stone-200 border-l-4 border-red-600 pl-4">
         The Pitch
       </h2>
       <ul class="space-y-6 mt-8">
         <li class="flex gap-4 items-start">
           <div>
-            <strong class="text-white block mb-1">Code</strong>
+            <strong class="text-stone-200 block mb-1">Code</strong>
             <span class="text-gray-500 text-sm"
-            >At its heart, Maintainer One is a coding game where <strong
-              >every</strong> action a team makes is automated through code.
-              Each league has an evolving protocol that determines the rules and
-              constraints each team must play under.</span>
+            >At its heart, Maintainer One is a coding game where all the logic
+              and decisions are automated through code. Each league has an
+              evolving protocol that determines the rules and constraints each
+              team plays under.</span>
           </div>
         </li>
         <li class="flex gap-4 items-start">
           <div>
-            <strong class="text-white block mb-1">Community</strong>
+            <strong class="text-stone-200 block mb-1">Community</strong>
             <span class="text-gray-500 text-sm"
-            >Maintainer One is also intended to be open source and community
-              driven. Each team's code will be stored in its own repo and will
-              depend on a maintainer and contributors to adapt to an ever
-              changing protocol.</span>
+            >Maintainer One is open source and community driven. The maintainer
+              for each team is responsible for fostering a strong community of
+              contributors to develop the most robust logic and gameplans to
+              adapt to the other teams and an evolving protocol.</span>
           </div>
         </li>
         <li class="flex gap-4 items-start">
           <div>
-            <strong class="text-white block mb-1">Championships</strong>
+            <strong class="text-stone-200 block mb-1">Championships</strong>
             <span class="text-gray-500 text-sm"
             >Only one team can win each season and the maintainer of that team
-              will be crowned Maintainer One.</span>
+              will be awarded the Maintainer One title.</span>
           </div>
         </li>
       </ul>
     </div>
 
     <div class="space-y-8">
-      <h2 class="text-3xl font-bold text-white border-l-4 border-red-600 pl-4">
+      <h2 class="text-3xl font-bold text-stone-200 border-l-4 border-red-600 pl-4">
         Upcoming
       </h2>
       <div class="p-6 border border-gray-800 bg-gray-900/30 text-sm space-y-4">
@@ -481,7 +494,7 @@
             <span
               class="text-gray-500 block text-xs uppercase tracking-wider mb-1"
             >Name</span>
-            <span class="text-white">Protocol One</span>
+            <span class="text-stone-200">Protocol One</span>
           </div>
           <div>
             <span
@@ -493,16 +506,25 @@
             <span
               class="text-gray-500 block text-xs uppercase tracking-wider mb-1"
             >Description</span>
-            <span class="text-white"
-            >The premier league for Maintainer One with the most complicated
-              protocol to deal with.</span>
+            <span class="text-stone-200"
+            >The premier league for Maintainer One with the most complex
+              protocol to solve.<br /><br />The first season will exhibit a
+              simplified protocol that resembles the above real time simulation.
+              Point zones spawn in and the first player to occupy that square
+              scores the point for their team.</span>
           </div>
           <div class="col-span-2">
             <span
               class="text-gray-500 block text-xs uppercase tracking-wider mb-1"
             >Maintainer One</span>
-            <span class="text-white"
-            >The first Maintainer One will be crowned end of Season 1</span>
+            <span class="text-stone-200"
+            >The first Maintainer One title will be awarded at season end to the
+              Maintainer who's team performs wins the
+              championship.<br /><br />In order to be elegible for the title, a
+              Maintainer must have been active from the start of the season with
+              the team they win with, can not have maintained another team
+              during the season, and there must be at least one other Maintainer
+              that has been active since the start of the season.</span>
           </div>
         </div>
       </div>
@@ -512,7 +534,7 @@
   <section class="border-t border-gray-900 bg-black py-20 px-6 relative z-10">
     <div class="max-w-4xl mx-auto">
       <div class="mb-8 text-center">
-        <h2 class="text-xl font-bold text-white mb-2 tracking-widest">
+        <h2 class="text-xl font-bold text-stone-200 mb-2 tracking-widest">
           Interested?
         </h2>
         <p class="text-gray-500 text-sm">
@@ -569,7 +591,7 @@
           </div>
           <p class="text-gray-500 text-sm">
             Have an idea for a game mechanic? A loophole in the protocol? Open
-            an issue and join the design conversation.
+            an issue on Github and join the design conversation.
           </p>
         </a>
       </div>
@@ -579,6 +601,6 @@
   <footer
     class="text-center py-12 text-gray-600 text-xs border-t border-gray-900 relative z-10 bg-black"
   >
-    <p>2026-01-01 // MAINTAINER ONE</p>
+    <p>MAINTAINER ONE || 2026</p>
   </footer>
 </div>
