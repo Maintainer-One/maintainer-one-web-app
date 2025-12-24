@@ -2,7 +2,7 @@ import type { PageServerLoad } from "./$types";
 import { simGame } from "$lib/server/v1sim.ts";
 import type { Team } from "$lib/server/v1sim.ts";
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async () => {
   let teamA: Team = {
     name: "A's",
     players: [

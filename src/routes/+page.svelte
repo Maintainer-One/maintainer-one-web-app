@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { fade } from "svelte/transition";
   import M1Logo from "$lib/components/M1Logo.svelte";
 
   // --- ENTITIES ---
@@ -11,7 +10,6 @@
     prevY: number;
     nextX: number;
     nextY: number;
-    intent: string;
   }
 
   interface PointZone {
@@ -30,7 +28,6 @@
   const MAX_PLAYERS = 10;
 
   // --- STATE ---
-  let scores = $state({ red: 0, gray: 0 });
   let canvas: HTMLCanvasElement;
 
   // --- FIELD DIMENSIONS ---
@@ -52,11 +49,6 @@
 
     const prefersReducedMotion =
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    // Mouse State
-    let mouseX = -100;
-    let mouseY = -100;
-    let isMouseOverCanvas = false;
 
     const players: Player[] = [];
     let pointzone: PointZone | null = null;
@@ -109,7 +101,6 @@
           prevY: startY,
           nextX: startX,
           nextY: startY,
-          intent: "IDLE",
         });
       }
     };
@@ -133,16 +124,17 @@
         DIMENSIONS.displayHeight,
       );
       ctx.strokeStyle = "rgba(50, 50, 50, 0.3)";
-      ctx.lineWidth = 20;
+
+      ctx.lineWidth = 6;
       ctx.beginPath();
 
       ctx.strokeRect(
-        DIMENSIONS.insetWidth - 10,
-        DIMENSIONS.insetHeight - 10,
-        DIMENSIONS.width + 20,
-        DIMENSIONS.height + 20,
+        DIMENSIONS.insetWidth - 3,
+        DIMENSIONS.insetHeight - 3,
+        DIMENSIONS.width + 6,
+        DIMENSIONS.height + 6,
       );
-      ctx.strokeStyle = "rgba(50, 50, 50, 0.2)";
+      ctx.strokeStyle = "rgba(50, 50, 50, 0.3)";
       ctx.lineWidth = 1;
       for (
         let x = DIMENSIONS.insetWidth;
@@ -198,13 +190,11 @@
           let dy = 0;
 
           if (pointzone && chaserIds.has(player.id)) {
-            player.intent = "RACING";
             if (pointzone.x > player.prevX) dx = 1;
             else if (pointzone.x < player.prevX) dx = -1;
             else if (pointzone.y > player.prevY) dy = 1;
             else if (pointzone.y < player.prevY) dy = -1;
           } else {
-            player.intent = "IDLE";
             if (Math.random() > 0.3) {
               const r = Math.floor(Math.random() * 4);
               if (r === 0) dy = -1;
@@ -234,7 +224,6 @@
                 (player.prevX === pointzone.x &&
                   player.prevY === pointzone.y))
             ) {
-              scores[player.team] += 1;
               explosions.push({
                 x: (pointzone.x * DIMENSIONS.cellSize +
                   DIMENSIONS.insetWidth) + (DIMENSIONS.cellSize / 2),
@@ -298,8 +287,6 @@
         if (exp.age >= 1) explosions.splice(i, 1);
       }
 
-      let newFoundPlayer: Player | null = null;
-
       players.forEach((player) => {
         const curX = prefersReducedMotion
           ? player.nextX
@@ -317,13 +304,6 @@
         ctx.arc(px, py, DIMENSIONS.cellSize * 0.35, 0, Math.PI * 2);
         ctx.fill();
 
-        if (player.intent === "RACING") {
-          ctx.fillStyle = "#fff";
-          ctx.beginPath();
-          ctx.arc(px, py, 2, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
         if (player.team === "red") {
           ctx.shadowColor = "#dc2626";
           ctx.shadowBlur = 15;
@@ -332,12 +312,6 @@
         }
         ctx.fill();
         ctx.shadowBlur = 0;
-
-        // HOVER CHECK (Hit Test)
-        const dist = Math.hypot(px - mouseX, py - mouseY);
-        if (dist < DIMENSIONS.cellSize / 2) {
-          newFoundPlayer = player;
-        }
       });
 
       if (!prefersReducedMotion) {
@@ -392,26 +366,8 @@
     ></canvas>
 
     <div
-      class="absolute inset-0 pointer-events-none z-20 opacity-5 bg-gradient-to-b from-transparent via-white/5 to-transparent bg-[length:100%_4px]"
+      class="absolute inset-0 pointer-events-none z-20 opacity-5 bg-linear-to-b from-transparent via-white/5 to-transparent bg-size-[100%_4px]"
     >
-    </div>
-
-    <div
-      class="absolute top-4 left-4 z-30 flex flex-col gap-2 pointer-events-none opacity-80"
-    >
-      <div class="flex items-center gap-2">
-        <div class="w-3 h-3 bg-red-700 rounded-full shadow-[0_0_10px_red]">
-        </div>
-        <span class="text-xl font-bold text-stone-200 tracking-widest">{
-          String(scores.red).padStart(3, "0")
-        }</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
-        <span class="text-xl font-bold text-gray-400 tracking-widest">{
-          String(scores.gray).padStart(3, "0")
-        }</span>
-      </div>
     </div>
 
     <div
@@ -449,7 +405,9 @@
     class="max-w-5xl mx-auto py-24 px-6 grid md:grid-cols-2 gap-16 relative z-10 bg-black"
   >
     <div class="space-y-8">
-      <h2 class="text-3xl font-bold text-stone-200 border-l-4 border-red-600 pl-4">
+      <h2
+        class="text-3xl font-bold text-stone-200 border-l-4 border-red-600 pl-4"
+      >
         The Pitch
       </h2>
       <ul class="space-y-6 mt-8">
@@ -485,7 +443,9 @@
     </div>
 
     <div class="space-y-8">
-      <h2 class="text-3xl font-bold text-stone-200 border-l-4 border-red-600 pl-4">
+      <h2
+        class="text-3xl font-bold text-stone-200 border-l-4 border-red-600 pl-4"
+      >
         Upcoming
       </h2>
       <div class="p-6 border border-gray-800 bg-gray-900/30 text-sm space-y-4">
