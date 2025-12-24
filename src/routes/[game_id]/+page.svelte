@@ -59,7 +59,62 @@
         ctx.fill();
       });
     }
+
+    for (let x = 0; x < 10; x++) {
+      for (let y = 0; y < 10; y++) {
+        let control: {
+          color: string | undefined;
+          distance: number | undefined;
+        } = {
+          color: undefined,
+          distance: undefined,
+        };
+
+        for (let teamAction of data.game.ticks[tick].teamActions) {
+          for (let player of teamAction.players) {
+            let distance = Math.abs(player.x - x) + Math.abs(player.y - y);
+
+            if (
+              control.distance === undefined || distance < control.distance
+            ) {
+              control.color = teamAction.color;
+              control.distance = distance;
+            } else if (distance === control.distance) {
+              control.color = undefined;
+            }
+          }
+        }
+
+        if (control.color === undefined || control.distance === undefined) {
+          continue;
+        }
+
+        ctx.beginPath();
+        ctx.fillStyle = hexToRgba(control.color, 0.1);
+        ctx.fillRect(
+          x * cellSize,
+          y * cellSize,
+          32,
+          32,
+        );
+      }
+    }
   });
+
+  function hexToRgba(hex: string, opacity: number) {
+    var c;
+    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+      c = hex.substring(1).split("");
+      if (c.length == 3) {
+        c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+      }
+      c = "0x" + c.join("");
+      return "rgba(" +
+        [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(",") +
+        `,${opacity})`;
+    }
+    throw new Error("Bad Hex");
+  }
 </script>
 
 <div
