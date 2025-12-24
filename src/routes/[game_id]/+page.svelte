@@ -101,6 +101,7 @@
     }
   });
 
+  // TODO: This was copied from stack overflow and needs to be cleaned up
   function hexToRgba(hex: string, opacity: number) {
     var c;
     if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
