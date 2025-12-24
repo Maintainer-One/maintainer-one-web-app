@@ -217,13 +217,18 @@
             player.nextY = targetY;
             occupied.add(key);
             occupied.delete(`${player.prevX},${player.prevY}`);
+          } else {
+            player.nextX = player.prevX;
+            player.nextY = player.prevY;
+          }
 
-            if (
-              pointzone && ((player.nextX === pointzone.x &&
-                player.nextY === pointzone.y) ||
-                (player.prevX === pointzone.x &&
-                  player.prevY === pointzone.y))
-            ) {
+          if (
+            pointzone
+          ) {
+            let distanceToPointZone = Math.abs(player.nextX - pointzone.x) +
+              Math.abs(player.nextY - pointzone.y);
+
+            if (distanceToPointZone === 0) {
               explosions.push({
                 x: (pointzone.x * DIMENSIONS.cellSize +
                   DIMENSIONS.insetWidth) + (DIMENSIONS.cellSize / 2),
@@ -234,9 +239,6 @@
               });
               pointzone = null;
             }
-          } else {
-            player.nextX = player.prevX;
-            player.nextY = player.prevY;
           }
         });
       }
