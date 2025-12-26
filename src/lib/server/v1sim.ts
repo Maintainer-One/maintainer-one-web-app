@@ -1,8 +1,15 @@
+import { randomMoveIntentGenerator } from "./teamLogic.ts";
+import { blueTeam } from "./blueTeam.ts";
+import { amberTeam } from "./amberTeam.ts";
+
+let teamMap: Record<string, Team> = {
+  Amber: amberTeam,
+  Blue: blueTeam,
+};
+
 const GAME_LENGTH = 10;
-const TEAM_SIZE = 3;
 
 type GameReplay = {
-  seed: string;
   ticks: Tick[];
 };
 
@@ -10,10 +17,9 @@ type Tick = {
   teamActions: TeamAction[];
 };
 
-type TeamAction = {
+export type TeamAction = {
   name: string;
   color: string;
-  score: number;
   players: PlayerAction[];
 };
 
@@ -33,39 +39,24 @@ export type Player = {
   name: string;
 };
 
-export function simGame(seed: string, teams: Team[]): GameReplay {
+export function runGame(
+  homeTeamName: string,
+  awayTeamName: string
+): GameReplay {
+  let homeTeam = teamMap[homeTeamName];
+  let awayTeam = teamMap[awayTeamName];
+
   let gameReplay: GameReplay = {
-    seed,
     ticks: [],
   };
-
-  let scores = teams.map((team) => 0);
 
   for (let tickCount = 0; tickCount < GAME_LENGTH; tickCount++) {
     let tick: Tick = {
       teamActions: [],
     };
-    for (let [index, team] of teams.entries()) {
-      let score = scores[index];
 
-      if (Math.random() < 0.5) {
-        score += Math.floor(Math.random() * 10);
-        scores[index] = score;
-      }
-      let teamAction: TeamAction = {
-        name: team.name,
-        color: team.color,
-        score,
-        players: team.players.map((player) => {
-          return {
-            name: player.name,
-            x: Math.floor(Math.random() * 10),
-            y: Math.floor(Math.random() * 10),
-          };
-        }),
-      };
-      tick.teamActions.push(teamAction);
-    }
+    tick.teamActions.push(randomMoveIntentGenerator(homeTeam));
+    tick.teamActions.push(randomMoveIntentGenerator(awayTeam));
 
     gameReplay.ticks.push(tick);
   }
