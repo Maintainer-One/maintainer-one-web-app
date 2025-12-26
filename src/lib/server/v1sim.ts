@@ -1,10 +1,10 @@
-import { randomMoveIntentGenerator } from "./teamLogic.ts";
-import { blueTeam } from "./blueTeam.ts";
-import { amberTeam } from "./amberTeam.ts";
+import { randomMoveIntentGenerator, Team } from "./teamLogic.ts";
+import { loadBlueTeam } from "./blueTeam.ts";
+import { loadAmberTeam } from "./amberTeam.ts";
 
 let teamMap: Record<string, Team> = {
-  Amber: amberTeam,
-  Blue: blueTeam,
+  Amber: loadAmberTeam(),
+  Blue: loadBlueTeam(),
 };
 
 const GAME_LENGTH = 10;
@@ -29,14 +29,10 @@ type PlayerAction = {
   y: number;
 };
 
-export type Team = {
-  name: string;
-  color: string;
-  players: Player[];
-};
-
-export type Player = {
-  name: string;
+type Intent = {
+  playerId: number;
+  x: number;
+  y: number;
 };
 
 export function runGame(
@@ -55,19 +51,16 @@ export function runGame(
       teamActions: [],
     };
 
-    tick.teamActions.push(randomMoveIntentGenerator(homeTeam));
-    tick.teamActions.push(randomMoveIntentGenerator(awayTeam));
+    let intents = [
+      ...homeTeam.generateIntents(),
+      ...awayTeam.generateIntents(),
+    ];
+
+    tick.teamActions.push(homeTeam.randomMoveIntentGenerator());
+    tick.teamActions.push(awayTeam.randomMoveIntentGenerator());
 
     gameReplay.ticks.push(tick);
   }
 
   return gameReplay;
-}
-
-function move(player: Player): PlayerAction {
-  return {
-    name: player.name,
-    x: Math.floor(Math.random() * 10),
-    y: Math.floor(Math.random() * 10),
-  };
 }
