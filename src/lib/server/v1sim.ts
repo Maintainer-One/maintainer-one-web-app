@@ -1,6 +1,6 @@
-import { randomMoveIntentGenerator, Team } from "./teamLogic.ts";
 import { loadBlueTeam } from "./blueTeam.ts";
 import { loadAmberTeam } from "./amberTeam.ts";
+import type { Team } from "./teamLogic.ts";
 
 let teamMap: Record<string, Team> = {
   Amber: loadAmberTeam(),
