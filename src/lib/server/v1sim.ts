@@ -1,6 +1,6 @@
 import { loadBlueTeam } from "./blueTeam.ts";
 import { loadAmberTeam } from "./amberTeam.ts";
-import type { Team } from "./teamLogic.ts";
+import { Team } from "./teamLogic.ts";
 
 let teamMap: Record<string, Team> = {
   Amber: loadAmberTeam(),
@@ -29,12 +29,6 @@ type PlayerAction = {
   y: number;
 };
 
-type Intent = {
-  playerId: number;
-  x: number;
-  y: number;
-};
-
 export function runGame(
   homeTeamName: string,
   awayTeamName: string
@@ -55,6 +49,27 @@ export function runGame(
       ...homeTeam.generateIntents(),
       ...awayTeam.generateIntents(),
     ];
+
+    let tempHome = new Team(
+      homeTeam.name,
+      homeTeam.color,
+      homeTeam.players.map((player) => {
+        return { ...player };
+      })
+    );
+    let tempAway = new Team(
+      awayTeam.name,
+      awayTeam.color,
+      awayTeam.players.map((player) => {
+        return { ...player };
+      })
+    );
+
+    let occupied: Record<string, number> = {};
+
+    for (let intent of intents) {
+      console.log(intent);
+    }
 
     tick.teamActions.push(homeTeam.randomMoveIntentGenerator());
     tick.teamActions.push(awayTeam.randomMoveIntentGenerator());
