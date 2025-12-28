@@ -7,7 +7,7 @@ export function generateIntents(team: Team, opponent: Team, players: Player[]) {
   for (let player of currentPlayers) {
     intents.push({
       playerId: player.id,
-      x: player.x + 1,
+      x: player.x - 1,
       y: player.y,
     });
   }

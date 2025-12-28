@@ -47,13 +47,23 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
         continue;
       }
 
-      tick.players.push({
-        ...player,
-        x: intent.x,
-        y: intent.y,
-      });
-      player.x = intent.x;
-      player.y = intent.y;
+      let intentIsValid = true;
+
+      if (intent.x > 9 || intent.y > 9 || intent.x < 0 || intent.y < 0) {
+        intentIsValid = false;
+      }
+
+      if (intentIsValid) {
+        tick.players.push({
+          ...player,
+          x: intent.x,
+          y: intent.y,
+        });
+        player.x = intent.x;
+        player.y = intent.y;
+      } else {
+        tick.players.push(player);
+      }
     }
 
     gameReplay.ticks.push(tick);
