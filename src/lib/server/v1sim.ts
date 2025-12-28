@@ -1,78 +1,60 @@
 import { loadBlueTeam } from "./blueTeam.ts";
 import { loadAmberTeam } from "./amberTeam.ts";
-import { Team } from "./teamLogic.ts";
+import type { Game, Player, Team, TeamLoadFunction, Tick } from "./types.d.ts";
 
-let teamMap: Record<string, Team> = {
-  Amber: loadAmberTeam(),
-  Blue: loadBlueTeam(),
+let teamMap: Record<string, TeamLoadFunction> = {
+  Amber: loadAmberTeam,
+  Blue: loadBlueTeam,
 };
 
 const GAME_LENGTH = 10;
 
-type GameReplay = {
-  ticks: Tick[];
-};
+export function runGame(homeTeamName: string, awayTeamName: string): Game {
+  let [homeTeam, homePlayers, homeIntentGenerator] = teamMap[homeTeamName]();
+  let [awayTeam, awayPlayers, awayIntentGenerator] = teamMap[awayTeamName]();
 
-type Tick = {
-  teamActions: TeamAction[];
-};
+  let players: Player[] = [...homePlayers, ...awayPlayers];
 
-export type TeamAction = {
-  name: string;
-  color: string;
-  players: PlayerAction[];
-};
-
-type PlayerAction = {
-  name: string;
-  x: number;
-  y: number;
-};
-
-export function runGame(
-  homeTeamName: string,
-  awayTeamName: string
-): GameReplay {
-  let homeTeam = teamMap[homeTeamName];
-  let awayTeam = teamMap[awayTeamName];
-
-  let gameReplay: GameReplay = {
-    ticks: [],
+  let gameReplay: Game = {
+    ticks: [
+      {
+        homeTeam: { ...homeTeam },
+        awayTeam: { ...awayTeam },
+        players: players.map((player) => {
+          return { ...player };
+        }),
+      },
+    ],
   };
 
-  for (let tickCount = 0; tickCount < GAME_LENGTH; tickCount++) {
-    let tick: Tick = {
-      teamActions: [],
-    };
-
+  for (let tickCount = 0; tickCount < GAME_LENGTH - 1; tickCount++) {
     let intents = [
-      ...homeTeam.generateIntents(),
-      ...awayTeam.generateIntents(),
+      ...homeIntentGenerator(homeTeam, awayTeam, players),
+      ...awayIntentGenerator(awayTeam, homeTeam, players),
     ];
 
-    let tempHome = new Team(
-      homeTeam.name,
-      homeTeam.color,
-      homeTeam.players.map((player) => {
-        return { ...player };
-      })
-    );
-    let tempAway = new Team(
-      awayTeam.name,
-      awayTeam.color,
-      awayTeam.players.map((player) => {
-        return { ...player };
-      })
-    );
+    let tick: Tick = {
+      homeTeam: { ...homeTeam },
+      awayTeam: { ...awayTeam },
+      players: [],
+    };
 
-    let occupied: Record<string, number> = {};
+    for (let player of players) {
+      let intent = intents.find((intent) => player.id === intent.playerId);
 
-    for (let intent of intents) {
-      console.log(intent);
+      if (intent === undefined) {
+        tick.players.push(player);
+        continue;
+      }
+
+      tick.players.push({
+        ...player,
+        x: intent.x,
+        y: intent.y,
+      });
+      player.x = intent.x;
+      player.y = intent.y;
     }
-
-    tick.teamActions.push(homeTeam.randomMoveIntentGenerator());
-    tick.teamActions.push(awayTeam.randomMoveIntentGenerator());
 
     gameReplay.ticks.push(tick);
   }

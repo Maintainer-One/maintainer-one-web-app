@@ -26,29 +26,30 @@
           distance: undefined,
         };
 
-        for (let teamAction of data.game.ticks[tick].teamActions) {
-          for (let player of teamAction.players) {
+        console.log(data.game.ticks[tick])
+
+        for (let player of data.game.ticks[tick].players) {
+            let team = data.game.ticks[tick].awayTeam.id === player.teamId ? data.game.ticks[tick].awayTeam : data.game.ticks[tick].homeTeam
             let distance = Math.abs(player.x - x) + Math.abs(player.y - y);
 
             if (
               control.distance === undefined || distance < control.distance
             ) {
-              control.color = teamAction.color;
+              control.color = team.color;
               control.distance = distance;
             } else if (
               distance === control.distance &&
-              control.color !== teamAction.color
+              control.color !== team.color
             ) {
               control.color = undefined;
             }
-          }
         }
 
         switch (control.color) {
-          case data.game.ticks[tick].teamActions[0].color:
+          case data.game.ticks[tick].homeTeam.color:
             left += 1;
             break;
-          case data.game.ticks[tick].teamActions[1].color:
+          case data.game.ticks[tick].awayTeam.color:
             right += 1;
             break;
           default:
@@ -99,20 +100,19 @@
     }
     ctx.stroke();
 
-    for (let teamAction of data.game.ticks[tick].teamActions) {
-      teamAction.players.forEach((player) => {
-        ctx.beginPath();
-        ctx.fillStyle = teamAction.color;
-        ctx.arc(
-          player.x * cellSize + (cellSize / 2),
-          player.y * cellSize + (cellSize / 2),
-          cellSize * 0.35,
-          0,
-          Math.PI * 2,
-        );
-        ctx.fill();
-      });
-    }
+    data.game.ticks[tick].players.forEach((player) => {
+      let team = data.game.ticks[tick].awayTeam.id === player.teamId ? data.game.ticks[tick].awayTeam : data.game.ticks[tick].homeTeam
+      ctx.beginPath();
+      ctx.fillStyle = team.color;
+      ctx.arc(
+        player.x * cellSize + (cellSize / 2),
+        player.y * cellSize + (cellSize / 2),
+        cellSize * 0.35,
+        0,
+        Math.PI * 2,
+      );
+      ctx.fill();
+    });
 
     for (let square of controlStats.map) {
       ctx.beginPath();
@@ -151,10 +151,10 @@
   >
     <aside>
       <h2 class="text-lg border-b">
-        {data.game.ticks[tick].teamActions[0].name}
+        {data.game.ticks[tick].homeTeam.name}
       </h2>
       <ul>
-        {#each data.game.ticks[tick].teamActions[0].players as player}
+        {#each data.game.ticks[tick].players.filter(player => data.game.ticks[tick].homeTeam.id === player.teamId) as player}
           <li>{player.name}</li>
         {/each}
       </ul>
@@ -164,14 +164,14 @@
     >
       <div class="flex justify-around w-full">
         <div class="flex flex-col">
-          <p>{data.game.ticks[tick].teamActions[0].name}</p>
+          <p>{data.game.ticks[tick].homeTeam.name}</p>
         </div>
         <div class="flex flex-col">
           <p>Tick</p>
           <p>{tick}</p>
         </div>
         <div class="flex flex-col">
-          <p>{data.game.ticks[tick].teamActions[1].name}</p>
+          <p>{data.game.ticks[tick].awayTeam.name}</p>
         </div>
       </div>
       <canvas {width} {height} bind:this={canvas}></canvas>
@@ -191,7 +191,7 @@
           <div class="flex h-6 w-full rounded-full overflow-hidden border border-gray-700 bg-gray-900">
             <div
               class="h-full transition-all duration-300 ease-in-out"
-              style="width: {controlStats.left}%; background-color: {data.game.ticks[tick].teamActions[0].color};"
+              style="width: {controlStats.left}%; background-color: {data.game.ticks[tick].homeTeam.color};"
             ></div>
 
             <div
@@ -201,7 +201,7 @@
 
             <div
               class="h-full transition-all duration-300 ease-in-out"
-              style="width: {controlStats.right}%; background-color: {data.game.ticks[tick].teamActions[1].color};"
+              style="width: {controlStats.right}%; background-color: {data.game.ticks[tick].awayTeam.color};"
             ></div>
           </div>
 
@@ -214,10 +214,10 @@
     </div>
     <aside>
       <h2 class="text-lg border-b">
-        {data.game.ticks[tick].teamActions[1].name}
+        {data.game.ticks[tick].awayTeam.name}
       </h2>
       <ul>
-        {#each data.game.ticks[tick].teamActions[1].players as player}
+        {#each data.game.ticks[tick].players.filter(player => data.game.ticks[tick].awayTeam.id === player.teamId) as player}
           <li>{player.name}</li>
         {/each}
       </ul>
