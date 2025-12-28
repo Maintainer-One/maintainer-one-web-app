@@ -34,15 +34,21 @@ export type Tick = {
   homeTeam: Team;
   awayTeam: Team;
   players: Player[];
+  pointZones: PointZone[];
+};
+
+export type PointZone = {
+  x: number;
+  y: number;
 };
 
 export type TeamLoadFunction = (
   team?: Team,
-  players?: Player[],
+  players?: Player[]
 ) => [Team, Player[], TeamIntentGenerator];
 
 export type TeamIntentGenerator = (
   team: Team,
   opponent: Team,
-  players: Players,
+  players: Players
 ) => Intent[];

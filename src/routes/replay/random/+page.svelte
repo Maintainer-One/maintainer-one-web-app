@@ -71,9 +71,13 @@
 
   $effect(() => {
     if (isPlaying) {
-      setTimeout(() => {
-        tick += 1;
-      }, 1000);
+      if (tick === data.game.ticks.length - 1) {
+        isPlaying = false
+      } else {
+        setTimeout(() => {
+          tick += 1;
+        }, 1000);
+      }
     }
     if (tick > data.game.ticks.length) {
       return;
@@ -110,6 +114,18 @@
         cellSize * 0.35,
         0,
         Math.PI * 2,
+      );
+      ctx.fill();
+    });
+
+    data.game.ticks[tick].pointZones.forEach((pointZone) => {
+      ctx.beginPath();
+      ctx.fillStyle = "#EFBF04";
+      ctx.fillRect(
+        pointZone.x * cellSize + (cellSize / 4),
+        pointZone.y * cellSize + (cellSize / 4),
+        16,
+        16,
       );
       ctx.fill();
     });

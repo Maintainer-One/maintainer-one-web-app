@@ -2,7 +2,7 @@ import type { PageServerLoad } from "./$types";
 import { runGame } from "$lib/server/v1sim.ts";
 
 export const load: PageServerLoad = async () => {
-  let homeTeam = "Amber";
+  let homeTeam = "Denim";
 
   let awayTeam = "Crimson";
 

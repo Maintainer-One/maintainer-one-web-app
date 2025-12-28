@@ -2,7 +2,7 @@ import type { Intent, Player, Team, TeamIntentGenerator } from "./types.d.ts";
 
 export function loadCrimsonTeam(
   team?: Team,
-  players?: Player[],
+  players?: Player[]
 ): [Team, Player[], TeamIntentGenerator] {
   team = team || {
     id: 3,
@@ -31,7 +31,7 @@ export function loadCrimsonTeam(
       teamId: 3,
       name: "Chad",
       x: -1,
-      y: 7,
+      y: 8,
     },
   ];
 
@@ -49,6 +49,9 @@ function generateIntents(team: Team, opponent: Team, players: Player[]) {
     if (player.x === 5 && player.y === 1) {
       targetX = player.x;
       targetY = player.y + 1;
+    } else if (player.x === 5 && player.y === 8) {
+      targetX = player.x;
+      targetY = player.y - 1;
     }
     intents.push({
       playerId: player.id,
@@ -56,5 +59,6 @@ function generateIntents(team: Team, opponent: Team, players: Player[]) {
       y: targetY,
     });
   }
+  console.log(intents);
   return intents;
 }

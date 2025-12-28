@@ -1,6 +1,12 @@
 import { loadBeigeTeam } from "./beigeTeam.ts";
 import { loadAmberTeam } from "./amberTeam.ts";
-import type { Game, Player, TeamLoadFunction, Tick } from "./types.d.ts";
+import type {
+  Game,
+  Player,
+  PointZone,
+  TeamLoadFunction,
+  Tick,
+} from "./types.d.ts";
 import { loadCrimsonTeam } from "./crimsonTeam.ts";
 import { loadDenimTeam } from "./denimTeam.ts";
 
@@ -12,6 +18,7 @@ let teamMap: Record<string, TeamLoadFunction> = {
 };
 
 const GAME_LENGTH = 20;
+const POINT_ZONE_CAPTURE_COOL_DOWN = 3;
 
 export function runGame(homeTeamName: string, awayTeamName: string): Game {
   let [homeTeam, homePlayers, homeIntentGenerator] = teamMap[homeTeamName]();
@@ -38,11 +45,17 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
         players: players.map((player) => {
           return { ...player };
         }),
+        pointZones: [],
       },
     ],
   };
 
+  // With a cool down of 4, the first point zone will appear on game tick 5
+  let pointZoneCoolDown = 4;
+  let pointZones: PointZone[] = [];
+
   for (let tickCount = 0; tickCount < GAME_LENGTH - 1; tickCount++) {
+    // PLAYER INTENT LOGIC
     let intents = [
       ...homeIntentGenerator(homeTeam, awayTeam, players),
       ...awayIntentGenerator(awayTeam, homeTeam, players),
@@ -52,6 +65,7 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
       homeTeam: { ...homeTeam },
       awayTeam: { ...awayTeam },
       players: [],
+      pointZones: [],
     };
 
     let occupied: Record<string, Player> = {};
@@ -71,6 +85,7 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
       }
 
       if (intent.x > 9 || intent.y > 9 || intent.x < 0 || intent.y < 0) {
+        console.log(tickCount, player);
         continue;
       } else if (occupied[`${intent.x},${intent.y}`]) {
         if (collisions[`${intent.x},${intent.y}`]) {
@@ -89,7 +104,6 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
     }
 
     for (let [key, collidingPlayers] of Object.entries(collisions)) {
-      console.log(key);
       let [stringX, stringY] = key.split(",");
       let x = parseInt(stringX);
       let y = parseInt(stringY);
@@ -118,8 +132,20 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
       tick.players.push({ ...player });
     }
 
+    // POINT ZONE LOGIC
+    if (pointZoneCoolDown === 0) {
+      pointZones.push({
+        x: Math.floor(Math.random() * 10),
+        y: Math.floor(Math.random() * 10),
+      });
+      pointZoneCoolDown = -1;
+    } else if (pointZoneCoolDown > 0) {
+      pointZoneCoolDown--;
+    }
+
+    tick.pointZones = [...pointZones];
+
     gameReplay.ticks.push(tick);
-    console.log(`--- END ${tickCount + 1} TICK ---`);
   }
 
   return gameReplay;
