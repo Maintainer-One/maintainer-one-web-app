@@ -10,19 +10,27 @@
 
 **Maintainer One** is a competitive engineering platform launching **Q1 2026**.
 
-At its heart, it is a coding league where every action a team makes is automated through code. Humans write the logic; the bots execute the protocol.
+At its heart, it is a coding league where every action a team makes is automated
+through code. Humans write the logic; the bots execute the protocol.
 
-Unlike standard e-sports or hackathons, you do not control your units directly. You maintain the repository that controls them. Each league operates under a specific **Protocol**—a set of constraints and evolving rules that your codebase must adapt to.
+Unlike standard e-sports or hackathons, you do not control your units directly.
+You maintain the repository that controls them. Each league operates under a
+specific **Protocol**—a set of constraints and evolving rules that your codebase
+must adapt to.
 
 ## 🎯 The Objective
 
-- **Code:** Develop autonomous logic for agents (Bots) on a grid-based simulation.
-- **Community:** Open Source strategy. Each team is a repository; success depends on maintainers and contributors adapting to the protocol.
-- **Championships:** Only one team can win each season. The maintainer of that team is crowned **Maintainer One**.
+- **Code:** Develop autonomous logic for agents (Bots) on a grid-based
+  simulation.
+- **Community:** Open Source strategy. Each team is a repository; success
+  depends on maintainers and contributors adapting to the protocol.
+- **Championships:** Only one team can win each season. The maintainer of that
+  team is crowned **Maintainer One**.
 
 ## 🛠️ Tech Stack & Architecture
 
-This repository contains the landing page and the core simulation engine visualization.
+This repository contains the landing page and the core simulation engine
+visualization.
 
 - **Framework:** SvelteKit (Svelte 5 Runes)
 - **Styling:** Tailwind CSS
@@ -32,35 +40,35 @@ This repository contains the landing page and the core simulation engine visuali
 
 The landing page features a live simulation of the game engine:
 
-1.  **Entities:** Bots (Red vs. Gray) move across a grid.
-2.  **Intents:** Bots enter states (IDLE, RACING) based on `hotspot` generation.
-3.  **Scoring:** Bots race to capture hotspots; successful captures trigger explosions and increment team scores.
+1. **Entities:** Bots (Red vs. Gray) move across a grid.
+2. **Intents:** Bots enter states (IDLE, RACING) based on `hotspot` generation.
+3. **Scoring:** Bots race to capture hotspots; successful captures trigger
+   explosions and increment team scores.
 
 ## 🚀 Development Setup
 
 We are currently in **Pre-Alpha**. To run the landing page locally:
 
-1.  **Clone:**
+1. **Clone:**
 
-    ```bash
-    git clone [https://github.com/Maintainer-One/platform.git](https://github.com/Maintainer-One/maintainer-one-web-app.git)
-    cd maintainer-one-web-app
-    ```
+   ```bash
+   git clone [https://github.com/Maintainer-One/platform.git](https://github.com/Maintainer-One/maintainer-one-web-app.git)
+   cd maintainer-one-web-app
+   ```
 
-2.  **Install dependencies:**
+2. **Install dependencies:**
 
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
-3.  **Initiate Protocol:**
+3. **Initiate Protocol:**
 
-    ```bash
-    npm run dev
-    ```
+   ```bash
+   npm run dev
+   ```
 
-4.  **Visualize:**
-    Open `http://localhost:5173` in your browser.
+4. **Visualize:** Open `http://localhost:5173` in your browser.
 
 ## 📅 Roadmap: Protocol One
 
@@ -79,7 +87,8 @@ We need Engineers, Designers, and Strategists.
 
 Submit PRs to fix bugs in the simulation engine or optimize the rendering loop.
 
-- _Current Focus:_ Optimizing the `draw()` loop and `Explosion` particle management.
+- _Current Focus:_ Optimizing the `draw()` loop and `Explosion` particle
+  management.
 
 ### 🎨 For Designers
 

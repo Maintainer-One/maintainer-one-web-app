@@ -1,6 +1,7 @@
 export type Team = {
   id: number;
   name: string;
+  status?: "Home" | "Away";
   color: string;
   score: number;
 };
@@ -11,6 +12,8 @@ export type Player = {
   name: string;
   x: number;
   y: number;
+  targetX?: number;
+  targetY?: number;
 };
 
 export type Intent = {
@@ -35,11 +38,11 @@ export type Tick = {
 
 export type TeamLoadFunction = (
   team?: Team,
-  players?: Player[]
+  players?: Player[],
 ) => [Team, Player[], TeamIntentGenerator];
 
 export type TeamIntentGenerator = (
   team: Team,
   opponent: Team,
-  players: Players
+  players: Players,
 ) => Intent[];

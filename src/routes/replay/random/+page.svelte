@@ -3,6 +3,7 @@
 
   let { data }: PageProps = $props();
 
+
   let canvas: HTMLCanvasElement;
 
   let width = 300;
@@ -10,6 +11,7 @@
   const cellSize = 30;
 
   let tick = $state(0);
+
   let controlStats = $derived.by(() => {
     let left = 0;
     let right = 0;
@@ -179,18 +181,15 @@
           <div class="flex h-6 w-full rounded-full overflow-hidden border border-gray-700 bg-gray-900">
             <div
               class="h-full transition-all duration-300 ease-in-out"
-              style="width: {controlStats.left}%; background-color: {data.game.ticks[tick].homeTeam.color};"
-            ></div>
+              style="width: {controlStats.left}%; background-color: {data.game.ticks[tick].homeTeam.color};"></div>
 
             <div
               class="h-full bg-gray-700 transition-all duration-300 ease-in-out"
-              style="width: {controlStats.none}%;"
-            ></div>
+              style="width: {controlStats.none}%;"></div>
 
             <div
               class="h-full transition-all duration-300 ease-in-out"
-              style="width: {controlStats.right}%; background-color: {data.game.ticks[tick].awayTeam.color};"
-            ></div>
+              style="width: {controlStats.right}%; background-color: {data.game.ticks[tick].awayTeam.color};"></div>
           </div>
 
           <div class="flex justify-between text-sm mt-1 text-gray-400">

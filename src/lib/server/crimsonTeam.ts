@@ -1,9 +1,8 @@
-import { generateIntents } from "./teamLogic.ts";
-import type { Player, Team, TeamIntentGenerator } from "./types.d.ts";
+import type { Intent, Player, Team, TeamIntentGenerator } from "./types.d.ts";
 
 export function loadCrimsonTeam(
   team?: Team,
-  players?: Player[]
+  players?: Player[],
 ): [Team, Player[], TeamIntentGenerator] {
   team = team || {
     id: 3,
@@ -37,4 +36,25 @@ export function loadCrimsonTeam(
   ];
 
   return [team, players, generateIntents];
+}
+
+function generateIntents(team: Team, opponent: Team, players: Player[]) {
+  let intents: Intent[] = [];
+  let currentPlayers = players.filter((player) => player.teamId === team.id);
+
+  for (let player of currentPlayers) {
+    let targetX = team.status === "Home" ? player.x + 1 : player.x - 1;
+    let targetY = player.y;
+
+    if (player.x === 5 && player.y === 1) {
+      targetX = player.x;
+      targetY = player.y + 1;
+    }
+    intents.push({
+      playerId: player.id,
+      x: targetX,
+      y: targetY,
+    });
+  }
+  return intents;
 }
