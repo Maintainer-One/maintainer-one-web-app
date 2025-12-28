@@ -17,22 +17,22 @@ export function loadDenimTeam(
       id: 10,
       teamId: 4,
       name: "Derick",
-      x: 9,
+      x: -1,
       y: 3,
     },
     {
       id: 11,
       teamId: 4,
       name: "Drayson",
-      x: 9,
-      y: 4,
+      x: -1,
+      y: 5,
     },
     {
       id: 12,
       teamId: 4,
       name: "Danny",
-      x: 9,
-      y: 5,
+      x: -1,
+      y: 7,
     },
   ];
 

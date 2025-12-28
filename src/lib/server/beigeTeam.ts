@@ -17,22 +17,22 @@ export function loadBeigeTeam(
       id: 4,
       teamId: 2,
       name: "Bonnie",
-      x: 9,
-      y: 3,
+      x: -1,
+      y: 2,
     },
     {
       id: 5,
       teamId: 2,
       name: "Brad",
-      x: 9,
-      y: 4,
+      x: -1,
+      y: 6,
     },
     {
       id: 6,
       teamId: 2,
       name: "Bluth",
-      x: 9,
-      y: 5,
+      x: -1,
+      y: 8,
     },
   ];
 

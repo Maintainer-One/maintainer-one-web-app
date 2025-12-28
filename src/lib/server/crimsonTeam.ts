@@ -17,22 +17,22 @@ export function loadCrimsonTeam(
       id: 7,
       teamId: 3,
       name: "Corie",
-      x: 9,
-      y: 3,
+      x: -1,
+      y: 1,
     },
     {
       id: 8,
       teamId: 3,
       name: "Calin",
-      x: 9,
+      x: -1,
       y: 4,
     },
     {
       id: 9,
       teamId: 3,
       name: "Chad",
-      x: 9,
-      y: 5,
+      x: -1,
+      y: 7,
     },
   ];
 

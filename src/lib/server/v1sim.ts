@@ -17,6 +17,14 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
   let [homeTeam, homePlayers, homeIntentGenerator] = teamMap[homeTeamName]();
   let [awayTeam, awayPlayers, awayIntentGenerator] = teamMap[awayTeamName]();
 
+  for (let player of homePlayers) {
+    player.x = 0;
+  }
+
+  for (let player of awayPlayers) {
+    player.x = 9;
+  }
+
   let players: Player[] = [...homePlayers, ...awayPlayers];
 
   let gameReplay: Game = {

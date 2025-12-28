@@ -17,22 +17,22 @@ export function loadAmberTeam(
       id: 1,
       teamId: 1,
       name: "Alan",
-      x: 0,
-      y: 3,
+      x: -1,
+      y: 2,
     },
     {
       id: 2,
       teamId: 1,
       name: "Aaron",
-      x: 0,
+      x: -1,
       y: 4,
     },
     {
       id: 3,
       teamId: 1,
       name: "Annie",
-      x: 0,
-      y: 5,
+      x: -1,
+      y: 7,
     },
   ];
 
