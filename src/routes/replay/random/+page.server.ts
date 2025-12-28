@@ -4,7 +4,7 @@ import { runGame } from "$lib/server/v1sim.ts";
 export const load: PageServerLoad = async () => {
   let homeTeam = "Amber";
 
-  let awayTeam = "Blue";
+  let awayTeam = "Crimson";
 
   let gameReplay = runGame(homeTeam, awayTeam);
 

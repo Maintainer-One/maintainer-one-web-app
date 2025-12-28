@@ -26,8 +26,6 @@
           distance: undefined,
         };
 
-        console.log(data.game.ticks[tick])
-
         for (let player of data.game.ticks[tick].players) {
             let team = data.game.ticks[tick].awayTeam.id === player.teamId ? data.game.ticks[tick].awayTeam : data.game.ticks[tick].homeTeam
             let distance = Math.abs(player.x - x) + Math.abs(player.y - y);
@@ -149,16 +147,6 @@
   <div
     class="flex flex-wrap flex-row justify-around"
   >
-    <aside>
-      <h2 class="text-lg border-b">
-        {data.game.ticks[tick].homeTeam.name}
-      </h2>
-      <ul>
-        {#each data.game.ticks[tick].players.filter(player => data.game.ticks[tick].homeTeam.id === player.teamId) as player}
-          <li>{player.name}</li>
-        {/each}
-      </ul>
-    </aside>
     <div
       class="flex flex-col items-center gap-4"
     >
@@ -212,15 +200,5 @@
           </div>
         </div>
     </div>
-    <aside>
-      <h2 class="text-lg border-b">
-        {data.game.ticks[tick].awayTeam.name}
-      </h2>
-      <ul>
-        {#each data.game.ticks[tick].players.filter(player => data.game.ticks[tick].awayTeam.id === player.teamId) as player}
-          <li>{player.name}</li>
-        {/each}
-      </ul>
-    </aside>
   </div>
 </div>

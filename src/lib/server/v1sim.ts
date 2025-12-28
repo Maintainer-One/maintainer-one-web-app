@@ -1,10 +1,14 @@
-import { loadBlueTeam } from "./blueTeam.ts";
+import { loadBeigeTeam } from "./beigeTeam.ts";
 import { loadAmberTeam } from "./amberTeam.ts";
-import type { Game, Player, Team, TeamLoadFunction, Tick } from "./types.d.ts";
+import type { Game, Player, TeamLoadFunction, Tick } from "./types.d.ts";
+import { loadCrimsonTeam } from "./crimsonTeam.ts";
+import { loadDenimTeam } from "./denimTeam.ts";
 
 let teamMap: Record<string, TeamLoadFunction> = {
   Amber: loadAmberTeam,
-  Blue: loadBlueTeam,
+  Beige: loadBeigeTeam,
+  Crimson: loadCrimsonTeam,
+  Denim: loadDenimTeam,
 };
 
 const GAME_LENGTH = 10;
