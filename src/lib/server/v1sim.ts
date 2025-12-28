@@ -85,7 +85,6 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
       }
 
       if (intent.x > 9 || intent.y > 9 || intent.x < 0 || intent.y < 0) {
-        console.log(tickCount, player);
         continue;
       } else if (occupied[`${intent.x},${intent.y}`]) {
         if (collisions[`${intent.x},${intent.y}`]) {
@@ -123,7 +122,7 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
     }
 
     for (let player of players) {
-      if (player.targetX && player.targetY) {
+      if (player.targetX !== undefined && player.targetY !== undefined) {
         player.x = player.targetX;
         player.y = player.targetY;
         delete player.targetX;

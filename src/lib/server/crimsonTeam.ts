@@ -53,12 +53,13 @@ function generateIntents(team: Team, opponent: Team, players: Player[]) {
       targetX = player.x;
       targetY = player.y - 1;
     }
+
     intents.push({
       playerId: player.id,
       x: targetX,
       y: targetY,
     });
   }
-  console.log(intents);
+
   return intents;
 }
