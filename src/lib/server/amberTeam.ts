@@ -3,7 +3,7 @@ import type { Player, Team, TeamIntentGenerator } from "./types.d.ts";
 
 export function loadAmberTeam(
   team?: Team,
-  players?: Player[],
+  players?: Player[]
 ): [Team, Player[], TeamIntentGenerator] {
   team = team || {
     id: 1,

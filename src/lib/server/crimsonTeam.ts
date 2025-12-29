@@ -1,4 +1,10 @@
-import type { Intent, Player, Team, TeamIntentGenerator } from "./types.d.ts";
+import type {
+  Intent,
+  Player,
+  PointZone,
+  Team,
+  TeamIntentGenerator,
+} from "./types.d.ts";
 
 export function loadCrimsonTeam(
   team?: Team,
@@ -38,20 +44,53 @@ export function loadCrimsonTeam(
   return [team, players, generateIntents];
 }
 
-function generateIntents(team: Team, opponent: Team, players: Player[]) {
+function generateIntents(
+  team: Team,
+  opponent: Team,
+  players: Player[],
+  pointZones: PointZone[]
+) {
   let intents: Intent[] = [];
-  let currentPlayers = players.filter((player) => player.teamId === team.id);
+  let crimsonPlayers = players.filter((player) => player.teamId === team.id);
 
-  for (let player of currentPlayers) {
-    let targetX = team.status === "Home" ? player.x + 1 : player.x - 1;
+  if (pointZones.length === 0) {
+    return intents;
+  }
+
+  let closestPlayer: {
+    distance?: number;
+    player?: Player;
+  } = {};
+
+  for (let player of crimsonPlayers) {
+    let distance =
+      Math.abs(player.x - pointZones[0].x) +
+      Math.abs(player.y - pointZones[0].y);
+
+    if (
+      closestPlayer.distance === undefined ||
+      closestPlayer.distance > distance
+    ) {
+      closestPlayer.distance = distance;
+      closestPlayer.player = player;
+    }
+  }
+
+  if (closestPlayer.player !== undefined) {
+    let player = closestPlayer.player;
+    let pointZone = pointZones[0];
+
+    let targetX = player.x;
     let targetY = player.y;
 
-    if (player.x === 5 && player.y === 1) {
-      targetX = player.x;
-      targetY = player.y + 1;
-    } else if (player.x === 5 && player.y === 8) {
-      targetX = player.x;
-      targetY = player.y - 1;
+    if (pointZone.x > player.x) {
+      targetX += 1;
+    } else if (pointZone.x < player.x) {
+      targetX -= 1;
+    } else if (pointZone.y > player.y) {
+      targetY += 1;
+    } else if (pointZone.y < player.y) {
+      targetY -= 1;
     }
 
     intents.push({
@@ -63,3 +102,29 @@ function generateIntents(team: Team, opponent: Team, players: Player[]) {
 
   return intents;
 }
+
+// function generateIntents(team: Team, opponent: Team, players: Player[]) {
+//   let intents: Intent[] = [];
+//   let currentPlayers = players.filter((player) => player.teamId === team.id);
+
+//   for (let player of currentPlayers) {
+//     let targetX = team.status === "Home" ? player.x + 1 : player.x - 1;
+//     let targetY = player.y;
+
+//     if (player.x === 5 && player.y === 1) {
+//       targetX = player.x;
+//       targetY = player.y + 1;
+//     } else if (player.x === 5 && player.y === 8) {
+//       targetX = player.x;
+//       targetY = player.y - 1;
+//     }
+
+//     intents.push({
+//       playerId: player.id,
+//       x: targetX,
+//       y: targetY,
+//     });
+//   }
+
+//   return intents;
+// }

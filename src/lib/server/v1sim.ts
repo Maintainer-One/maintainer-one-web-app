@@ -1,14 +1,15 @@
 import { loadBeigeTeam } from "./beigeTeam.ts";
 import { loadAmberTeam } from "./amberTeam.ts";
+import { loadCrimsonTeam } from "./crimsonTeam.ts";
+import { loadDenimTeam } from "./denimTeam.ts";
 import type {
   Game,
   Player,
   PointZone,
+  Replay,
   TeamLoadFunction,
   Tick,
 } from "./types.d.ts";
-import { loadCrimsonTeam } from "./crimsonTeam.ts";
-import { loadDenimTeam } from "./denimTeam.ts";
 
 let teamMap: Record<string, TeamLoadFunction> = {
   Amber: loadAmberTeam,
@@ -20,7 +21,7 @@ let teamMap: Record<string, TeamLoadFunction> = {
 const GAME_LENGTH = 20;
 const POINT_ZONE_CAPTURE_COOL_DOWN = 3;
 
-export function runGame(homeTeamName: string, awayTeamName: string): Game {
+export function runGame(homeTeamName: string, awayTeamName: string): Replay {
   let [homeTeam, homePlayers, homeIntentGenerator] = teamMap[homeTeamName]();
   let [awayTeam, awayPlayers, awayIntentGenerator] = teamMap[awayTeamName]();
 
@@ -37,7 +38,7 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
 
   let players: Player[] = [...homePlayers, ...awayPlayers];
 
-  let gameReplay: Game = {
+  let gameReplay: Replay = {
     ticks: [
       {
         homeTeam: { ...homeTeam },
@@ -51,14 +52,14 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
   };
 
   // With a cool down of 4, the first point zone will appear on game tick 5
-  let pointZoneCoolDown = 4;
+  let pointZoneCoolDown = 0;
   let pointZones: PointZone[] = [];
 
   for (let tickCount = 0; tickCount < GAME_LENGTH - 1; tickCount++) {
     // PLAYER INTENT LOGIC
     let intents = [
-      ...homeIntentGenerator(homeTeam, awayTeam, players),
-      ...awayIntentGenerator(awayTeam, homeTeam, players),
+      ...homeIntentGenerator(homeTeam, awayTeam, players, pointZones),
+      ...awayIntentGenerator(awayTeam, homeTeam, players, pointZones),
     ];
 
     let tick: Tick = {
@@ -80,7 +81,6 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
       let intent = intents.find((intent) => player.id === intent.playerId);
 
       if (intent === undefined) {
-        tick.players.push(player);
         continue;
       }
 
