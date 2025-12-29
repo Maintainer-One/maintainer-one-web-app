@@ -2,9 +2,7 @@
 
 > **The sports management game powered by open source logic**
 
----
-
-**Maintainer One** is a competitive engineering platform launching **Q1 2026**.
+Season 1 launching **Q1 2026**.
 
 - **Code:** Develop autonomous logic for teams to see them through a season.
 - **Community:** Work together to develop the best team logic. Pick a favorite team and connect with other fans as the season plays out.
@@ -44,20 +42,20 @@ We are currently in **Pre-Alpha**. To run the web app locally:
 
 This project uses Deno for the runtime. [Installation Documentation](https://docs.deno.com/runtime/getting_started/installation/)
 
-**Clone:**
+2. **Clone:**
 
 ```bash
-git clone [https://github.com/Maintainer-One/platform.git](https://github.com/Maintainer-One/maintainer-one-web-app.git)
+git clone https://github.com/Maintainer-One/platform.git
 cd maintainer-one-web-app
 ```
 
-2. **Install dependencies:**
+3. **Install dependencies:**
 
    ```bash
    deno install
    ```
 
-3. **Run the project:**
+4. **Run the project:**
 
    ```bash
    deno task dev
@@ -71,7 +69,7 @@ cd maintainer-one-web-app
 
    This will then wait for a debugger to attach. To attach the debugger in VS Code press F5. If you use a different IDE please open an issue so we can make the development experience as diverse as possible. Also, I'm not super happy with this debug set up so if you have any better ways of doing it, I'm all ears!
 
-4. **The Game:**
+5. **The Game:**
 
 Open `http://localhost:5173` in your browser.
 
@@ -86,7 +84,7 @@ This project is very very early in development and this roadmap may change drast
 - **v0:** Landing page
 - **v1:** First protocol implemented and solid foundations in place with a great user experience and developer experience
 - **v2:** Start separating the coding aspects of the game from fan experience
-- **And beyond:** I don't know. I have some many plans for this game that I will be able to continue tinkering on it forever but I would also love for it to be something that progresses with community input so reach out with your ideas!
+- **And beyond:** I don't know. I have so many plans for this game that I will be able to continue tinkering on it forever but would love for it to grow with community input so reach out with your ideas!
 
 ## Contributing
 
