@@ -30,14 +30,14 @@ export function loadCrimsonTeam(
       teamId: 3,
       name: "Calin",
       x: -1,
-      y: 4,
+      y: 5,
     },
     {
       id: 9,
       teamId: 3,
       name: "Chad",
       x: -1,
-      y: 8,
+      y: 7,
     },
   ];
 
