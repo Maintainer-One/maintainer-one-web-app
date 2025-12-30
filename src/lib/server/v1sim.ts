@@ -18,7 +18,7 @@ let teamMap: Record<string, TeamLoadFunction> = {
   Denim: loadDenimTeam,
 };
 
-const GAME_LENGTH = 20;
+const GAME_LENGTH = 300;
 const POINT_ZONE_CAPTURE_COOL_DOWN = 3;
 
 export function runGame(homeTeamName: string, awayTeamName: string): Replay {

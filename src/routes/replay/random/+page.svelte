@@ -104,8 +104,6 @@
     }
     ctx.stroke();
 
-    console.log(data.game.ticks[tick].players)
-
     data.game.ticks[tick].players.forEach((player) => {
       let team = data.game.ticks[tick].awayTeam.id === player.teamId ? data.game.ticks[tick].awayTeam : data.game.ticks[tick].homeTeam
       ctx.beginPath();
