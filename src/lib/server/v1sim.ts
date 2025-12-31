@@ -3,7 +3,6 @@ import { loadAmberTeam } from "./amberTeam.ts";
 import { loadCrimsonTeam } from "./crimsonTeam.ts";
 import { loadDenimTeam } from "./denimTeam.ts";
 import type {
-  Game,
   Player,
   PointZone,
   Replay,
@@ -52,7 +51,7 @@ export function runGame(homeTeamName: string, awayTeamName: string): Replay {
   };
 
   // With a cool down of 4, the first point zone will appear on game tick 5
-  let pointZoneCoolDown = 0;
+  let pointZoneCoolDown = 4;
   let pointZones: PointZone[] = [];
 
   for (let tickCount = 0; tickCount < GAME_LENGTH - 1; tickCount++) {
@@ -162,3 +161,5 @@ export function runGame(homeTeamName: string, awayTeamName: string): Replay {
 
   return gameReplay;
 }
+
+function loadState() {}
