@@ -9,6 +9,7 @@ import type {
   TeamLoadFunction,
   Tick,
 } from "./types.d.ts";
+import { randomSeeded } from "@std/random";
 
 let teamMap: Record<string, TeamLoadFunction> = {
   Amber: loadAmberTeam,
@@ -17,12 +18,16 @@ let teamMap: Record<string, TeamLoadFunction> = {
   Denim: loadDenimTeam,
 };
 
-const GAME_LENGTH = 300;
+const GAME_LENGTH = 10;
 const POINT_ZONE_CAPTURE_COOL_DOWN = 3;
 
 export function runGame(homeTeamName: string, awayTeamName: string): Replay {
   let [homeTeam, homePlayers, homeIntentGenerator] = teamMap[homeTeamName]();
   let [awayTeam, awayPlayers, awayIntentGenerator] = teamMap[awayTeamName]();
+
+  let seed = BigInt(Math.floor(Math.random() * 10000000));
+
+  let prng = randomSeeded(1067780n);
 
   homeTeam.status = "Home";
   awayTeam.status = "Away";
@@ -65,8 +70,8 @@ export function runGame(homeTeamName: string, awayTeamName: string): Replay {
     // POINT ZONE LOGIC
     if (pointZoneCoolDown === 0) {
       pointZones.push({
-        x: Math.floor(Math.random() * 10),
-        y: Math.floor(Math.random() * 10),
+        x: Math.floor(prng() * 10),
+        y: Math.floor(prng() * 10),
       });
       pointZoneCoolDown = -1;
     } else if (pointZoneCoolDown > 0) {
