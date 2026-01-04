@@ -9,7 +9,7 @@ import type {
   TeamLoadFunction,
   Tick,
 } from "./types.d.ts";
-import { randomSeeded } from "@std/random";
+import { MatchPCG } from "./random.ts";
 
 let teamMap: Record<string, TeamLoadFunction> = {
   Amber: loadAmberTeam,
@@ -18,7 +18,7 @@ let teamMap: Record<string, TeamLoadFunction> = {
   Denim: loadDenimTeam,
 };
 
-const GAME_LENGTH = 10;
+const GAME_LENGTH = 100;
 const POINT_ZONE_CAPTURE_COOL_DOWN = 3;
 
 export function runGame(homeTeamName: string, awayTeamName: string): Replay {
@@ -27,7 +27,8 @@ export function runGame(homeTeamName: string, awayTeamName: string): Replay {
 
   let seed = BigInt(Math.floor(Math.random() * 10000000));
 
-  let prng = randomSeeded(1067780n);
+  let prng = new MatchPCG(1067780n);
+  // let prng = new MatchPCG(seed);
 
   homeTeam.status = "Home";
   awayTeam.status = "Away";
@@ -69,9 +70,12 @@ export function runGame(homeTeamName: string, awayTeamName: string): Replay {
 
     // POINT ZONE LOGIC
     if (pointZoneCoolDown === 0) {
+      let x = prng.nextRange(0, 9);
+      let y = prng.nextRange(0, 9);
+
       pointZones.push({
-        x: Math.floor(prng() * 10),
-        y: Math.floor(prng() * 10),
+        x,
+        y,
       });
       pointZoneCoolDown = -1;
     } else if (pointZoneCoolDown > 0) {
@@ -99,9 +103,14 @@ export function runGame(homeTeamName: string, awayTeamName: string): Replay {
         continue;
       }
 
+      // Ignore intent if out of bounds
       if (intent.x > 9 || intent.y > 9 || intent.x < 0 || intent.y < 0) {
         continue;
-      } else if (occupied[`${intent.x},${intent.y}`]) {
+      }
+
+      // If trying to move to an occupied square
+      if (occupied[`${intent.x},${intent.y}`]) {
+        // Add a collision if there isn't one, otherwise add a player to the collision
         if (collisions[`${intent.x},${intent.y}`]) {
           collisions[`${intent.x},${intent.y}`].push(player);
         } else {
@@ -122,10 +131,11 @@ export function runGame(homeTeamName: string, awayTeamName: string): Replay {
       let x = parseInt(stringX);
       let y = parseInt(stringY);
       let occupier: Player | undefined = collidingPlayers[0];
+
       for (let player of collidingPlayers) {
         if (occupier === undefined) {
           occupier = player;
-        } else if (occupier.targetX !== x && occupier.targetY !== y) {
+        } else if (occupier.targetX !== x || occupier.targetY !== y) {
           occupier = undefined;
         } else if (occupier.id !== player.id) {
           delete occupier.targetX;
