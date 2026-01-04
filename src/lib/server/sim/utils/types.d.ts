@@ -20,6 +20,7 @@ export type Intent = {
   playerId: number;
   x: number;
   y: number;
+  status?: string; 
 };
 
 export type Game = {

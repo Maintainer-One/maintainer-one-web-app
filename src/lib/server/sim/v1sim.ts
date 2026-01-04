@@ -25,12 +25,12 @@ export function runGame(homeTeamName: string, awayTeamName: string): Replay {
   let [homeTeam, homePlayers, homeIntentGenerator] = teamMap[homeTeamName]();
   let [awayTeam, awayPlayers, awayIntentGenerator] = teamMap[awayTeamName]();
 
-  // let seed = BigInt(Math.floor(Math.random() * 10000000));
+  let seed = BigInt(Math.floor(Math.random() * 10000000));
 
   // console.log({ seed });
 
-  let prng = new MatchPCG(5637502n);
-  // let prng = new MatchPCG(seed);
+  // let prng = new MatchPCG(5637502n);
+  let prng = new MatchPCG(seed);
 
   homeTeam.status = "Home";
   awayTeam.status = "Away";
@@ -111,9 +111,6 @@ export function runGame(homeTeamName: string, awayTeamName: string): Replay {
       }
       // If trying to move to an occupied square
       if (occupied[`${intent.x},${intent.y}`]) {
-        if (tickCount === 18) {
-          console.log(player);
-        }
         // Add a collision if there isn't one, otherwise add a player to the collision
         if (collisions[`${intent.x},${intent.y}`]) {
           collisions[`${intent.x},${intent.y}`].push(player);
@@ -141,15 +138,10 @@ export function runGame(homeTeamName: string, awayTeamName: string): Replay {
         collidingPlayers.length === 2 &&
         occupier.targetX !== undefined
       ) {
-        console.log(collidingPlayers);
         continue;
       }
 
       for (let player of collidingPlayers) {
-        // if (tickCount === 17) {
-        //   console.log(collisions["5,2"]);
-        // }
-
         if (occupier === undefined) {
           occupier = player;
         } else if (occupier.targetX !== x || occupier.targetY !== y) {
