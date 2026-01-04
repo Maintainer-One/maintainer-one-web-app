@@ -1,15 +1,15 @@
-import { loadBeigeTeam } from "./beigeTeam.ts";
-import { loadAmberTeam } from "./amberTeam.ts";
-import { loadCrimsonTeam } from "./crimsonTeam.ts";
-import { loadDenimTeam } from "./denimTeam.ts";
+import { loadBeigeTeam } from "../teamLogic/beigeTeam.ts";
+import { loadAmberTeam } from "../teamLogic/amberTeam.ts";
+import { loadCrimsonTeam } from "../teamLogic/crimsonTeam.ts";
+import { loadDenimTeam } from "../teamLogic/denimTeam.ts";
 import type {
   Player,
   PointZone,
   Replay,
   TeamLoadFunction,
   Tick,
-} from "./types.d.ts";
-import { MatchPCG } from "./random.ts";
+} from "./utils/types";
+import { MatchPCG } from "./utils/random.ts";
 
 let teamMap: Record<string, TeamLoadFunction> = {
   Amber: loadAmberTeam,
@@ -25,9 +25,11 @@ export function runGame(homeTeamName: string, awayTeamName: string): Replay {
   let [homeTeam, homePlayers, homeIntentGenerator] = teamMap[homeTeamName]();
   let [awayTeam, awayPlayers, awayIntentGenerator] = teamMap[awayTeamName]();
 
-  let seed = BigInt(Math.floor(Math.random() * 10000000));
+  // let seed = BigInt(Math.floor(Math.random() * 10000000));
 
-  let prng = new MatchPCG(1067780n);
+  // console.log({ seed });
+
+  let prng = new MatchPCG(5637502n);
   // let prng = new MatchPCG(seed);
 
   homeTeam.status = "Home";
@@ -107,9 +109,11 @@ export function runGame(homeTeamName: string, awayTeamName: string): Replay {
       if (intent.x > 9 || intent.y > 9 || intent.x < 0 || intent.y < 0) {
         continue;
       }
-
       // If trying to move to an occupied square
       if (occupied[`${intent.x},${intent.y}`]) {
+        if (tickCount === 18) {
+          console.log(player);
+        }
         // Add a collision if there isn't one, otherwise add a player to the collision
         if (collisions[`${intent.x},${intent.y}`]) {
           collisions[`${intent.x},${intent.y}`].push(player);
@@ -132,7 +136,20 @@ export function runGame(homeTeamName: string, awayTeamName: string): Replay {
       let y = parseInt(stringY);
       let occupier: Player | undefined = collidingPlayers[0];
 
+      if (
+        tickCount === 17 &&
+        collidingPlayers.length === 2 &&
+        occupier.targetX !== undefined
+      ) {
+        console.log(collidingPlayers);
+        continue;
+      }
+
       for (let player of collidingPlayers) {
+        // if (tickCount === 17) {
+        //   console.log(collisions["5,2"]);
+        // }
+
         if (occupier === undefined) {
           occupier = player;
         } else if (occupier.targetX !== x || occupier.targetY !== y) {

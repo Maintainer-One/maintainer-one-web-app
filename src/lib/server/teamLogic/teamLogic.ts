@@ -1,4 +1,4 @@
-import type { Intent, Player, PointZone, Team } from "./types.d.ts";
+import type { Intent, Player, PointZone, Team } from "../sim/utils/types.d.ts";
 
 export function generateIntents(
   team: Team,
