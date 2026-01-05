@@ -20,10 +20,13 @@ export type Intent = {
   playerId: number;
   x: number;
   y: number;
+  status?: string; 
 };
 
 export type Game = {
-  ticks: Tick[];
+  teams: Team[];
+  players: Player[];
+  pointZone: PointZone;
 };
 
 export type Replay = {
@@ -50,5 +53,6 @@ export type TeamLoadFunction = (
 export type TeamIntentGenerator = (
   team: Team,
   opponent: Team,
-  players: Players
+  players: Players,
+  pointZones: PointZone[]
 ) => Intent[];

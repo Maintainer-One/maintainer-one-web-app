@@ -171,6 +171,7 @@
       <div class="flex justify-around w-full">
         <div class="flex flex-col">
           <p>{data.game.ticks[tick].homeTeam.name}</p>
+          <p>{data.game.ticks[tick].homeTeam.score}</p>
         </div>
         <div class="flex flex-col">
           <p>Tick</p>
@@ -178,6 +179,7 @@
         </div>
         <div class="flex flex-col">
           <p>{data.game.ticks[tick].awayTeam.name}</p>
+          <p>{data.game.ticks[tick].awayTeam.score}</p>
         </div>
       </div>
       <canvas {width} {height} bind:this={canvas}></canvas>

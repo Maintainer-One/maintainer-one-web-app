@@ -1,14 +1,15 @@
-import { loadBeigeTeam } from "./beigeTeam.ts";
-import { loadAmberTeam } from "./amberTeam.ts";
+import { loadBeigeTeam } from "../teamLogic/beigeTeam.ts";
+import { loadAmberTeam } from "../teamLogic/amberTeam.ts";
+import { loadCrimsonTeam } from "../teamLogic/crimsonTeam.ts";
+import { loadDenimTeam } from "../teamLogic/denimTeam.ts";
 import type {
-  Game,
   Player,
   PointZone,
+  Replay,
   TeamLoadFunction,
   Tick,
-} from "./types.d.ts";
-import { loadCrimsonTeam } from "./crimsonTeam.ts";
-import { loadDenimTeam } from "./denimTeam.ts";
+} from "./utils/types";
+import { MatchPCG } from "./utils/random.ts";
 
 let teamMap: Record<string, TeamLoadFunction> = {
   Amber: loadAmberTeam,
@@ -17,12 +18,19 @@ let teamMap: Record<string, TeamLoadFunction> = {
   Denim: loadDenimTeam,
 };
 
-const GAME_LENGTH = 20;
+const GAME_LENGTH = 100;
 const POINT_ZONE_CAPTURE_COOL_DOWN = 3;
 
-export function runGame(homeTeamName: string, awayTeamName: string): Game {
+export function runGame(homeTeamName: string, awayTeamName: string): Replay {
   let [homeTeam, homePlayers, homeIntentGenerator] = teamMap[homeTeamName]();
   let [awayTeam, awayPlayers, awayIntentGenerator] = teamMap[awayTeamName]();
+
+  let seed = BigInt(Math.floor(Math.random() * 10000000));
+
+  // console.log({ seed });
+
+  // let prng = new MatchPCG(5637502n);
+  let prng = new MatchPCG(seed);
 
   homeTeam.status = "Home";
   awayTeam.status = "Away";
@@ -37,7 +45,7 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
 
   let players: Player[] = [...homePlayers, ...awayPlayers];
 
-  let gameReplay: Game = {
+  let gameReplay: Replay = {
     ticks: [
       {
         homeTeam: { ...homeTeam },
@@ -55,18 +63,32 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
   let pointZones: PointZone[] = [];
 
   for (let tickCount = 0; tickCount < GAME_LENGTH - 1; tickCount++) {
-    // PLAYER INTENT LOGIC
-    let intents = [
-      ...homeIntentGenerator(homeTeam, awayTeam, players),
-      ...awayIntentGenerator(awayTeam, homeTeam, players),
-    ];
-
     let tick: Tick = {
       homeTeam: { ...homeTeam },
       awayTeam: { ...awayTeam },
       players: [],
       pointZones: [],
     };
+
+    // POINT ZONE LOGIC
+    if (pointZoneCoolDown === 0) {
+      let x = prng.nextRange(0, 9);
+      let y = prng.nextRange(0, 9);
+
+      pointZones.push({
+        x,
+        y,
+      });
+      pointZoneCoolDown = -1;
+    } else if (pointZoneCoolDown > 0) {
+      pointZoneCoolDown--;
+    }
+
+    // PLAYER INTENT LOGIC
+    let intents = [
+      ...homeIntentGenerator(homeTeam, awayTeam, players, pointZones),
+      ...awayIntentGenerator(awayTeam, homeTeam, players, pointZones),
+    ];
 
     let occupied: Record<string, Player> = {};
 
@@ -80,13 +102,16 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
       let intent = intents.find((intent) => player.id === intent.playerId);
 
       if (intent === undefined) {
-        tick.players.push(player);
         continue;
       }
 
+      // Ignore intent if out of bounds
       if (intent.x > 9 || intent.y > 9 || intent.x < 0 || intent.y < 0) {
         continue;
-      } else if (occupied[`${intent.x},${intent.y}`]) {
+      }
+      // If trying to move to an occupied square
+      if (occupied[`${intent.x},${intent.y}`]) {
+        // Add a collision if there isn't one, otherwise add a player to the collision
         if (collisions[`${intent.x},${intent.y}`]) {
           collisions[`${intent.x},${intent.y}`].push(player);
         } else {
@@ -107,10 +132,19 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
       let x = parseInt(stringX);
       let y = parseInt(stringY);
       let occupier: Player | undefined = collidingPlayers[0];
+
+      if (
+        tickCount === 17 &&
+        collidingPlayers.length === 2 &&
+        occupier.targetX !== undefined
+      ) {
+        continue;
+      }
+
       for (let player of collidingPlayers) {
         if (occupier === undefined) {
           occupier = player;
-        } else if (occupier.targetX !== x && occupier.targetY !== y) {
+        } else if (occupier.targetX !== x || occupier.targetY !== y) {
           occupier = undefined;
         } else if (occupier.id !== player.id) {
           delete occupier.targetX;
@@ -120,6 +154,21 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
         }
       }
     }
+
+    // If any players are on the current point zone we increment score and remove the point zone
+    for (let [index, pointZone] of pointZones.entries()) {
+      for (let player of players) {
+        if (player.x === pointZone.x && player.y === pointZone.y) {
+          let team = homeTeam.id === player.teamId ? homeTeam : awayTeam;
+          team.score += 1;
+
+          pointZones.splice(index, 1);
+          pointZoneCoolDown = POINT_ZONE_CAPTURE_COOL_DOWN;
+        }
+      }
+    }
+
+    tick.pointZones = [...pointZones];
 
     for (let player of players) {
       if (player.targetX !== undefined && player.targetY !== undefined) {
@@ -131,21 +180,10 @@ export function runGame(homeTeamName: string, awayTeamName: string): Game {
       tick.players.push({ ...player });
     }
 
-    // POINT ZONE LOGIC
-    if (pointZoneCoolDown === 0) {
-      pointZones.push({
-        x: Math.floor(Math.random() * 10),
-        y: Math.floor(Math.random() * 10),
-      });
-      pointZoneCoolDown = -1;
-    } else if (pointZoneCoolDown > 0) {
-      pointZoneCoolDown--;
-    }
-
-    tick.pointZones = [...pointZones];
-
     gameReplay.ticks.push(tick);
   }
 
   return gameReplay;
 }
+
+function loadState() {}

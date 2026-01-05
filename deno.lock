@@ -1,7 +1,12 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@std/assert@*": "1.0.16",
+    "jsr:@std/assert@^1.0.16": "1.0.16",
+    "jsr:@std/internal@^1.0.12": "1.0.12",
+    "jsr:@std/random@~0.1.4": "0.1.4",
     "npm:@deno/svelte-adapter@0.1": "0.1.0_@sveltejs+kit@2.49.1__@sveltejs+vite-plugin-svelte@6.2.1___svelte@5.45.4____acorn@8.15.0___vite@7.2.6____picomatch@4.0.3__svelte@5.45.4___acorn@8.15.0__vite@7.2.6___picomatch@4.0.3__acorn@8.15.0_@sveltejs+vite-plugin-svelte@6.2.1__svelte@5.45.4___acorn@8.15.0__vite@7.2.6___picomatch@4.0.3_svelte@5.45.4__acorn@8.15.0_vite@7.2.6__picomatch@4.0.3",
+    "npm:@deno/vite-plugin@^1.0.6": "1.0.6_vite@7.2.6__picomatch@4.0.3",
     "npm:@sveltejs/kit@*": "2.49.1_@sveltejs+vite-plugin-svelte@6.2.1__svelte@5.45.4___acorn@8.15.0__vite@7.2.6___picomatch@4.0.3_svelte@5.45.4__acorn@8.15.0_vite@7.2.6__picomatch@4.0.3_acorn@8.15.0",
     "npm:@sveltejs/vite-plugin-svelte@*": "6.2.1_svelte@5.45.4__acorn@8.15.0_vite@7.2.6__picomatch@4.0.3",
     "npm:@tailwindcss/vite@*": "4.1.17_vite@7.2.6__picomatch@4.0.3",
@@ -9,6 +14,20 @@
     "npm:svelte@*": "5.45.4_acorn@8.15.0",
     "npm:tailwindcss@*": "4.1.17",
     "npm:vite@*": "7.2.6_picomatch@4.0.3"
+  },
+  "jsr": {
+    "@std/assert@1.0.16": {
+      "integrity": "6a7272ed1eaa77defe76e5ff63ca705d9c495077e2d5fd0126d2b53fc5bd6532",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/internal@1.0.12": {
+      "integrity": "972a634fd5bc34b242024402972cd5143eac68d8dffaca5eaa4dba30ce17b027"
+    },
+    "@std/random@0.1.4": {
+      "integrity": "91407b5c30d63b6570e5d7be8b341bf5941c55d5c6d6b9569a220b63ae03e2d9"
+    }
   },
   "npm": {
     "@deno/experimental-route-config@0.0.5": {
@@ -22,6 +41,12 @@
       "dependencies": [
         "@deno/experimental-route-config",
         "@sveltejs/kit"
+      ]
+    },
+    "@deno/vite-plugin@1.0.6_vite@7.2.6__picomatch@4.0.3": {
+      "integrity": "sha512-Sh5XqvFuKAwjARTesi0n6xRpEXm1V0UeqKh+SxIrexCofxOaieNDMqXZD02RiZCg0mrJ43V8eCMuVrDfq6mLmg==",
+      "dependencies": [
+        "vite"
       ]
     },
     "@esbuild/aix-ppc64@0.25.12": {
@@ -816,7 +841,10 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@std/assert@^1.0.16",
+      "jsr:@std/random@~0.1.4",
       "npm:@deno/svelte-adapter@0.1",
+      "npm:@deno/vite-plugin@^1.0.6",
       "npm:@sveltejs/kit@*",
       "npm:@sveltejs/vite-plugin-svelte@*",
       "npm:@tailwindcss/vite@*",
