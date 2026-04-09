@@ -89,16 +89,27 @@ export function generateIntents(team, opponent, players, pointZones) {
     };
   }
 
-  let controlStats = $derived.by(() => {
-    let currentTick = game.ticks[tick];
-    if (!currentTick) return { left: 0, right: 0, none: 100, map: [] };
+  // Cache for grid control states to make interpolation smooth
+  let controlCache = new Map<number, {
+    left: number, 
+    right: number, 
+    none: number, 
+    grid: (string | null)[][]
+  }>();
+
+  function calculateControl(tickIdx: number) {
+    if (controlCache.has(tickIdx)) return controlCache.get(tickIdx)!;
+    
+    const currentTick = game.ticks[tickIdx];
+    if (!currentTick) return { left: 0, right: 0, none: 100, grid: [] };
 
     let left = 0;
     let right = 0;
     let none = 0;
-    let map: { x: number; y: number; color: string }[] = [];
+    let grid: (string | null)[][] = [];
 
     for (let x = 0; x < gridSize; x++) {
+      grid[x] = [];
       for (let y = 0; y < gridSize; y++) {
         let control: { color: string | undefined; distance: number | undefined } = { color: undefined, distance: undefined };
 
@@ -114,15 +125,19 @@ export function generateIntents(team, opponent, players, pointZones) {
           }
         }
 
+        grid[x][y] = control.color || null;
         if (control.color === currentTick.homeTeam.color) left++;
         else if (control.color === currentTick.awayTeam.color) right++;
         else none++;
-
-        if (control.color) map.push({ x, y, color: control.color });
       }
     }
-    return { left, right, none, map };
-  });
+    
+    const result = { left, right, none, grid };
+    controlCache.set(tickIdx, result);
+    return result;
+  }
+
+  let controlStats = $derived(calculateControl(tick));
 
   $effect(() => {
     if (isPlaying) {
@@ -193,10 +208,31 @@ export function generateIntents(team, opponent, players, pointZones) {
       const currentTick = game.ticks[tick];
       const prevTick = tick > 0 ? game.ticks[tick - 1] : currentTick;
 
-      // 3. DRAW GRID & HEATMAP
-      for (let square of controlStats.map) {
-        ctx.fillStyle = hexToRgba(square.color, 0.15);
-        ctx.fillRect(square.x * cellSize, square.y * cellSize, cellSize, cellSize);
+      // 3. DRAW GRID & HEATMAP (Interpolated)
+      const prevControl = calculateControl(tick > 0 ? tick - 1 : tick);
+      const currControl = controlStats;
+
+      for (let x = 0; x < gridSize; x++) {
+        for (let y = 0; y < gridSize; y++) {
+          const prevColor = prevControl.grid[x][y];
+          const currColor = currControl.grid[x][y];
+
+          if (prevColor === currColor) {
+            if (currColor) {
+              ctx.fillStyle = hexToRgba(currColor, 0.15);
+              ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+            }
+          } else {
+            if (prevColor) {
+              ctx.fillStyle = hexToRgba(prevColor, 0.15 * (1 - progress));
+              ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+            }
+            if (currColor) {
+              ctx.fillStyle = hexToRgba(currColor, 0.15 * progress);
+              ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+            }
+          }
+        }
       }
 
       ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
