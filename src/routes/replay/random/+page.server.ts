@@ -1,5 +1,5 @@
 import type { PageServerLoad, Actions } from "./$types";
-import { runGame } from "../../../lib/server/sim/v1sim.ts";
+import { runGame } from "../../../lib/sim/v1sim.ts";
 
 export const load: PageServerLoad = async () => {
   let homeTeam = "Amber";

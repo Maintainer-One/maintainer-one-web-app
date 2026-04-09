@@ -1,5 +1,5 @@
 import { generateIntents } from "./teamLogic.ts";
-import type { Player, Team, TeamIntentGenerator } from "../sim/utils/types.d.ts";
+import type { Player, Team, TeamIntentGenerator } from "../utils/types.d.ts";
 
 export function loadBeigeTeam(
   team?: Team,

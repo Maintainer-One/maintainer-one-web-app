@@ -5,11 +5,14 @@
   import { javascript } from "@codemirror/lang-javascript";
   import { oneDark } from "@codemirror/theme-one-dark";
   import { enhance } from "$app/forms";
+  import { transform } from "sucrase";
+  import { runGame } from "$lib/sim/v1sim.ts";
 
   let { data, form }: PageProps = $props();
-
-  // Use form result if available, otherwise data
-  let game = $derived(form?.game ?? data.game);
+  
+  // Local state for the game replay to allow client-side updates
+  let game = $state(form?.game ?? data.game);
+  let isSimulating = $state(false);
 
   let canvas: HTMLCanvasElement;
   let width = 600;
@@ -23,15 +26,11 @@
 
   let activeTab = $state("info"); // "info" | "home" | "away"
 
-  let homeCode = $state(form?.homeCode ?? `/**
- * Team: Amber
- * @param {Team} team - Your team stats
- * @param {Team} opponent - Opponent team stats
- * @param {Player[]} players - All players on the field
- * @param {PointZone[]} pointZones - Active point zones
- */
-export function generateIntents(team, opponent, players, pointZones) {
-  let intents = [];
+  let homeCode = $state(form?.homeCode ?? `// Team: Amber
+// You can now use TypeScript!
+
+export function generateIntents(team: any, opponent: any, players: any[], pointZones: any[]): any[] {
+  let intents: any[] = [];
   let myPlayers = players.filter(p => p.teamId === team.id);
   
   if (pointZones.length === 0) return intents;
@@ -43,21 +42,19 @@ export function generateIntents(team, opponent, players, pointZones) {
     let targetY = player.y;
 
     if (target.x > player.x) targetX++;
-    else if (target.x < player.x) targetX--;
-    else if (target.y > player.y) targetY++;
-    else if (target.y < player.y) targetY--;
-
+    else if (target.x < player.x) targetY++; // Simple move logic
+    
     intents.push({ playerId: player.id, x: targetX, y: targetY });
   }
 
   return intents;
 }`);
 
-  let awayCode = $state(form?.awayCode ?? `/**
- * Team: Beige
- */
-export function generateIntents(team, opponent, players, pointZones) {
-  let intents = [];
+  let awayCode = $state(form?.awayCode ?? `// Team: Beige
+// Run the simulation locally for instant feedback!
+
+export function generateIntents(team: any, opponent: any, players: any[], pointZones: any[]): any[] {
+  let intents: any[] = [];
   // Add your logic here!
   return intents;
 }`);
@@ -87,6 +84,31 @@ export function generateIntents(team, opponent, players, pointZones) {
         view.destroy();
       }
     };
+  }
+
+  async function runSimulation(e?: Event) {
+    if (e) e.preventDefault();
+    isSimulating = true;
+    
+    try {
+      // Transpile TS to JS locally using sucrase
+      const homeJS = transform(homeCode, { transforms: ["typescript"] }).code;
+      const awayJS = transform(awayCode, { transforms: ["typescript"] }).code;
+
+      // Run simulation directly in the browser
+      const newGame = await runGame("Amber", "Beige", homeJS, awayJS);
+      
+      // Update state immediately without page refresh
+      game = newGame;
+      tick = 0;
+      isPlaying = true;
+      controlCache.clear();
+    } catch (err) {
+      console.error("Local simulation failed:", err);
+      // Fallback: if local fails, the form submit might still work or we show an error
+    } finally {
+      isSimulating = false;
+    }
   }
 
   // Cache for grid control states to make interpolation smooth
@@ -384,13 +406,22 @@ export function generateIntents(team, opponent, players, pointZones) {
       </button>
       
       <div class="ml-auto">
-        <form method="POST" use:enhance>
-          <input type="hidden" name="homeCode" value={homeCode} />
-          <input type="hidden" name="awayCode" value={awayCode} />
-          <button class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-lg shadow-indigo-500/20 active:scale-95">
+        <button 
+          type="button"
+          onclick={runSimulation}
+          disabled={isSimulating}
+          class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:text-slate-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-lg shadow-indigo-500/20 active:scale-95 flex items-center gap-2"
+        >
+          {#if isSimulating}
+            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Simulating...
+          {:else}
             Run Simulation
-          </button>
-        </form>
+          {/if}
+        </button>
       </div>
     </div>
 

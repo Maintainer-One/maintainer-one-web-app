@@ -1,7 +1,7 @@
-import { loadBeigeTeam } from "../teamLogic/beigeTeam.ts";
-import { loadAmberTeam } from "../teamLogic/amberTeam.ts";
-import { loadCrimsonTeam } from "../teamLogic/crimsonTeam.ts";
-import { loadDenimTeam } from "../teamLogic/denimTeam.ts";
+import { loadBeigeTeam } from "./teamLogic/beigeTeam.ts";
+import { loadAmberTeam } from "./teamLogic/amberTeam.ts";
+import { loadCrimsonTeam } from "./teamLogic/crimsonTeam.ts";
+import { loadDenimTeam } from "./teamLogic/denimTeam.ts";
 import type {
   Replay,
   TeamLoadFunction,

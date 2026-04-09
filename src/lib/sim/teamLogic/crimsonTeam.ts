@@ -4,7 +4,7 @@ import type {
   PointZone,
   Team,
   TeamIntentGenerator,
-} from "../sim/utils/types.d.ts";
+} from "../utils/types.d.ts";
 
 export function loadCrimsonTeam(
   team?: Team,

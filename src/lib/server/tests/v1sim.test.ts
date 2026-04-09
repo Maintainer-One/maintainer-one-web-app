@@ -1,6 +1,6 @@
 /// <reference path="../../../../deno.d.ts" />
 import { assertEquals, assertNotEquals } from "@std/assert";
-import { runGame } from "../sim/v1sim.ts";
+import { runGame } from "../../sim/v1sim.ts";
 
 Deno.test("runGame execution should produce the correct number of ticks", async () => {
   const replay = await runGame("Crimson", "Denim");

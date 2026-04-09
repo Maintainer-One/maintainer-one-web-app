@@ -38,6 +38,7 @@
     "@tailwindcss/vite": "npm:@tailwindcss/vite",
     "@types/deno": "npm:@types/deno@^2.5.0",
     "codemirror": "npm:codemirror@^6.0.2",
+    "sucrase": "npm:sucrase@^3.35.1",
     "svelte": "npm:svelte",
     "svelte-check": "npm:svelte-check",
     "tailwindcss": "npm:tailwindcss",

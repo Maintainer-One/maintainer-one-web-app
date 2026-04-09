@@ -1,36 +1,36 @@
 import { generateIntents } from "./teamLogic.ts";
-import type { Player, Team, TeamIntentGenerator } from "../sim/utils/types.d.ts";
+import type { Player, Team, TeamIntentGenerator } from "../utils/types.d.ts";
 
-export function loadDenimTeam(
+export function loadAmberTeam(
   team?: Team,
   players?: Player[]
 ): [Team, Player[], TeamIntentGenerator] {
   team = team || {
-    id: 4,
-    name: "Denim",
-    color: "#1560BD",
+    id: 1,
+    name: "Amber",
+    color: "#FFBF00",
     score: 0,
   };
 
   players = players?.filter((player) => player.teamId === team.id) || [
     {
-      id: 10,
-      teamId: 4,
-      name: "Derick",
+      id: 1,
+      teamId: 1,
+      name: "Alan",
       x: -1,
-      y: 3,
+      y: 2,
     },
     {
-      id: 11,
-      teamId: 4,
-      name: "Drayson",
+      id: 2,
+      teamId: 1,
+      name: "Aaron",
       x: -1,
-      y: 5,
+      y: 4,
     },
     {
-      id: 12,
-      teamId: 4,
-      name: "Danny",
+      id: 3,
+      teamId: 1,
+      name: "Annie",
       x: -1,
       y: 7,
     },
