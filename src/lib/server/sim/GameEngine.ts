@@ -36,8 +36,8 @@ export class GameEngine {
 
     // PLAYER INTENT LOGIC
     let intents = [
-      ...this.homeIntentGenerator(this.homeTeam, this.awayTeam, this.players, this.pointZones),
-      ...this.awayIntentGenerator(this.awayTeam, this.homeTeam, this.players, this.pointZones),
+      ...(this.homeIntentGenerator(this.homeTeam, this.awayTeam, this.players, this.pointZones) || []),
+      ...(this.awayIntentGenerator(this.awayTeam, this.homeTeam, this.players, this.pointZones) || []),
     ];
 
     // Apply intents if valid

@@ -17,6 +17,15 @@ let teamMap: Record<string, TeamLoadFunction> = {
   Denim: loadDenimTeam,
 };
 
+function toBase64(str: string): string {
+  const bytes = new TextEncoder().encode(str);
+  let binary = "";
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
 export async function runGame(
   homeTeamName: string, 
   awayTeamName: string,
@@ -27,18 +36,26 @@ export async function runGame(
   let [awayTeam, awayPlayers, awayIntentGenerator] = teamMap[awayTeamName]();
 
   if (homeCode) {
-    const b64 = btoa(homeCode);
-    const mod = await import(`data:application/javascript;base64,${b64}`);
-    if (mod.generateIntents) {
-      homeIntentGenerator = mod.generateIntents;
+    try {
+      const b64 = toBase64(homeCode);
+      const mod = await import(`data:application/javascript;base64,${b64}`);
+      if (mod.generateIntents && typeof mod.generateIntents === "function") {
+        homeIntentGenerator = mod.generateIntents;
+      }
+    } catch (e) {
+      console.error("Error loading home team code:", e);
     }
   }
 
   if (awayCode) {
-    const b64 = btoa(awayCode);
-    const mod = await import(`data:application/javascript;base64,${b64}`);
-    if (mod.generateIntents) {
-      awayIntentGenerator = mod.generateIntents;
+    try {
+      const b64 = toBase64(awayCode);
+      const mod = await import(`data:application/javascript;base64,${b64}`);
+      if (mod.generateIntents && typeof mod.generateIntents === "function") {
+        awayIntentGenerator = mod.generateIntents;
+      }
+    } catch (e) {
+      console.error("Error loading away team code:", e);
     }
   }
 

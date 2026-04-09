@@ -35,3 +35,24 @@ Deno.test("players should move over time", async () => {
 
   assertEquals(hasMoved, true);
 });
+
+Deno.test("custom code with UTF-8 should not crash", async () => {
+  const code = `
+    // This is a comment with an emoji: 🚀
+    export function generateIntents(team, opponent, players, pointZones) {
+      return [];
+    }
+  `;
+  const replay = await runGame("Amber", "Beige", code);
+  assertEquals(replay.ticks.length, 100);
+});
+
+Deno.test("custom code returning undefined should be handled gracefully", async () => {
+  const code = `
+    export function generateIntents(team, opponent, players, pointZones) {
+      // Missing return statement
+    }
+  `;
+  const replay = await runGame("Amber", "Beige", code);
+  assertEquals(replay.ticks.length, 100);
+});
