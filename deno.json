@@ -28,7 +28,9 @@
   "imports": {
     "@deno/svelte-adapter": "npm:@deno/svelte-adapter@^0.1.0",
     "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.6",
+    "@std/assert": "jsr:@std/assert@^1.0.0",
     "@std/random": "jsr:@std/random@^0.1.4",
+    "@std/testing": "jsr:@std/testing@^1.0.0",
     "@sveltejs/kit": "npm:@sveltejs/kit",
     "@sveltejs/vite-plugin-svelte": "npm:@sveltejs/vite-plugin-svelte",
     "@tailwindcss/vite": "npm:@tailwindcss/vite",
