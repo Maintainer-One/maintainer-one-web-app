@@ -6,7 +6,7 @@ import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
   {
-    ignores: ['node_modules/', '.svelte-kit/', 'dist/', 'build/'],
+    ignores: ['node_modules/', '.svelte-kit/', '.vite/', 'dist/', 'build/', 'deno.d.ts'],
   },
   ...tseslint.configs.recommended,
   ...svelte.configs['flat/recommended'],

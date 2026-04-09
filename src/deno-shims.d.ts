@@ -11,13 +11,13 @@ declare module '@std/assert' {
   export function assertExists(actual: unknown, msg?: string): void;
   export function assertRejects(
     fn: () => Promise<unknown>,
-    errorClass?: any,
+    errorClass?: unknown,
     msgIncludes?: string,
     msg?: string,
   ): Promise<void>;
   export function assertThrows(
     fn: () => unknown,
-    errorClass?: any,
+    errorClass?: unknown,
     msgIncludes?: string,
     msg?: string,
   ): void;

@@ -2,7 +2,7 @@ import { loadBeigeTeam } from './teamLogic/beigeTeam.ts';
 import { loadAmberTeam } from './teamLogic/amberTeam.ts';
 import { loadCrimsonTeam } from './teamLogic/crimsonTeam.ts';
 import { loadDenimTeam } from './teamLogic/denimTeam.ts';
-import type { Replay, TeamLoadFunction, TeamIntentGenerator } from './utils/types';
+import type { Replay, TeamLoadFunction } from './utils/types';
 import { GameConfig } from './gameConfig.ts';
 import { GameEngine } from './GameEngine.ts';
 
@@ -28,8 +28,10 @@ export async function runGame(
   homeCode?: string,
   awayCode?: string,
 ): Promise<Replay> {
-  let [homeTeam, homePlayers, homeIntentGenerator] = teamMap[homeTeamName]();
-  let [awayTeam, awayPlayers, awayIntentGenerator] = teamMap[awayTeamName]();
+  const [homeTeam, homePlayers, defaultHomeIntentGenerator] = teamMap[homeTeamName]();
+  let homeIntentGenerator = defaultHomeIntentGenerator;
+  const [awayTeam, awayPlayers, defaultAwayIntentGenerator] = teamMap[awayTeamName]();
+  let awayIntentGenerator = defaultAwayIntentGenerator;
 
   if (homeCode) {
     try {

@@ -1,12 +1,11 @@
 <script lang="ts">
-  import type { ActionData, PageProps } from "./$types";
+  import type { PageProps } from "./$types";
   import { onMount } from "svelte";
   import { EditorView, basicSetup } from "codemirror";
   import { javascript } from "@codemirror/lang-javascript";
   import { oneDark } from "@codemirror/theme-one-dark";
-  import { enhance } from "$app/forms";
   import { transform } from "sucrase";
-  import { runGame } from "$lib/sim/v1sim.ts";
+  import { runGame } from "$lib/sim/v1sim";
 
   let { data, form }: PageProps = $props();
   

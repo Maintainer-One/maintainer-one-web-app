@@ -1,5 +1,5 @@
 import { GameConfig } from './gameConfig.ts';
-import type { Player, PointZone, Team, Tick, Intent, TeamIntentGenerator } from './utils/types';
+import type { Player, PointZone, Team, Tick, TeamIntentGenerator } from './utils/types';
 import { MatchPCG } from './utils/random.ts';
 
 export class GameEngine {
@@ -116,7 +116,7 @@ export class GameEngine {
         }
       }
 
-      for (const [key, playersMovingHere] of Object.entries(targetCounts)) {
+      for (const [, playersMovingHere] of Object.entries(targetCounts)) {
         if (playersMovingHere.length > 1) {
           for (const p of playersMovingHere) {
             if (p.targetX !== p.x || p.targetY !== p.y) {
