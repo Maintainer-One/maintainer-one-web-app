@@ -1,5 +1,5 @@
-import { generateIntents } from "./teamLogic.ts";
-import type { Player, Team, TeamIntentGenerator } from "../utils/types.d.ts";
+import { generateIntents } from './teamLogic.ts';
+import type { Player, Team, TeamIntentGenerator } from '../utils/types.d.ts';
 
 export function loadBeigeTeam(
   team?: Team,
@@ -7,8 +7,8 @@ export function loadBeigeTeam(
 ): [Team, Player[], TeamIntentGenerator] {
   team = team || {
     id: 2,
-    name: "Beige",
-    color: "#F5F5DC",
+    name: 'Beige',
+    color: '#F5F5DC',
     score: 0,
   };
 
@@ -16,21 +16,21 @@ export function loadBeigeTeam(
     {
       id: 4,
       teamId: 2,
-      name: "Bonnie",
+      name: 'Bonnie',
       x: -1,
       y: 2,
     },
     {
       id: 5,
       teamId: 2,
-      name: "Brad",
+      name: 'Brad',
       x: -1,
       y: 6,
     },
     {
       id: 6,
       teamId: 2,
-      name: "Bluth",
+      name: 'Bluth',
       x: -1,
       y: 8,
     },

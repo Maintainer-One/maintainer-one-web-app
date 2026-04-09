@@ -1,14 +1,14 @@
-import { generateIntents } from "./teamLogic.ts";
-import type { Player, Team, TeamIntentGenerator } from "../utils/types.d.ts";
+import { generateIntents } from './teamLogic.ts';
+import type { Player, Team, TeamIntentGenerator } from '../utils/types.d.ts';
 
 export function loadDenimTeam(
   team?: Team,
-  players?: Player[]
+  players?: Player[],
 ): [Team, Player[], TeamIntentGenerator] {
   team = team || {
     id: 4,
-    name: "Denim",
-    color: "#1560BD",
+    name: 'Denim',
+    color: '#1560BD',
     score: 0,
   };
 
@@ -16,21 +16,21 @@ export function loadDenimTeam(
     {
       id: 10,
       teamId: 4,
-      name: "Derick",
+      name: 'Derick',
       x: -1,
       y: 3,
     },
     {
       id: 11,
       teamId: 4,
-      name: "Drayson",
+      name: 'Drayson',
       x: -1,
       y: 5,
     },
     {
       id: 12,
       teamId: 4,
-      name: "Danny",
+      name: 'Danny',
       x: -1,
       y: 7,
     },

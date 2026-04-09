@@ -95,10 +95,7 @@ interface Performance {
 
   /** Stores the `DOMHighResTimeStamp` duration between two marks along with the
    * associated name (a "measure"). */
-  measure(
-    measureName: string,
-    options?: PerformanceMeasureOptions,
-  ): PerformanceMeasure;
+  measure(measureName: string, options?: PerformanceMeasureOptions): PerformanceMeasure;
 }
 
 /**
@@ -418,7 +415,7 @@ declare namespace Deno {
     /** The network interface name. */
     name: string;
     /** The IP protocol version. */
-    family: "IPv4" | "IPv6";
+    family: 'IPv4' | 'IPv6';
     /** The IP address bound to the interface. */
     address: string;
     /** The netmask applied to the interface. */
@@ -539,7 +536,7 @@ declare namespace Deno {
    * set of permissions to the test context.
    *
    * @category Permissions */
-  export type PermissionOptions = "inherit" | "none" | PermissionOptionsObject;
+  export type PermissionOptions = 'inherit' | 'none' | PermissionOptionsObject;
 
   /**
    * A set of options which can define the permissions within a test or worker
@@ -554,7 +551,7 @@ declare namespace Deno {
      *
      * @default {false}
      */
-    env?: "inherit" | boolean | string[];
+    env?: 'inherit' | boolean | string[];
 
     /** Specifies if the `ffi` permission should be requested or revoked.
      * If set to `"inherit"`, the current `ffi` permission will be inherited.
@@ -563,7 +560,7 @@ declare namespace Deno {
      *
      * @default {false}
      */
-    ffi?: "inherit" | boolean | Array<string | URL>;
+    ffi?: 'inherit' | boolean | Array<string | URL>;
 
     /** Specifies if the `import` permission should be requested or revoked.
      * If set to `"inherit"` the current `import` permission will be inherited.
@@ -572,7 +569,7 @@ declare namespace Deno {
      * If set to `Array<string>`, the `import` permissions will be requested with the
      * specified domains.
      */
-    import?: "inherit" | boolean | Array<string>;
+    import?: 'inherit' | boolean | Array<string>;
 
     /** Specifies if the `net` permission should be requested or revoked.
      * if set to `"inherit"`, the current `net` permission will be inherited.
@@ -645,7 +642,7 @@ declare namespace Deno {
      * });
      * ```
      */
-    net?: "inherit" | boolean | string[];
+    net?: 'inherit' | boolean | string[];
 
     /** Specifies if the `read` permission should be requested or revoked.
      * If set to `"inherit"`, the current `read` permission will be inherited.
@@ -656,7 +653,7 @@ declare namespace Deno {
      *
      * @default {false}
      */
-    read?: "inherit" | boolean | Array<string | URL>;
+    read?: 'inherit' | boolean | Array<string | URL>;
 
     /** Specifies if the `run` permission should be requested or revoked.
      * If set to `"inherit"`, the current `run` permission will be inherited.
@@ -665,7 +662,7 @@ declare namespace Deno {
      *
      * @default {false}
      */
-    run?: "inherit" | boolean | Array<string | URL>;
+    run?: 'inherit' | boolean | Array<string | URL>;
 
     /** Specifies if the `sys` permission should be requested or revoked.
      * If set to `"inherit"`, the current `sys` permission will be inherited.
@@ -674,7 +671,7 @@ declare namespace Deno {
      *
      * @default {false}
      */
-    sys?: "inherit" | boolean | string[];
+    sys?: 'inherit' | boolean | string[];
 
     /** Specifies if the `write` permission should be requested or revoked.
      * If set to `"inherit"`, the current `write` permission will be inherited.
@@ -685,7 +682,7 @@ declare namespace Deno {
      *
      * @default {false}
      */
-    write?: "inherit" | boolean | Array<string | URL>;
+    write?: 'inherit' | boolean | Array<string | URL>;
   }
 
   /**
@@ -751,10 +748,7 @@ declare namespace Deno {
      * );
      * ```
      */
-    step(
-      name: string,
-      fn: (t: TestContext) => void | Promise<void>,
-    ): Promise<boolean>;
+    step(name: string, fn: (t: TestContext) => void | Promise<void>): Promise<boolean>;
 
     /** Run a sub step of the parent test or step. Returns a promise
      * that resolves to a boolean signifying if the step completed successfully.
@@ -1001,7 +995,7 @@ declare namespace Deno {
      */
     (
       name: string,
-      options: Omit<TestDefinition, "fn" | "name">,
+      options: Omit<TestDefinition, 'fn' | 'name'>,
       fn: (t: TestContext) => void | Promise<void>,
     ): void;
 
@@ -1039,7 +1033,7 @@ declare namespace Deno {
      * @category Testing
      */
     (
-      options: Omit<TestDefinition, "fn" | "name">,
+      options: Omit<TestDefinition, 'fn' | 'name'>,
       fn: (t: TestContext) => void | Promise<void>,
     ): void;
 
@@ -1070,16 +1064,13 @@ declare namespace Deno {
      *
      * @category Testing
      */
-    (
-      options: Omit<TestDefinition, "fn">,
-      fn: (t: TestContext) => void | Promise<void>,
-    ): void;
+    (options: Omit<TestDefinition, 'fn'>, fn: (t: TestContext) => void | Promise<void>): void;
 
     /** Shorthand property for ignoring a particular test case.
      *
      * @category Testing
      */
-    ignore(t: Omit<TestDefinition, "ignore">): void;
+    ignore(t: Omit<TestDefinition, 'ignore'>): void;
 
     /** Shorthand property for ignoring a particular test case.
      *
@@ -1099,7 +1090,7 @@ declare namespace Deno {
      */
     ignore(
       name: string,
-      options: Omit<TestDefinition, "fn" | "name" | "ignore">,
+      options: Omit<TestDefinition, 'fn' | 'name' | 'ignore'>,
       fn: (t: TestContext) => void | Promise<void>,
     ): void;
 
@@ -1108,7 +1099,7 @@ declare namespace Deno {
      * @category Testing
      */
     ignore(
-      options: Omit<TestDefinition, "fn" | "name" | "ignore">,
+      options: Omit<TestDefinition, 'fn' | 'name' | 'ignore'>,
       fn: (t: TestContext) => void | Promise<void>,
     ): void;
 
@@ -1117,7 +1108,7 @@ declare namespace Deno {
      * @category Testing
      */
     ignore(
-      options: Omit<TestDefinition, "fn" | "ignore">,
+      options: Omit<TestDefinition, 'fn' | 'ignore'>,
       fn: (t: TestContext) => void | Promise<void>,
     ): void;
 
@@ -1125,7 +1116,7 @@ declare namespace Deno {
      *
      * @category Testing
      */
-    only(t: Omit<TestDefinition, "only">): void;
+    only(t: Omit<TestDefinition, 'only'>): void;
 
     /** Shorthand property for focusing a particular test case.
      *
@@ -1145,7 +1136,7 @@ declare namespace Deno {
      */
     only(
       name: string,
-      options: Omit<TestDefinition, "fn" | "name" | "only">,
+      options: Omit<TestDefinition, 'fn' | 'name' | 'only'>,
       fn: (t: TestContext) => void | Promise<void>,
     ): void;
 
@@ -1154,7 +1145,7 @@ declare namespace Deno {
      * @category Testing
      */
     only(
-      options: Omit<TestDefinition, "fn" | "name" | "only">,
+      options: Omit<TestDefinition, 'fn' | 'name' | 'only'>,
       fn: (t: TestContext) => void | Promise<void>,
     ): void;
 
@@ -1163,7 +1154,7 @@ declare namespace Deno {
      * @category Testing
      */
     only(
-      options: Omit<TestDefinition, "fn" | "only">,
+      options: Omit<TestDefinition, 'fn' | 'only'>,
       fn: (t: TestContext) => void | Promise<void>,
     ): void;
 
@@ -1182,9 +1173,7 @@ declare namespace Deno {
      *
      * @category Testing
      */
-    beforeAll(
-      fn: () => void | Promise<void>,
-    ): void;
+    beforeAll(fn: () => void | Promise<void>): void;
 
     /** Register a function to be called before each test in the current scope.
      *
@@ -1403,10 +1392,7 @@ declare namespace Deno {
    *
    * @category Testing
    */
-  export function bench(
-    name: string,
-    fn: (b: BenchContext) => void | Promise<void>,
-  ): void;
+  export function bench(name: string, fn: (b: BenchContext) => void | Promise<void>): void;
 
   /**
    * Register a benchmark test which will be run when `deno bench` is used on
@@ -1466,7 +1452,7 @@ declare namespace Deno {
    */
   export function bench(
     name: string,
-    options: Omit<BenchDefinition, "fn" | "name">,
+    options: Omit<BenchDefinition, 'fn' | 'name'>,
     fn: (b: BenchContext) => void | Promise<void>,
   ): void;
 
@@ -1500,7 +1486,7 @@ declare namespace Deno {
    * @category Testing
    */
   export function bench(
-    options: Omit<BenchDefinition, "fn">,
+    options: Omit<BenchDefinition, 'fn'>,
     fn: (b: BenchContext) => void | Promise<void>,
   ): void;
 
@@ -1534,7 +1520,7 @@ declare namespace Deno {
    * @category Testing
    */
   export function bench(
-    options: Omit<BenchDefinition, "fn" | "name">,
+    options: Omit<BenchDefinition, 'fn' | 'name'>,
     fn: (b: BenchContext) => void | Promise<void>,
   ): void;
 
@@ -1772,10 +1758,7 @@ declare namespace Deno {
    * @tags allow-read, allow-write
    * @category File System
    */
-  export function open(
-    path: string | URL,
-    options?: OpenOptions,
-  ): Promise<FsFile>;
+  export function open(path: string | URL, options?: OpenOptions): Promise<FsFile>;
 
   /** Synchronously open a file and return an instance of
    * {@linkcode Deno.FsFile}. The file does not need to previously exist if
@@ -2605,10 +2588,7 @@ declare namespace Deno {
    * @tags allow-write
    * @category File System
    */
-  export function mkdir(
-    path: string | URL,
-    options?: MkdirOptions,
-  ): Promise<void>;
+  export function mkdir(path: string | URL, options?: MkdirOptions): Promise<void>;
 
   /** Synchronously creates a new directory with the specified path.
    *
@@ -2815,11 +2795,7 @@ declare namespace Deno {
    * @param uid user id (UID) of the new owner, or `null` for no change
    * @param gid group id (GID) of the new owner, or `null` for no change
    */
-  export function chown(
-    path: string | URL,
-    uid: number | null,
-    gid: number | null,
-  ): Promise<void>;
+  export function chown(path: string | URL, uid: number | null, gid: number | null): Promise<void>;
 
   /** Synchronously change owner of a regular file or directory.
    *
@@ -2840,11 +2816,7 @@ declare namespace Deno {
    * @param uid user id (UID) of the new owner, or `null` for no change
    * @param gid group id (GID) of the new owner, or `null` for no change
    */
-  export function chownSync(
-    path: string | URL,
-    uid: number | null,
-    gid: number | null,
-  ): void;
+  export function chownSync(path: string | URL, uid: number | null, gid: number | null): void;
 
   /**
    * Options which can be set when using {@linkcode Deno.remove} and
@@ -2873,10 +2845,7 @@ declare namespace Deno {
    * @tags allow-write
    * @category File System
    */
-  export function remove(
-    path: string | URL,
-    options?: RemoveOptions,
-  ): Promise<void>;
+  export function remove(path: string | URL, options?: RemoveOptions): Promise<void>;
 
   /** Synchronously removes the named file or directory.
    *
@@ -2914,10 +2883,7 @@ declare namespace Deno {
    * @tags allow-read, allow-write
    * @category File System
    */
-  export function renameSync(
-    oldpath: string | URL,
-    newpath: string | URL,
-  ): void;
+  export function renameSync(oldpath: string | URL, newpath: string | URL): void;
 
   /** Renames (moves) `oldpath` to `newpath`. Paths may be files or directories.
    * If `newpath` already exists and is not a directory, `rename()` replaces it.
@@ -2939,10 +2905,7 @@ declare namespace Deno {
    * @tags allow-read, allow-write
    * @category File System
    */
-  export function rename(
-    oldpath: string | URL,
-    newpath: string | URL,
-  ): Promise<void>;
+  export function rename(oldpath: string | URL, newpath: string | URL): Promise<void>;
 
   /** Asynchronously reads and returns the entire contents of a file as an UTF-8
    *  decoded string. Reading a directory throws an error.
@@ -2957,10 +2920,7 @@ declare namespace Deno {
    * @tags allow-read
    * @category File System
    */
-  export function readTextFile(
-    path: string | URL,
-    options?: ReadFileOptions,
-  ): Promise<string>;
+  export function readTextFile(path: string | URL, options?: ReadFileOptions): Promise<string>;
 
   /** Synchronously reads and returns the entire contents of a file as an UTF-8
    *  decoded string. Reading a directory throws an error.
@@ -3211,10 +3171,7 @@ declare namespace Deno {
    * @tags allow-read, allow-write
    * @category File System
    */
-  export function copyFile(
-    fromPath: string | URL,
-    toPath: string | URL,
-  ): Promise<void>;
+  export function copyFile(fromPath: string | URL, toPath: string | URL): Promise<void>;
 
   /** Synchronously copies the contents and permissions of one file to another
    * specified path, by default creating a new file if needed, else overwriting.
@@ -3231,10 +3188,7 @@ declare namespace Deno {
    * @tags allow-read, allow-write
    * @category File System
    */
-  export function copyFileSync(
-    fromPath: string | URL,
-    toPath: string | URL,
-  ): void;
+  export function copyFileSync(fromPath: string | URL, toPath: string | URL): void;
 
   /** Resolves to the full path destination of the named symbolic link.
    *
@@ -3516,7 +3470,7 @@ declare namespace Deno {
    *
    * @category File System
    */
-  export type FsEventFlag = "rescan";
+  export type FsEventFlag = 'rescan';
 
   /**
    * Represents a unique file system event yielded by a
@@ -3525,14 +3479,7 @@ declare namespace Deno {
    * @category File System */
   export interface FsEvent {
     /** The kind/type of the file system event. */
-    kind:
-      | "any"
-      | "access"
-      | "create"
-      | "modify"
-      | "rename"
-      | "remove"
-      | "other";
+    kind: 'any' | 'access' | 'create' | 'modify' | 'rename' | 'remove' | 'other';
     /** An array of paths that are associated with the file system event. */
     paths: string[];
     /** Any additional flags associated with the event. */
@@ -3595,52 +3542,49 @@ declare namespace Deno {
    * @tags allow-read
    * @category File System
    */
-  export function watchFs(
-    paths: string | string[],
-    options?: { recursive: boolean },
-  ): FsWatcher;
+  export function watchFs(paths: string | string[], options?: { recursive: boolean }): FsWatcher;
 
   /** Operating signals which can be listened for or sent to sub-processes. What
    * signals and what their standard behaviors are OS dependent.
    *
    * @category Runtime */
   export type Signal =
-    | "SIGABRT"
-    | "SIGALRM"
-    | "SIGBREAK"
-    | "SIGBUS"
-    | "SIGCHLD"
-    | "SIGCONT"
-    | "SIGEMT"
-    | "SIGFPE"
-    | "SIGHUP"
-    | "SIGILL"
-    | "SIGINFO"
-    | "SIGINT"
-    | "SIGIO"
-    | "SIGPOLL"
-    | "SIGUNUSED"
-    | "SIGKILL"
-    | "SIGPIPE"
-    | "SIGPROF"
-    | "SIGPWR"
-    | "SIGQUIT"
-    | "SIGSEGV"
-    | "SIGSTKFLT"
-    | "SIGSTOP"
-    | "SIGSYS"
-    | "SIGTERM"
-    | "SIGTRAP"
-    | "SIGTSTP"
-    | "SIGTTIN"
-    | "SIGTTOU"
-    | "SIGURG"
-    | "SIGUSR1"
-    | "SIGUSR2"
-    | "SIGVTALRM"
-    | "SIGWINCH"
-    | "SIGXCPU"
-    | "SIGXFSZ";
+    | 'SIGABRT'
+    | 'SIGALRM'
+    | 'SIGBREAK'
+    | 'SIGBUS'
+    | 'SIGCHLD'
+    | 'SIGCONT'
+    | 'SIGEMT'
+    | 'SIGFPE'
+    | 'SIGHUP'
+    | 'SIGILL'
+    | 'SIGINFO'
+    | 'SIGINT'
+    | 'SIGIO'
+    | 'SIGPOLL'
+    | 'SIGUNUSED'
+    | 'SIGKILL'
+    | 'SIGPIPE'
+    | 'SIGPROF'
+    | 'SIGPWR'
+    | 'SIGQUIT'
+    | 'SIGSEGV'
+    | 'SIGSTKFLT'
+    | 'SIGSTOP'
+    | 'SIGSYS'
+    | 'SIGTERM'
+    | 'SIGTRAP'
+    | 'SIGTSTP'
+    | 'SIGTTIN'
+    | 'SIGTTOU'
+    | 'SIGURG'
+    | 'SIGUSR1'
+    | 'SIGUSR2'
+    | 'SIGVTALRM'
+    | 'SIGWINCH'
+    | 'SIGXCPU'
+    | 'SIGXFSZ';
 
   /** Registers the given function as a listener of the given signal event.
    *
@@ -3676,10 +3620,7 @@ declare namespace Deno {
    *
    * @category Runtime
    */
-  export function removeSignalListener(
-    signal: Signal,
-    handler: () => void,
-  ): void;
+  export function removeSignalListener(signal: Signal, handler: () => void): void;
 
   /** Create a child process.
    *
@@ -3817,8 +3758,7 @@ declare namespace Deno {
    *
    * @category Subprocess
    */
-  export interface SubprocessReadableStream
-    extends ReadableStream<Uint8Array<ArrayBuffer>> {
+  export interface SubprocessReadableStream extends ReadableStream<Uint8Array<ArrayBuffer>> {
     /**
      * Reads the stream to completion. It returns a promise that resolves with
      * an `ArrayBuffer`.
@@ -3886,17 +3826,17 @@ declare namespace Deno {
      *
      * Defaults to `"inherit"` for `output` & `outputSync`,
      * and `"inherit"` for `spawn`. */
-    stdin?: "piped" | "inherit" | "null";
+    stdin?: 'piped' | 'inherit' | 'null';
     /** How `stdout` of the spawned process should be handled.
      *
      * Defaults to `"piped"` for `output` & `outputSync`,
      * and `"inherit"` for `spawn`. */
-    stdout?: "piped" | "inherit" | "null";
+    stdout?: 'piped' | 'inherit' | 'null';
     /** How `stderr` of the spawned process should be handled.
      *
      * Defaults to `"piped"` for `output` & `outputSync`,
      * and `"inherit"` for `spawn`. */
-    stderr?: "piped" | "inherit" | "null";
+    stderr?: 'piped' | 'inherit' | 'null';
 
     /** Skips quoting and escaping of the arguments on windows. This option
      * is ignored on non-windows platforms.
@@ -4042,14 +3982,7 @@ declare namespace Deno {
    *
    * @category Permissions
    */
-  export type PermissionName =
-    | "run"
-    | "read"
-    | "write"
-    | "net"
-    | "env"
-    | "sys"
-    | "ffi";
+  export type PermissionName = 'run' | 'read' | 'write' | 'net' | 'env' | 'sys' | 'ffi';
 
   /** The current status of the permission:
    *
@@ -4059,7 +3992,7 @@ declare namespace Deno {
    *
    * @category Permissions
    */
-  export type PermissionState = "granted" | "denied" | "prompt";
+  export type PermissionState = 'granted' | 'denied' | 'prompt';
 
   /** The permission descriptor for the `allow-run` and `deny-run` permissions, which controls
    * access to what sub-processes can be executed by Deno. The option `command`
@@ -4071,7 +4004,7 @@ declare namespace Deno {
    *
    * @category Permissions */
   export interface RunPermissionDescriptor {
-    name: "run";
+    name: 'run';
     /** An `allow-run` or `deny-run` permission can be scoped to a specific executable,
      * which would be relative to the start-up CWD of the Deno CLI. */
     command?: string | URL;
@@ -4087,7 +4020,7 @@ declare namespace Deno {
    *
    * @category Permissions */
   export interface ReadPermissionDescriptor {
-    name: "read";
+    name: 'read';
     /** An `allow-read` or `deny-read` permission can be scoped to a specific path (and if
      * the path is a directory, any sub paths). */
     path?: string | URL;
@@ -4103,7 +4036,7 @@ declare namespace Deno {
    *
    * @category Permissions */
   export interface WritePermissionDescriptor {
-    name: "write";
+    name: 'write';
     /** An `allow-write` or `deny-write` permission can be scoped to a specific path (and if
      * the path is a directory, any sub paths). */
     path?: string | URL;
@@ -4116,7 +4049,7 @@ declare namespace Deno {
    *
    * @category Permissions */
   export interface NetPermissionDescriptor {
-    name: "net";
+    name: 'net';
     /** Optional host string of the form `"<hostname>[:<port>]"`. Examples:
      *
      *      "github.com"
@@ -4133,7 +4066,7 @@ declare namespace Deno {
    *
    * @category Permissions */
   export interface EnvPermissionDescriptor {
-    name: "env";
+    name: 'env';
     /** Optional environment variable name (e.g. `PATH`). */
     variable?: string;
   }
@@ -4145,23 +4078,23 @@ declare namespace Deno {
    *
    * @category Permissions */
   export interface SysPermissionDescriptor {
-    name: "sys";
+    name: 'sys';
     /** The specific information to scope the permission to. */
     kind?:
-      | "loadavg"
-      | "hostname"
-      | "systemMemoryInfo"
-      | "networkInterfaces"
-      | "osRelease"
-      | "osUptime"
-      | "uid"
-      | "gid"
-      | "username"
-      | "cpus"
-      | "homedir"
-      | "statfs"
-      | "getPriority"
-      | "setPriority";
+      | 'loadavg'
+      | 'hostname'
+      | 'systemMemoryInfo'
+      | 'networkInterfaces'
+      | 'osRelease'
+      | 'osUptime'
+      | 'uid'
+      | 'gid'
+      | 'username'
+      | 'cpus'
+      | 'homedir'
+      | 'statfs'
+      | 'getPriority'
+      | 'setPriority';
   }
 
   /** The permission descriptor for the `allow-ffi` and `deny-ffi` permissions, which controls
@@ -4172,7 +4105,7 @@ declare namespace Deno {
    *
    * @category Permissions */
   export interface FfiPermissionDescriptor {
-    name: "ffi";
+    name: 'ffi';
     /** Optional path on the local host to scope the permission to. */
     path?: string | URL;
   }
@@ -4183,7 +4116,7 @@ declare namespace Deno {
    *
    * @category Permissions */
   export interface ImportPermissionDescriptor {
-    name: "import";
+    name: 'import';
     /** Optional host string of the form `"<hostname>[:<port>]"`. Examples:
      *
      *      "github.com"
@@ -4235,10 +4168,7 @@ declare namespace Deno {
     readonly partial: boolean;
     addEventListener<K extends keyof PermissionStatusEventMap>(
       type: K,
-      listener: (
-        this: PermissionStatus,
-        ev: PermissionStatusEventMap[K],
-      ) => any,
+      listener: (this: PermissionStatus, ev: PermissionStatusEventMap[K]) => any,
       options?: boolean | AddEventListenerOptions,
     ): void;
     addEventListener(
@@ -4248,10 +4178,7 @@ declare namespace Deno {
     ): void;
     removeEventListener<K extends keyof PermissionStatusEventMap>(
       type: K,
-      listener: (
-        this: PermissionStatus,
-        ev: PermissionStatusEventMap[K],
-      ) => any,
+      listener: (this: PermissionStatus, ev: PermissionStatusEventMap[K]) => any,
       options?: boolean | EventListenerOptions,
     ): void;
     removeEventListener(
@@ -4457,19 +4384,19 @@ declare namespace Deno {
      * the current runtime was built for. */
     target: string;
     /** Instruction set architecture that the Deno CLI was built for. */
-    arch: "x86_64" | "aarch64";
+    arch: 'x86_64' | 'aarch64';
     /** The operating system that the Deno CLI was built for. `"darwin"` is
      * also known as OSX or MacOS. */
     os:
-      | "darwin"
-      | "linux"
-      | "android"
-      | "windows"
-      | "freebsd"
-      | "netbsd"
-      | "aix"
-      | "solaris"
-      | "illumos";
+      | 'darwin'
+      | 'linux'
+      | 'android'
+      | 'windows'
+      | 'freebsd'
+      | 'netbsd'
+      | 'aix'
+      | 'solaris'
+      | 'illumos';
     standalone: boolean;
     /** The computer vendor that the Deno CLI was built for. */
     vendor: string;
@@ -4542,7 +4469,7 @@ declare namespace Deno {
   export interface SymlinkOptions {
     /** Specify the symbolic link type as file, directory or NTFS junction. This
      * option only applies to Windows and is ignored on other operating systems. */
-    type: "file" | "dir" | "junction";
+    type: 'file' | 'dir' | 'junction';
   }
 
   /**
@@ -4601,11 +4528,7 @@ declare namespace Deno {
    * @tags allow-write
    * @category File System
    */
-  export function utimeSync(
-    path: string | URL,
-    atime: number | Date,
-    mtime: number | Date,
-  ): void;
+  export function utimeSync(path: string | URL, atime: number | Date, mtime: number | Date): void;
 
   /**
    * Changes the access (`atime`) and modification (`mtime`) times of a file
@@ -4753,18 +4676,18 @@ declare namespace Deno {
    * @category Network
    */
   export type RecordType =
-    | "A"
-    | "AAAA"
-    | "ANAME"
-    | "CAA"
-    | "CNAME"
-    | "MX"
-    | "NAPTR"
-    | "NS"
-    | "PTR"
-    | "SOA"
-    | "SRV"
-    | "TXT";
+    | 'A'
+    | 'AAAA'
+    | 'ANAME'
+    | 'CAA'
+    | 'CNAME'
+    | 'MX'
+    | 'NAPTR'
+    | 'NS'
+    | 'PTR'
+    | 'SOA'
+    | 'SRV'
+    | 'TXT';
 
   /**
    * Options which can be set when using {@linkcode Deno.resolveDns}.
@@ -4889,7 +4812,7 @@ declare namespace Deno {
    */
   export function resolveDns(
     query: string,
-    recordType: "A" | "AAAA" | "ANAME" | "CNAME" | "NS" | "PTR",
+    recordType: 'A' | 'AAAA' | 'ANAME' | 'CNAME' | 'NS' | 'PTR',
     options?: ResolveDnsOptions,
   ): Promise<string[]>;
 
@@ -4919,7 +4842,7 @@ declare namespace Deno {
    */
   export function resolveDns(
     query: string,
-    recordType: "CAA",
+    recordType: 'CAA',
     options?: ResolveDnsOptions,
   ): Promise<CaaRecord[]>;
 
@@ -4949,7 +4872,7 @@ declare namespace Deno {
    */
   export function resolveDns(
     query: string,
-    recordType: "MX",
+    recordType: 'MX',
     options?: ResolveDnsOptions,
   ): Promise<MxRecord[]>;
 
@@ -4979,7 +4902,7 @@ declare namespace Deno {
    */
   export function resolveDns(
     query: string,
-    recordType: "NAPTR",
+    recordType: 'NAPTR',
     options?: ResolveDnsOptions,
   ): Promise<NaptrRecord[]>;
 
@@ -5009,7 +4932,7 @@ declare namespace Deno {
    */
   export function resolveDns(
     query: string,
-    recordType: "SOA",
+    recordType: 'SOA',
     options?: ResolveDnsOptions,
   ): Promise<SoaRecord[]>;
 
@@ -5039,7 +4962,7 @@ declare namespace Deno {
    */
   export function resolveDns(
     query: string,
-    recordType: "SRV",
+    recordType: 'SRV',
     options?: ResolveDnsOptions,
   ): Promise<SrvRecord[]>;
 
@@ -5069,7 +4992,7 @@ declare namespace Deno {
    */
   export function resolveDns(
     query: string,
-    recordType: "TXT",
+    recordType: 'TXT',
     options?: ResolveDnsOptions,
   ): Promise<string[][]>;
 
@@ -5102,13 +5025,7 @@ declare namespace Deno {
     recordType: RecordType,
     options?: ResolveDnsOptions,
   ): Promise<
-    | string[]
-    | CaaRecord[]
-    | MxRecord[]
-    | NaptrRecord[]
-    | SoaRecord[]
-    | SrvRecord[]
-    | string[][]
+    string[] | CaaRecord[] | MxRecord[] | NaptrRecord[] | SoaRecord[] | SrvRecord[] | string[][]
   >;
 
   /**
@@ -5233,7 +5150,7 @@ declare namespace Deno {
    */
   export interface ServeTcpOptions extends ServeOptions<Deno.NetAddr> {
     /** The transport to use. */
-    transport?: "tcp";
+    transport?: 'tcp';
 
     /** The port to listen on.
      *
@@ -5276,7 +5193,7 @@ declare namespace Deno {
    */
   export interface ServeUnixOptions extends ServeOptions<Deno.UnixAddr> {
     /** The transport to use. */
-    transport?: "unix";
+    transport?: 'unix';
 
     /** The unix domain socket path to listen on. */
     path: string;
@@ -5292,7 +5209,7 @@ declare namespace Deno {
    */
   export interface ServeVsockOptions extends ServeOptions<Deno.VsockAddr> {
     /** The transport to use. */
-    transport?: "vsock";
+    transport?: 'vsock';
 
     /** The context identifier to use. */
     cid: number;
@@ -5313,8 +5230,7 @@ declare namespace Deno {
    *
    * @category HTTP Server
    */
-  export interface HttpServer<Addr extends Deno.Addr = Deno.Addr>
-    extends AsyncDisposable {
+  export interface HttpServer<Addr extends Deno.Addr = Deno.Addr> extends AsyncDisposable {
     /** A promise that resolves once server finishes - eg. when aborted using
      * the signal passed to {@linkcode ServeOptions.signal}.
      */
@@ -5350,9 +5266,7 @@ declare namespace Deno {
    *
    * @category HTTP Server
    */
-  export function serve(
-    handler: ServeHandler<Deno.NetAddr>,
-  ): HttpServer<Deno.NetAddr>;
+  export function serve(handler: ServeHandler<Deno.NetAddr>): HttpServer<Deno.NetAddr>;
   /** Serves HTTP requests with the given option bag and handler.
    *
    * You can specify the socket path with `path` option.
@@ -5600,60 +5514,50 @@ declare namespace Deno {
    * @category HTTP Server
    */
   export function serve(
-    options:
-      & (ServeTcpOptions | (ServeTcpOptions & TlsCertifiedKeyPem))
-      & ServeInit<Deno.NetAddr>,
+    options: (ServeTcpOptions | (ServeTcpOptions & TlsCertifiedKeyPem)) & ServeInit<Deno.NetAddr>,
   ): HttpServer<Deno.NetAddr>;
 
   /** All plain number types for interfacing with foreign functions.
    *
    * @category FFI
    */
-  export type NativeNumberType =
-    | "u8"
-    | "i8"
-    | "u16"
-    | "i16"
-    | "u32"
-    | "i32"
-    | "f32"
-    | "f64";
+  export type NativeNumberType = 'u8' | 'i8' | 'u16' | 'i16' | 'u32' | 'i32' | 'f32' | 'f64';
 
   /** All BigInt number types for interfacing with foreign functions.
    *
    * @category FFI
    */
-  export type NativeBigIntType = "u64" | "i64" | "usize" | "isize";
+  export type NativeBigIntType = 'u64' | 'i64' | 'usize' | 'isize';
 
   /** The native boolean type for interfacing to foreign functions.
    *
    * @category FFI
    */
-  export type NativeBooleanType = "bool";
+  export type NativeBooleanType = 'bool';
 
   /** The native pointer type for interfacing to foreign functions.
    *
    * @category FFI
    */
-  export type NativePointerType = "pointer";
+  export type NativePointerType = 'pointer';
 
   /** The native buffer type for interfacing to foreign functions.
    *
    * @category FFI
    */
-  export type NativeBufferType = "buffer";
+  export type NativeBufferType = 'buffer';
 
   /** The native function type for interfacing with foreign functions.
    *
    * @category FFI
    */
-  export type NativeFunctionType = "function";
+  export type NativeFunctionType = 'function';
 
   /** The native void type for interfacing with foreign functions.
    *
    * @category FFI
    */
-  export type NativeVoidType = "void";
+  export type NativeVoidType = 'void';
 
   /** The native struct type for interfacing with foreign functions.
    *
@@ -5671,41 +5575,39 @@ declare namespace Deno {
   /**
    * @category FFI
    */
-  export type NativeU8Enum<T extends number> = "u8" & { [brand]: T };
+  export type NativeU8Enum<T extends number> = 'u8' & { [brand]: T };
   /**
    * @category FFI
    */
-  export type NativeI8Enum<T extends number> = "i8" & { [brand]: T };
+  export type NativeI8Enum<T extends number> = 'i8' & { [brand]: T };
   /**
    * @category FFI
    */
-  export type NativeU16Enum<T extends number> = "u16" & { [brand]: T };
+  export type NativeU16Enum<T extends number> = 'u16' & { [brand]: T };
   /**
    * @category FFI
    */
-  export type NativeI16Enum<T extends number> = "i16" & { [brand]: T };
+  export type NativeI16Enum<T extends number> = 'i16' & { [brand]: T };
   /**
    * @category FFI
    */
-  export type NativeU32Enum<T extends number> = "u32" & { [brand]: T };
+  export type NativeU32Enum<T extends number> = 'u32' & { [brand]: T };
   /**
    * @category FFI
    */
-  export type NativeI32Enum<T extends number> = "i32" & { [brand]: T };
+  export type NativeI32Enum<T extends number> = 'i32' & { [brand]: T };
   /**
    * @category FFI
    */
-  export type NativeTypedPointer<T extends PointerObject> = "pointer" & {
+  export type NativeTypedPointer<T extends PointerObject> = 'pointer' & {
     [brand]: T;
   };
   /**
    * @category FFI
    */
-  export type NativeTypedFunction<T extends UnsafeCallbackDefinition> =
-    & "function"
-    & {
-      [brand]: T;
-    };
+  export type NativeTypedFunction<T extends UnsafeCallbackDefinition> = 'function' & {
+    [brand]: T;
+  };
 
   /** All supported types for interfacing with foreign functions.
    *
@@ -5729,51 +5631,76 @@ declare namespace Deno {
    *
    * @category FFI
    */
-  export type ToNativeType<T extends NativeType = NativeType> = T extends
-    NativeStructType ? BufferSource
-    : T extends NativeNumberType ? T extends NativeU8Enum<infer U> ? U
-      : T extends NativeI8Enum<infer U> ? U
-      : T extends NativeU16Enum<infer U> ? U
-      : T extends NativeI16Enum<infer U> ? U
-      : T extends NativeU32Enum<infer U> ? U
-      : T extends NativeI32Enum<infer U> ? U
-      : number
-    : T extends NativeBigIntType ? bigint
-    : T extends NativeBooleanType ? boolean
-    : T extends NativePointerType
-      ? T extends NativeTypedPointer<infer U> ? U | null
-      : PointerValue
-    : T extends NativeFunctionType
-      ? T extends NativeTypedFunction<infer U> ? PointerValue<U> | null
-      : PointerValue
-    : T extends NativeBufferType ? BufferSource | null
-    : never;
+  export type ToNativeType<T extends NativeType = NativeType> = T extends NativeStructType
+    ? BufferSource
+    : T extends NativeNumberType
+      ? T extends NativeU8Enum<infer U>
+        ? U
+        : T extends NativeI8Enum<infer U>
+          ? U
+          : T extends NativeU16Enum<infer U>
+            ? U
+            : T extends NativeI16Enum<infer U>
+              ? U
+              : T extends NativeU32Enum<infer U>
+                ? U
+                : T extends NativeI32Enum<infer U>
+                  ? U
+                  : number
+      : T extends NativeBigIntType
+        ? bigint
+        : T extends NativeBooleanType
+          ? boolean
+          : T extends NativePointerType
+            ? T extends NativeTypedPointer<infer U>
+              ? U | null
+              : PointerValue
+            : T extends NativeFunctionType
+              ? T extends NativeTypedFunction<infer U>
+                ? PointerValue<U> | null
+                : PointerValue
+              : T extends NativeBufferType
+                ? BufferSource | null
+                : never;
 
   /** Type conversion for unsafe callback return types.
    *
    * @category FFI
    */
-  export type ToNativeResultType<
-    T extends NativeResultType = NativeResultType,
-  > = T extends NativeStructType ? BufferSource
-    : T extends NativeNumberType ? T extends NativeU8Enum<infer U> ? U
-      : T extends NativeI8Enum<infer U> ? U
-      : T extends NativeU16Enum<infer U> ? U
-      : T extends NativeI16Enum<infer U> ? U
-      : T extends NativeU32Enum<infer U> ? U
-      : T extends NativeI32Enum<infer U> ? U
-      : number
-    : T extends NativeBigIntType ? bigint
-    : T extends NativeBooleanType ? boolean
-    : T extends NativePointerType
-      ? T extends NativeTypedPointer<infer U> ? U | null
-      : PointerValue
-    : T extends NativeFunctionType
-      ? T extends NativeTypedFunction<infer U> ? PointerObject<U> | null
-      : PointerValue
-    : T extends NativeBufferType ? BufferSource | null
-    : T extends NativeVoidType ? void
-    : never;
+  export type ToNativeResultType<T extends NativeResultType = NativeResultType> =
+    T extends NativeStructType
+      ? BufferSource
+      : T extends NativeNumberType
+        ? T extends NativeU8Enum<infer U>
+          ? U
+          : T extends NativeI8Enum<infer U>
+            ? U
+            : T extends NativeU16Enum<infer U>
+              ? U
+              : T extends NativeI16Enum<infer U>
+                ? U
+                : T extends NativeU32Enum<infer U>
+                  ? U
+                  : T extends NativeI32Enum<infer U>
+                    ? U
+                    : number
+        : T extends NativeBigIntType
+          ? bigint
+          : T extends NativeBooleanType
+            ? boolean
+            : T extends NativePointerType
+              ? T extends NativeTypedPointer<infer U>
+                ? U | null
+                : PointerValue
+              : T extends NativeFunctionType
+                ? T extends NativeTypedFunction<infer U>
+                  ? PointerObject<U> | null
+                  : PointerValue
+                : T extends NativeBufferType
+                  ? BufferSource | null
+                  : T extends NativeVoidType
+                    ? void
+                    : never;
 
   /** A utility type for conversion of parameter types of foreign functions.
    *
@@ -5781,75 +5708,105 @@ declare namespace Deno {
    */
   export type ToNativeParameterTypes<T extends readonly NativeType[]> =
     //
-    [T[number][]] extends [T] ? ToNativeType<T[number]>[]
-      : [readonly T[number][]] extends [T] ? readonly ToNativeType<T[number]>[]
-      : T extends readonly [...NativeType[]] ? {
-          [K in keyof T]: ToNativeType<T[K]>;
-        }
-      : never;
+    [T[number][]] extends [T]
+      ? ToNativeType<T[number]>[]
+      : [readonly T[number][]] extends [T]
+        ? readonly ToNativeType<T[number]>[]
+        : T extends readonly [...NativeType[]]
+          ? {
+              [K in keyof T]: ToNativeType<T[K]>;
+            }
+          : never;
 
   /** Type conversion for foreign symbol return types and unsafe callback
    * parameters.
    *
    * @category FFI
    */
-  export type FromNativeType<T extends NativeType = NativeType> = T extends
-    NativeStructType ? Uint8Array<ArrayBuffer>
-    : T extends NativeNumberType ? T extends NativeU8Enum<infer U> ? U
-      : T extends NativeI8Enum<infer U> ? U
-      : T extends NativeU16Enum<infer U> ? U
-      : T extends NativeI16Enum<infer U> ? U
-      : T extends NativeU32Enum<infer U> ? U
-      : T extends NativeI32Enum<infer U> ? U
-      : number
-    : T extends NativeBigIntType ? bigint
-    : T extends NativeBooleanType ? boolean
-    : T extends NativePointerType
-      ? T extends NativeTypedPointer<infer U> ? U | null
-      : PointerValue
-    : T extends NativeBufferType ? PointerValue
-    : T extends NativeFunctionType
-      ? T extends NativeTypedFunction<infer U> ? PointerObject<U> | null
-      : PointerValue
-    : never;
+  export type FromNativeType<T extends NativeType = NativeType> = T extends NativeStructType
+    ? Uint8Array<ArrayBuffer>
+    : T extends NativeNumberType
+      ? T extends NativeU8Enum<infer U>
+        ? U
+        : T extends NativeI8Enum<infer U>
+          ? U
+          : T extends NativeU16Enum<infer U>
+            ? U
+            : T extends NativeI16Enum<infer U>
+              ? U
+              : T extends NativeU32Enum<infer U>
+                ? U
+                : T extends NativeI32Enum<infer U>
+                  ? U
+                  : number
+      : T extends NativeBigIntType
+        ? bigint
+        : T extends NativeBooleanType
+          ? boolean
+          : T extends NativePointerType
+            ? T extends NativeTypedPointer<infer U>
+              ? U | null
+              : PointerValue
+            : T extends NativeBufferType
+              ? PointerValue
+              : T extends NativeFunctionType
+                ? T extends NativeTypedFunction<infer U>
+                  ? PointerObject<U> | null
+                  : PointerValue
+                : never;
 
   /** Type conversion for foreign symbol return types.
    *
    * @category FFI
    */
-  export type FromNativeResultType<
-    T extends NativeResultType = NativeResultType,
-  > = T extends NativeStructType ? Uint8Array<ArrayBuffer>
-    : T extends NativeNumberType ? T extends NativeU8Enum<infer U> ? U
-      : T extends NativeI8Enum<infer U> ? U
-      : T extends NativeU16Enum<infer U> ? U
-      : T extends NativeI16Enum<infer U> ? U
-      : T extends NativeU32Enum<infer U> ? U
-      : T extends NativeI32Enum<infer U> ? U
-      : number
-    : T extends NativeBigIntType ? bigint
-    : T extends NativeBooleanType ? boolean
-    : T extends NativePointerType
-      ? T extends NativeTypedPointer<infer U> ? U | null
-      : PointerValue
-    : T extends NativeBufferType ? PointerValue
-    : T extends NativeFunctionType
-      ? T extends NativeTypedFunction<infer U> ? PointerObject<U> | null
-      : PointerValue
-    : T extends NativeVoidType ? void
-    : never;
+  export type FromNativeResultType<T extends NativeResultType = NativeResultType> =
+    T extends NativeStructType
+      ? Uint8Array<ArrayBuffer>
+      : T extends NativeNumberType
+        ? T extends NativeU8Enum<infer U>
+          ? U
+          : T extends NativeI8Enum<infer U>
+            ? U
+            : T extends NativeU16Enum<infer U>
+              ? U
+              : T extends NativeI16Enum<infer U>
+                ? U
+                : T extends NativeU32Enum<infer U>
+                  ? U
+                  : T extends NativeI32Enum<infer U>
+                    ? U
+                    : number
+        : T extends NativeBigIntType
+          ? bigint
+          : T extends NativeBooleanType
+            ? boolean
+            : T extends NativePointerType
+              ? T extends NativeTypedPointer<infer U>
+                ? U | null
+                : PointerValue
+              : T extends NativeBufferType
+                ? PointerValue
+                : T extends NativeFunctionType
+                  ? T extends NativeTypedFunction<infer U>
+                    ? PointerObject<U> | null
+                    : PointerValue
+                  : T extends NativeVoidType
+                    ? void
+                    : never;
 
   /** @category FFI
    */
   export type FromNativeParameterTypes<T extends readonly NativeType[]> =
     //
-    [T[number][]] extends [T] ? FromNativeType<T[number]>[]
+    [T[number][]] extends [T]
+      ? FromNativeType<T[number]>[]
       : [readonly T[number][]] extends [T]
         ? readonly FromNativeType<T[number]>[]
-      : T extends readonly [...NativeType[]] ? {
-          [K in keyof T]: FromNativeType<T[K]>;
-        }
-      : never;
+        : T extends readonly [...NativeType[]]
+          ? {
+              [K in keyof T]: FromNativeType<T[K]>;
+            }
+          : never;
 
   /** The interface for a foreign function as defined by its parameter and result
    * types.
@@ -5906,40 +5863,40 @@ declare namespace Deno {
    * @category FFI
    */
   export type StaticForeignSymbol<T extends ForeignFunction | ForeignStatic> =
-    T extends ForeignFunction ? FromForeignFunction<T>
-      : T extends ForeignStatic ? FromNativeType<T["type"]>
-      : never;
+    T extends ForeignFunction
+      ? FromForeignFunction<T>
+      : T extends ForeignStatic
+        ? FromNativeType<T['type']>
+        : never;
 
   /**  @category FFI
    */
-  export type FromForeignFunction<T extends ForeignFunction> =
-    T["parameters"] extends readonly [] ? () => StaticForeignSymbolReturnType<T>
-      : (
-        ...args: ToNativeParameterTypes<T["parameters"]>
-      ) => StaticForeignSymbolReturnType<T>;
+  export type FromForeignFunction<T extends ForeignFunction> = T['parameters'] extends readonly []
+    ? () => StaticForeignSymbolReturnType<T>
+    : (...args: ToNativeParameterTypes<T['parameters']>) => StaticForeignSymbolReturnType<T>;
 
   /** @category FFI
    */
-  export type StaticForeignSymbolReturnType<T extends ForeignFunction> =
-    ConditionalAsync<T["nonblocking"], FromNativeResultType<T["result"]>>;
+  export type StaticForeignSymbolReturnType<T extends ForeignFunction> = ConditionalAsync<
+    T['nonblocking'],
+    FromNativeResultType<T['result']>
+  >;
 
   /** @category FFI
    */
-  export type ConditionalAsync<
-    IsAsync extends boolean | undefined,
-    T,
-  > = IsAsync extends true ? Promise<T> : T;
+  export type ConditionalAsync<IsAsync extends boolean | undefined, T> = IsAsync extends true
+    ? Promise<T>
+    : T;
 
   /** A utility type that infers a foreign library interface.
    *
    * @category FFI
    */
-  export type StaticForeignLibraryInterface<T extends ForeignLibraryInterface> =
-    {
-      [K in keyof T]: T[K]["optional"] extends true
-        ? StaticForeignSymbol<T[K]> | null
-        : StaticForeignSymbol<T[K]>;
-    };
+  export type StaticForeignLibraryInterface<T extends ForeignLibraryInterface> = {
+    [K in keyof T]: T[K]['optional'] extends true
+      ? StaticForeignSymbol<T[K]> | null
+      : StaticForeignSymbol<T[K]>;
+  };
 
   /** A non-null pointer, represented as an object
    * at runtime. The object's prototype is `null`
@@ -5975,14 +5932,9 @@ declare namespace Deno {
     /** Returns `true` if the two pointers point to the same address. */
     static equals<T = unknown>(a: PointerValue<T>, b: PointerValue<T>): boolean;
     /** Return the direct memory pointer to the typed array in memory. */
-    static of<T = unknown>(
-      value: Deno.UnsafeCallback | BufferSource,
-    ): PointerValue<T>;
+    static of<T = unknown>(value: Deno.UnsafeCallback | BufferSource): PointerValue<T>;
     /** Return a new pointer offset from the original by `offset` bytes. */
-    static offset<T = unknown>(
-      value: PointerObject,
-      offset: number,
-    ): PointerValue<T>;
+    static offset<T = unknown>(value: PointerObject, offset: number): PointerValue<T>;
     /** Get the numeric value of a pointer */
     static value(value: PointerValue): bigint;
   }
@@ -6050,11 +6002,7 @@ declare namespace Deno {
     getArrayBuffer(byteLength: number, offset?: number): ArrayBuffer;
     /** Gets an `ArrayBuffer` of length `byteLength` at the specified byte
      * offset from the specified pointer. */
-    static getArrayBuffer(
-      pointer: PointerObject,
-      byteLength: number,
-      offset?: number,
-    ): ArrayBuffer;
+    static getArrayBuffer(pointer: PointerObject, byteLength: number, offset?: number): ArrayBuffer;
     /** Copies the memory of the pointer into a typed array.
      *
      * Length is determined from the typed array's `byteLength`.
@@ -6066,11 +6014,7 @@ declare namespace Deno {
      * Length is determined from the typed array's `byteLength`.
      *
      * Also takes optional byte offset from the pointer. */
-    static copyInto(
-      pointer: PointerObject,
-      destination: BufferSource,
-      offset?: number,
-    ): void;
+    static copyInto(pointer: PointerObject, destination: BufferSource, offset?: number): void;
   }
 
   /** An unsafe pointer to a function, for calling functions that are not present
@@ -6084,10 +6028,7 @@ declare namespace Deno {
     /** The definition of the function. */
     definition: Fn;
 
-    constructor(
-      pointer: PointerObject<NoInfer<Omit<Fn, "nonblocking">>>,
-      definition: Fn,
-    );
+    constructor(pointer: PointerObject<NoInfer<Omit<Fn, 'nonblocking'>>>, definition: Fn);
 
     /** Call the foreign function. */
     call: FromForeignFunction<Fn>;
@@ -6114,10 +6055,9 @@ declare namespace Deno {
   export type UnsafeCallbackFunction<
     Parameters extends readonly NativeType[] = readonly NativeType[],
     Result extends NativeResultType = NativeResultType,
-  > = Parameters extends readonly [] ? () => ToNativeResultType<Result>
-    : (
-      ...args: FromNativeParameterTypes<Parameters>
-    ) => ToNativeResultType<Result>;
+  > = Parameters extends readonly []
+    ? () => ToNativeResultType<Result>
+    : (...args: FromNativeParameterTypes<Parameters>) => ToNativeResultType<Result>;
 
   /** An unsafe function pointer for passing JavaScript functions as C function
    * pointers to foreign function calls.
@@ -6141,15 +6081,11 @@ declare namespace Deno {
    * @category FFI
    */
   export class UnsafeCallback<
-    const Definition extends UnsafeCallbackDefinition =
-      UnsafeCallbackDefinition,
+    const Definition extends UnsafeCallbackDefinition = UnsafeCallbackDefinition,
   > {
     constructor(
       definition: Definition,
-      callback: UnsafeCallbackFunction<
-        Definition["parameters"],
-        Definition["result"]
-      >,
+      callback: UnsafeCallbackFunction<Definition['parameters'], Definition['result']>,
     );
 
     /** The pointer to the unsafe callback. */
@@ -6157,10 +6093,7 @@ declare namespace Deno {
     /** The definition of the unsafe callback. */
     readonly definition: Definition;
     /** The callback function. */
-    readonly callback: UnsafeCallbackFunction<
-      Definition["parameters"],
-      Definition["result"]
-    >;
+    readonly callback: UnsafeCallbackFunction<Definition['parameters'], Definition['result']>;
 
     /**
      * Creates an {@linkcode UnsafeCallback} and calls `ref()` once to allow it to
@@ -6169,14 +6102,9 @@ declare namespace Deno {
      * This also stops Deno's process from exiting while the callback still
      * exists and is not unref'ed.
      */
-    static threadSafe<
-      Definition extends UnsafeCallbackDefinition = UnsafeCallbackDefinition,
-    >(
+    static threadSafe<Definition extends UnsafeCallbackDefinition = UnsafeCallbackDefinition>(
       definition: Definition,
-      callback: UnsafeCallbackFunction<
-        Definition["parameters"],
-        Definition["result"]
-      >,
+      callback: UnsafeCallbackFunction<Definition['parameters'], Definition['result']>,
     ): UnsafeCallback<Definition>;
 
     /**
@@ -6358,37 +6286,41 @@ declare namespace Deno {
    *
    * @category Fetch
    */
-  export type Proxy = {
-    transport?: "http" | "https" | "socks5";
-    /**
-     * The string URL of the proxy server to use.
-     *
-     * For `http` and `https` transports, the URL must start with `http://` or
-     * `https://` respectively, or be a plain hostname.
-     *
-     * For `socks` transport, the URL must start with `socks5://` or
-     * `socks5h://`.
-     */
-    url: string;
-    /** The basic auth credentials to be used against the proxy server. */
-    basicAuth?: BasicAuth;
-  } | {
-    transport: "tcp";
-    /** The hostname of the TCP server to connect to. */
-    hostname: string;
-    /** The port of the TCP server to connect to. */
-    port: number;
-  } | {
-    transport: "unix";
-    /** The path to the unix domain socket to use. */
-    path: string;
-  } | {
-    transport: "vsock";
-    /** The CID (Context Identifier) of the vsock to connect to. */
-    cid: number;
-    /** The port of the vsock to connect to. */
-    port: number;
-  };
+  export type Proxy =
+    | {
+        transport?: 'http' | 'https' | 'socks5';
+        /**
+         * The string URL of the proxy server to use.
+         *
+         * For `http` and `https` transports, the URL must start with `http://` or
+         * `https://` respectively, or be a plain hostname.
+         *
+         * For `socks` transport, the URL must start with `socks5://` or
+         * `socks5h://`.
+         */
+        url: string;
+        /** The basic auth credentials to be used against the proxy server. */
+        basicAuth?: BasicAuth;
+      }
+    | {
+        transport: 'tcp';
+        /** The hostname of the TCP server to connect to. */
+        hostname: string;
+        /** The port of the TCP server to connect to. */
+        port: number;
+      }
+    | {
+        transport: 'unix';
+        /** The path to the unix domain socket to use. */
+        path: string;
+      }
+    | {
+        transport: 'vsock';
+        /** The CID (Context Identifier) of the vsock to connect to. */
+        cid: number;
+        /** The port of the vsock to connect to. */
+        port: number;
+      };
 
   /**
    * Basic authentication credentials to be used with a {@linkcode Deno.Proxy}
@@ -6435,9 +6367,7 @@ declare namespace Deno {
    * @category Fetch
    */
   export function createHttpClient(
-    options:
-      | CreateHttpClientOptions
-      | (CreateHttpClientOptions & TlsCertifiedKeyPem),
+    options: CreateHttpClientOptions | (CreateHttpClientOptions & TlsCertifiedKeyPem),
   ): HttpClient;
 
   /**
@@ -6807,8 +6737,7 @@ interface Console {
  *
  * @category URL
  */
-interface URLSearchParamsIterator<T>
-  extends IteratorObject<T, BuiltinIteratorReturn, unknown> {
+interface URLSearchParamsIterator<T> extends IteratorObject<T, BuiltinIteratorReturn, unknown> {
   [Symbol.iterator](): URLSearchParamsIterator<T>;
 }
 
@@ -6904,10 +6833,7 @@ interface URLSearchParams {
    * });
    * ```
    */
-  forEach(
-    callbackfn: (value: string, key: string, parent: this) => void,
-    thisArg?: any,
-  ): void;
+  forEach(callbackfn: (value: string, key: string, parent: this) => void, thisArg?: any): void;
 
   /** Returns an iterator allowing to go through all keys contained
    * in this object.
@@ -7016,11 +6942,7 @@ declare var URLSearchParams: {
    * ```
    */
   new (
-    init?:
-      | Iterable<string[]>
-      | Record<string, string>
-      | string
-      | URLSearchParams,
+    init?: Iterable<string[]> | Record<string, string> | string | URLSearchParams,
   ): URLSearchParams;
 };
 
@@ -7631,11 +7553,7 @@ interface URLPattern {
  */
 declare var URLPattern: {
   readonly prototype: URLPattern;
-  new (
-    input: URLPatternInput,
-    baseURL: string,
-    options?: URLPatternOptions,
-  ): URLPattern;
+  new (input: URLPatternInput, baseURL: string, options?: URLPatternOptions): URLPattern;
   new (input?: URLPatternInput, options?: URLPatternOptions): URLPattern;
 };
 
@@ -7934,9 +7852,7 @@ interface EventListenerObject {
 }
 
 /** @category Events */
-type EventListenerOrEventListenerObject =
-  | EventListener
-  | EventListenerObject;
+type EventListenerOrEventListenerObject = EventListener | EventListenerObject;
 
 /**
  * Options for configuring an event listener via `addEventListener`.
@@ -8112,10 +8028,7 @@ interface TextEncoder extends TextEncoderCommon {
   encode(input?: string): Uint8Array<ArrayBuffer>;
 
   /** Encodes a string into the destination Uint8Array and returns the result of the encoding. */
-  encodeInto(
-    input: string,
-    dest: Uint8Array<ArrayBufferLike>,
-  ): TextEncoderEncodeIntoResult;
+  encodeInto(input: string, dest: Uint8Array<ArrayBufferLike>): TextEncoderEncodeIntoResult;
 }
 
 /** @category Encoding */
@@ -8230,12 +8143,12 @@ declare var AbortSignal: {
 
 /** @category File */
 interface FileReaderEventMap {
-  "abort": ProgressEvent<FileReader>;
-  "error": ProgressEvent<FileReader>;
-  "load": ProgressEvent<FileReader>;
-  "loadend": ProgressEvent<FileReader>;
-  "loadstart": ProgressEvent<FileReader>;
-  "progress": ProgressEvent<FileReader>;
+  abort: ProgressEvent<FileReader>;
+  error: ProgressEvent<FileReader>;
+  load: ProgressEvent<FileReader>;
+  loadend: ProgressEvent<FileReader>;
+  loadstart: ProgressEvent<FileReader>;
+  progress: ProgressEvent<FileReader>;
 }
 
 /** Lets web applications asynchronously read the contents of files (or raw data
@@ -8250,14 +8163,9 @@ interface FileReader extends EventTarget {
   onerror: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
   onload: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
   onloadend: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
-  onloadstart:
-    | ((this: FileReader, ev: ProgressEvent<FileReader>) => any)
-    | null;
+  onloadstart: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
   onprogress: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
-  readonly readyState:
-    | typeof FileReader.EMPTY
-    | typeof FileReader.LOADING
-    | typeof FileReader.DONE;
+  readonly readyState: typeof FileReader.EMPTY | typeof FileReader.LOADING | typeof FileReader.DONE;
   readonly result: string | ArrayBuffer | null;
   abort(): void;
   readAsArrayBuffer(blob: Blob): void;
@@ -8303,7 +8211,7 @@ declare var FileReader: {
 type BlobPart = BufferSource | Blob | string;
 
 /** @category File */
-type EndingType = "transparent" | "native";
+type EndingType = 'transparent' | 'native';
 
 /** @category File */
 interface BlobPropertyBag {
@@ -8367,9 +8275,7 @@ declare var File: {
 };
 
 /** @category Streams */
-type ReadableStreamReader<T> =
-  | ReadableStreamDefaultReader<T>
-  | ReadableStreamBYOBReader;
+type ReadableStreamReader<T> = ReadableStreamDefaultReader<T> | ReadableStreamBYOBReader;
 
 /** @category Streams */
 type ReadableStreamController<T> =
@@ -8400,8 +8306,7 @@ type ReadableStreamReadResult<T> =
   | ReadableStreamReadDoneResult<T>;
 
 /** @category Streams */
-interface ReadableStreamDefaultReader<R = any>
-  extends ReadableStreamGenericReader {
+interface ReadableStreamDefaultReader<R = any> extends ReadableStreamGenericReader {
   read(): Promise<ReadableStreamReadResult<R>>;
   releaseLock(): void;
 }
@@ -8429,9 +8334,7 @@ interface ReadableStreamBYOBReader extends ReadableStreamGenericReader {
 /** @category Streams */
 declare var ReadableStreamBYOBReader: {
   readonly prototype: ReadableStreamBYOBReader;
-  new (
-    stream: ReadableStream<Uint8Array<ArrayBuffer>>,
-  ): ReadableStreamBYOBReader;
+  new (stream: ReadableStream<Uint8Array<ArrayBuffer>>): ReadableStreamBYOBReader;
 };
 
 /** @category Streams */
@@ -8453,15 +8356,13 @@ interface UnderlyingByteSource {
   cancel?: UnderlyingSourceCancelCallback;
   pull?: (controller: ReadableByteStreamController) => void | PromiseLike<void>;
   start?: (controller: ReadableByteStreamController) => any;
-  type: "bytes";
+  type: 'bytes';
 }
 
 /** @category Streams */
 interface UnderlyingDefaultSource<R = any> {
   cancel?: UnderlyingSourceCancelCallback;
-  pull?: (
-    controller: ReadableStreamDefaultController<R>,
-  ) => void | PromiseLike<void>;
+  pull?: (controller: ReadableStreamDefaultController<R>) => void | PromiseLike<void>;
   start?: (controller: ReadableStreamDefaultController<R>) => any;
   type?: undefined;
 }
@@ -8476,7 +8377,7 @@ interface UnderlyingSink<W = any> {
 }
 
 /** @category Streams */
-type ReadableStreamType = "bytes";
+type ReadableStreamType = 'bytes';
 
 /** @category Streams */
 interface UnderlyingSource<R = any> {
@@ -8592,22 +8493,17 @@ interface QueuingStrategyInit {
 interface ReadableStream<R = any> {
   readonly locked: boolean;
   cancel(reason?: any): Promise<void>;
-  getReader(options: { mode: "byob" }): ReadableStreamBYOBReader;
+  getReader(options: { mode: 'byob' }): ReadableStreamBYOBReader;
   getReader(): ReadableStreamDefaultReader<R>;
   getReader(options?: ReadableStreamGetReaderOptions): ReadableStreamReader<R>;
   pipeThrough<T>(
     transform: ReadableWritablePair<T, R>,
     options?: StreamPipeOptions,
   ): ReadableStream<T>;
-  pipeTo(
-    destination: WritableStream<R>,
-    options?: StreamPipeOptions,
-  ): Promise<void>;
+  pipeTo(destination: WritableStream<R>, options?: StreamPipeOptions): Promise<void>;
   tee(): [ReadableStream<R>, ReadableStream<R>];
   values(options?: ReadableStreamIteratorOptions): AsyncIterableIterator<R>;
-  [Symbol.asyncIterator](
-    options?: ReadableStreamIteratorOptions,
-  ): AsyncIterableIterator<R>;
+  [Symbol.asyncIterator](options?: ReadableStreamIteratorOptions): AsyncIterableIterator<R>;
 }
 
 /** @category Streams */
@@ -8626,7 +8522,7 @@ declare var ReadableStream: {
     strategy?: QueuingStrategy<R>,
   ): ReadableStream<R>;
   from<R>(
-    asyncIterable: AsyncIterable<R> | Iterable<R | PromiseLike<R>> & object,
+    asyncIterable: AsyncIterable<R> | (Iterable<R | PromiseLike<R>> & object),
   ): ReadableStream<R>;
 };
 
@@ -8636,7 +8532,7 @@ interface ReadableStreamIteratorOptions {
 }
 
 /** @category Streams */
-type ReadableStreamReaderMode = "byob";
+type ReadableStreamReaderMode = 'byob';
 
 /** @category Streams */
 interface ReadableStreamGetReaderOptions {
@@ -8661,10 +8557,7 @@ interface UnderlyingSinkStartCallback {
 
 /** @category Streams */
 interface UnderlyingSinkWriteCallback<W> {
-  (
-    chunk: W,
-    controller: WritableStreamDefaultController,
-  ): void | PromiseLike<void>;
+  (chunk: W, controller: WritableStreamDefaultController): void | PromiseLike<void>;
 }
 
 /** @category Streams */
@@ -8787,10 +8680,7 @@ interface TransformerStartCallback<O> {
 
 /** @category Streams */
 interface TransformerTransformCallback<I, O> {
-  (
-    chunk: I,
-    controller: TransformStreamDefaultController<O>,
-  ): void | PromiseLike<void>;
+  (chunk: I, controller: TransformStreamDefaultController<O>): void | PromiseLike<void>;
 }
 
 /** @category Streams */
@@ -8855,12 +8745,7 @@ declare var MessageEvent: {
 };
 
 /** @category Events */
-type Transferable =
-  | MessagePort
-  | ArrayBuffer
-  | ReadableStream
-  | WritableStream
-  | TransformStream;
+type Transferable = MessagePort | ArrayBuffer | ReadableStream | WritableStream | TransformStream;
 
 /**
  * Options that control structured serialization operations such as
@@ -8926,8 +8811,8 @@ declare var MessageChannel: {
 
 /** @category Messaging */
 interface MessagePortEventMap {
-  "message": MessageEvent;
-  "messageerror": MessageEvent;
+  message: MessageEvent;
+  messageerror: MessageEvent;
 }
 
 /** The MessagePort interface of the Channel Messaging API represents one of the
@@ -9018,10 +8903,7 @@ declare var MessagePort: {
  *
  * @category Platform
  */
-declare function structuredClone<T = any>(
-  value: T,
-  options?: StructuredSerializeOptions,
-): T;
+declare function structuredClone<T = any>(value: T, options?: StructuredSerializeOptions): T;
 
 /**
  * An API for compressing a stream of data.
@@ -9041,7 +8923,7 @@ interface CompressionStream extends GenericTransformStream {
 }
 
 /** @category Streams */
-type CompressionFormat = "deflate" | "deflate-raw" | "gzip";
+type CompressionFormat = 'deflate' | 'deflate-raw' | 'gzip';
 
 /**
  * An API for compressing a stream of data.
@@ -9131,20 +9013,16 @@ declare var DecompressionStream: {
  *
  * @category Platform
  */
-declare function reportError(
-  error: any,
-): void;
+declare function reportError(error: any): void;
 
 /** @category Platform */
-type PredefinedColorSpace = "srgb" | "display-p3";
+type PredefinedColorSpace = 'srgb' | 'display-p3';
 
 /** @category Platform */
-type ImageDataArray =
-  | Uint8ClampedArray<ArrayBuffer>
-  | Float16Array<ArrayBuffer>;
+type ImageDataArray = Uint8ClampedArray<ArrayBuffer> | Float16Array<ArrayBuffer>;
 
 /** @category Platform */
-type ImageDataPixelFormat = "rgba-unorm8" | "rgba-float16";
+type ImageDataPixelFormat = 'rgba-unorm8' | 'rgba-float16';
 
 /** @category Platform */
 interface ImageDataSettings {
@@ -9165,12 +9043,7 @@ interface ImageData {
 declare var ImageData: {
   readonly prototype: ImageData;
   new (sw: number, sh: number, settings?: ImageDataSettings): ImageData;
-  new (
-    data: ImageDataArray,
-    sw: number,
-    sh?: number,
-    settings?: ImageDataSettings,
-  ): ImageData;
+  new (data: ImageDataArray, sw: number, sh?: number, settings?: ImageDataSettings): ImageData;
 };
 
 /** @category Platform */
@@ -9216,13 +9089,9 @@ interface WebTransport {
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/WebTransport/datagrams) */
   readonly datagrams: WebTransportDatagramDuplexStream;
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/WebTransport/incomingBidirectionalStreams) */
-  readonly incomingBidirectionalStreams: ReadableStream<
-    WebTransportBidirectionalStream
-  >;
+  readonly incomingBidirectionalStreams: ReadableStream<WebTransportBidirectionalStream>;
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/WebTransport/incomingUnidirectionalStreams) */
-  readonly incomingUnidirectionalStreams: ReadableStream<
-    WebTransportReceiveStream
-  >;
+  readonly incomingUnidirectionalStreams: ReadableStream<WebTransportReceiveStream>;
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/WebTransport/ready) */
   readonly ready: Promise<void>;
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/WebTransport/close) */
@@ -9386,10 +9255,10 @@ declare var WebTransportError: {
 };
 
 /** @category Platform */
-type WebTransportCongestionControl = "default" | "low-latency" | "throughput";
+type WebTransportCongestionControl = 'default' | 'low-latency' | 'throughput';
 
 /** @category Platform */
-type WebTransportErrorSource = "session" | "stream";
+type WebTransportErrorSource = 'session' | 'stream';
 
 // Copyright 2018-2025 the Deno authors. MIT license.
 
@@ -9404,10 +9273,7 @@ interface DomIterable<K, V> {
   values(): IterableIterator<V>;
   entries(): IterableIterator<[K, V]>;
   [Symbol.iterator](): IterableIterator<[K, V]>;
-  forEach(
-    callback: (value: V, key: K, parent: this) => void,
-    thisArg?: any,
-  ): void;
+  forEach(callback: (value: V, key: K, parent: this) => void, thisArg?: any): void;
 }
 
 /** @category Fetch */
@@ -9526,29 +9392,29 @@ declare var Headers: {
 type RequestInfo = Request | string;
 /** @category Fetch */
 type RequestCache =
-  | "default"
-  | "force-cache"
-  | "no-cache"
-  | "no-store"
-  | "only-if-cached"
-  | "reload";
+  | 'default'
+  | 'force-cache'
+  | 'no-cache'
+  | 'no-store'
+  | 'only-if-cached'
+  | 'reload';
 /** @category Fetch */
-type RequestCredentials = "include" | "omit" | "same-origin";
+type RequestCredentials = 'include' | 'omit' | 'same-origin';
 /** @category Fetch */
-type RequestMode = "cors" | "navigate" | "no-cors" | "same-origin";
+type RequestMode = 'cors' | 'navigate' | 'no-cors' | 'same-origin';
 /** @category Fetch */
-type RequestRedirect = "error" | "follow" | "manual";
+type RequestRedirect = 'error' | 'follow' | 'manual';
 /** @category Fetch */
 type ReferrerPolicy =
-  | ""
-  | "no-referrer"
-  | "no-referrer-when-downgrade"
-  | "origin"
-  | "origin-when-cross-origin"
-  | "same-origin"
-  | "strict-origin"
-  | "strict-origin-when-cross-origin"
-  | "unsafe-url";
+  | ''
+  | 'no-referrer'
+  | 'no-referrer-when-downgrade'
+  | 'origin'
+  | 'origin-when-cross-origin'
+  | 'same-origin'
+  | 'strict-origin'
+  | 'strict-origin-when-cross-origin'
+  | 'unsafe-url';
 /** @category Fetch */
 type BodyInit =
   | Blob
@@ -9561,24 +9427,24 @@ type BodyInit =
   | string;
 /** @category Fetch */
 type RequestDestination =
-  | ""
-  | "audio"
-  | "audioworklet"
-  | "document"
-  | "embed"
-  | "font"
-  | "image"
-  | "manifest"
-  | "object"
-  | "paintworklet"
-  | "report"
-  | "script"
-  | "sharedworker"
-  | "style"
-  | "track"
-  | "video"
-  | "worker"
-  | "xslt";
+  | ''
+  | 'audio'
+  | 'audioworklet'
+  | 'document'
+  | 'embed'
+  | 'font'
+  | 'image'
+  | 'manifest'
+  | 'object'
+  | 'paintworklet'
+  | 'report'
+  | 'script'
+  | 'sharedworker'
+  | 'style'
+  | 'track'
+  | 'video'
+  | 'worker'
+  | 'xslt';
 
 /** @category Fetch */
 interface RequestInit {
@@ -9752,13 +9618,7 @@ interface ResponseInit {
 }
 
 /** @category Fetch */
-type ResponseType =
-  | "basic"
-  | "cors"
-  | "default"
-  | "error"
-  | "opaque"
-  | "opaqueredirect";
+type ResponseType = 'basic' | 'cors' | 'default' | 'error' | 'opaque' | 'opaqueredirect';
 
 /** This Fetch API interface represents the response to a request.
  *
@@ -9800,10 +9660,7 @@ declare var Response: {
  * @tags allow-net, allow-read
  * @category Fetch
  */
-declare function fetch(
-  input: RequestInfo | URL,
-  init?: RequestInit,
-): Promise<Response>;
+declare function fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
 
 /**
  * @category Fetch
@@ -9817,9 +9674,9 @@ interface EventSourceInit {
  * @category Fetch
  */
 interface EventSourceEventMap {
-  "error": Event;
-  "message": MessageEvent;
-  "open": Event;
+  error: Event;
+  message: MessageEvent;
+  open: Event;
 }
 
 /**
@@ -9948,11 +9805,7 @@ declare class GPUSupportedLimits {
 /** @category GPU */
 declare class GPUSupportedFeatures {
   forEach(
-    callbackfn: (
-      value: GPUFeatureName,
-      value2: GPUFeatureName,
-      set: Set<GPUFeatureName>,
-    ) => void,
+    callbackfn: (value: GPUFeatureName, value2: GPUFeatureName, set: Set<GPUFeatureName>) => void,
     thisArg?: any,
   ): void;
   has(value: GPUFeatureName): boolean;
@@ -10006,9 +9859,7 @@ declare class GPUAdapterInfo {
  * @category GPU
  */
 declare class GPU {
-  requestAdapter(
-    options?: GPURequestAdapterOptions,
-  ): Promise<GPUAdapter | null>;
+  requestAdapter(options?: GPURequestAdapterOptions): Promise<GPUAdapter | null>;
   getPreferredCanvasFormat(): GPUTextureFormat;
 }
 
@@ -10019,7 +9870,7 @@ interface GPURequestAdapterOptions {
 }
 
 /** @category GPU */
-type GPUPowerPreference = "low-power" | "high-performance";
+type GPUPowerPreference = 'low-power' | 'high-performance';
 
 /**
  * Represents a physical GPU device that can be used to create a logical GPU device.
@@ -10074,50 +9925,50 @@ interface GPUDeviceDescriptor extends GPUObjectDescriptorBase {
 
 /** @category GPU */
 type GPUFeatureName =
-  | "depth-clip-control"
-  | "timestamp-query"
-  | "indirect-first-instance"
-  | "shader-f16"
-  | "depth32float-stencil8"
-  | "texture-compression-bc"
-  | "texture-compression-bc-sliced-3d"
-  | "texture-compression-etc2"
-  | "texture-compression-astc"
-  | "rg11b10ufloat-renderable"
-  | "bgra8unorm-storage"
-  | "float32-filterable"
-  | "dual-source-blending"
-  | "subgroups"
+  | 'depth-clip-control'
+  | 'timestamp-query'
+  | 'indirect-first-instance'
+  | 'shader-f16'
+  | 'depth32float-stencil8'
+  | 'texture-compression-bc'
+  | 'texture-compression-bc-sliced-3d'
+  | 'texture-compression-etc2'
+  | 'texture-compression-astc'
+  | 'rg11b10ufloat-renderable'
+  | 'bgra8unorm-storage'
+  | 'float32-filterable'
+  | 'dual-source-blending'
+  | 'subgroups'
   // extended from spec
-  | "texture-format-16-bit-norm"
-  | "texture-compression-astc-hdr"
-  | "texture-adapter-specific-format-features"
-  | "pipeline-statistics-query"
-  | "timestamp-query-inside-passes"
-  | "mappable-primary-buffers"
-  | "texture-binding-array"
-  | "buffer-binding-array"
-  | "storage-resource-binding-array"
-  | "sampled-texture-and-storage-buffer-array-non-uniform-indexing"
-  | "uniform-buffer-and-storage-texture-array-non-uniform-indexing"
-  | "partially-bound-binding-array"
-  | "multi-draw-indirect"
-  | "multi-draw-indirect-count"
-  | "push-constants"
-  | "address-mode-clamp-to-zero"
-  | "address-mode-clamp-to-border"
-  | "polygon-mode-line"
-  | "polygon-mode-point"
-  | "conservative-rasterization"
-  | "vertex-writable-storage"
-  | "clear-texture"
-  | "spirv-shader-passthrough"
-  | "multiview"
-  | "vertex-attribute-64-bit"
-  | "shader-f64"
-  | "shader-i16"
-  | "shader-primitive-index"
-  | "shader-early-depth-test";
+  | 'texture-format-16-bit-norm'
+  | 'texture-compression-astc-hdr'
+  | 'texture-adapter-specific-format-features'
+  | 'pipeline-statistics-query'
+  | 'timestamp-query-inside-passes'
+  | 'mappable-primary-buffers'
+  | 'texture-binding-array'
+  | 'buffer-binding-array'
+  | 'storage-resource-binding-array'
+  | 'sampled-texture-and-storage-buffer-array-non-uniform-indexing'
+  | 'uniform-buffer-and-storage-texture-array-non-uniform-indexing'
+  | 'partially-bound-binding-array'
+  | 'multi-draw-indirect'
+  | 'multi-draw-indirect-count'
+  | 'push-constants'
+  | 'address-mode-clamp-to-zero'
+  | 'address-mode-clamp-to-border'
+  | 'polygon-mode-line'
+  | 'polygon-mode-point'
+  | 'conservative-rasterization'
+  | 'vertex-writable-storage'
+  | 'clear-texture'
+  | 'spirv-shader-passthrough'
+  | 'multiview'
+  | 'vertex-attribute-64-bit'
+  | 'shader-f64'
+  | 'shader-i16'
+  | 'shader-primitive-index'
+  | 'shader-early-depth-test';
 
 /**
  * The primary interface for interacting with a WebGPU device.
@@ -10161,34 +10012,18 @@ declare class GPUDevice extends EventTarget implements GPUObjectBase {
   createTexture(descriptor: GPUTextureDescriptor): GPUTexture;
   createSampler(descriptor?: GPUSamplerDescriptor): GPUSampler;
 
-  createBindGroupLayout(
-    descriptor: GPUBindGroupLayoutDescriptor,
-  ): GPUBindGroupLayout;
-  createPipelineLayout(
-    descriptor: GPUPipelineLayoutDescriptor,
-  ): GPUPipelineLayout;
+  createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout;
+  createPipelineLayout(descriptor: GPUPipelineLayoutDescriptor): GPUPipelineLayout;
   createBindGroup(descriptor: GPUBindGroupDescriptor): GPUBindGroup;
 
   createShaderModule(descriptor: GPUShaderModuleDescriptor): GPUShaderModule;
-  createComputePipeline(
-    descriptor: GPUComputePipelineDescriptor,
-  ): GPUComputePipeline;
-  createRenderPipeline(
-    descriptor: GPURenderPipelineDescriptor,
-  ): GPURenderPipeline;
-  createComputePipelineAsync(
-    descriptor: GPUComputePipelineDescriptor,
-  ): Promise<GPUComputePipeline>;
-  createRenderPipelineAsync(
-    descriptor: GPURenderPipelineDescriptor,
-  ): Promise<GPURenderPipeline>;
+  createComputePipeline(descriptor: GPUComputePipelineDescriptor): GPUComputePipeline;
+  createRenderPipeline(descriptor: GPURenderPipelineDescriptor): GPURenderPipeline;
+  createComputePipelineAsync(descriptor: GPUComputePipelineDescriptor): Promise<GPUComputePipeline>;
+  createRenderPipelineAsync(descriptor: GPURenderPipelineDescriptor): Promise<GPURenderPipeline>;
 
-  createCommandEncoder(
-    descriptor?: GPUCommandEncoderDescriptor,
-  ): GPUCommandEncoder;
-  createRenderBundleEncoder(
-    descriptor: GPURenderBundleEncoderDescriptor,
-  ): GPURenderBundleEncoder;
+  createCommandEncoder(descriptor?: GPUCommandEncoderDescriptor): GPUCommandEncoder;
+  createRenderBundleEncoder(descriptor: GPURenderBundleEncoderDescriptor): GPURenderBundleEncoder;
 
   createQuerySet(descriptor: GPUQuerySetDescriptor): GPUQuerySet;
 }
@@ -10229,11 +10064,7 @@ declare class GPUBuffer implements GPUObjectBase {
   readonly usage: GPUFlagsConstant;
   readonly mapState: GPUBufferMapState;
 
-  mapAsync(
-    mode: GPUMapModeFlags,
-    offset?: number,
-    size?: number,
-  ): Promise<undefined>;
+  mapAsync(mode: GPUMapModeFlags, offset?: number, size?: number): Promise<undefined>;
   getMappedRange(offset?: number, size?: number): ArrayBuffer;
   unmap(): undefined;
 
@@ -10241,7 +10072,7 @@ declare class GPUBuffer implements GPUObjectBase {
 }
 
 /** @category GPU */
-type GPUBufferMapState = "unmapped" | "pending" | "mapped";
+type GPUBufferMapState = 'unmapped' | 'pending' | 'mapped';
 
 /** @category GPU */
 interface GPUBufferDescriptor extends GPUObjectDescriptorBase {
@@ -10336,7 +10167,7 @@ interface GPUTextureDescriptor extends GPUObjectDescriptorBase {
 }
 
 /** @category GPU */
-type GPUTextureDimension = "1d" | "2d" | "3d";
+type GPUTextureDimension = '1d' | '2d' | '3d';
 
 /** @category GPU */
 type GPUTextureUsageFlags = number;
@@ -10368,114 +10199,108 @@ interface GPUTextureViewDescriptor extends GPUObjectDescriptorBase {
 }
 
 /** @category GPU */
-type GPUTextureViewDimension =
-  | "1d"
-  | "2d"
-  | "2d-array"
-  | "cube"
-  | "cube-array"
-  | "3d";
+type GPUTextureViewDimension = '1d' | '2d' | '2d-array' | 'cube' | 'cube-array' | '3d';
 
 /** @category GPU */
-type GPUTextureAspect = "all" | "stencil-only" | "depth-only";
+type GPUTextureAspect = 'all' | 'stencil-only' | 'depth-only';
 
 /** @category GPU */
 type GPUTextureFormat =
-  | "r8unorm"
-  | "r8snorm"
-  | "r8uint"
-  | "r8sint"
-  | "r16uint"
-  | "r16sint"
-  | "r16float"
-  | "rg8unorm"
-  | "rg8snorm"
-  | "rg8uint"
-  | "rg8sint"
-  | "r32uint"
-  | "r32sint"
-  | "r32float"
-  | "rg16uint"
-  | "rg16sint"
-  | "rg16float"
-  | "rgba8unorm"
-  | "rgba8unorm-srgb"
-  | "rgba8snorm"
-  | "rgba8uint"
-  | "rgba8sint"
-  | "bgra8unorm"
-  | "bgra8unorm-srgb"
-  | "rgb9e5ufloat"
-  | "rgb10a2uint"
-  | "rgb10a2unorm"
-  | "rg11b10ufloat"
-  | "rg32uint"
-  | "rg32sint"
-  | "rg32float"
-  | "rgba16uint"
-  | "rgba16sint"
-  | "rgba16float"
-  | "rgba32uint"
-  | "rgba32sint"
-  | "rgba32float"
-  | "stencil8"
-  | "depth16unorm"
-  | "depth24plus"
-  | "depth24plus-stencil8"
-  | "depth32float"
-  | "depth32float-stencil8"
-  | "bc1-rgba-unorm"
-  | "bc1-rgba-unorm-srgb"
-  | "bc2-rgba-unorm"
-  | "bc2-rgba-unorm-srgb"
-  | "bc3-rgba-unorm"
-  | "bc3-rgba-unorm-srgb"
-  | "bc4-r-unorm"
-  | "bc4-r-snorm"
-  | "bc5-rg-unorm"
-  | "bc5-rg-snorm"
-  | "bc6h-rgb-ufloat"
-  | "bc6h-rgb-float"
-  | "bc7-rgba-unorm"
-  | "bc7-rgba-unorm-srgb"
-  | "etc2-rgb8unorm"
-  | "etc2-rgb8unorm-srgb"
-  | "etc2-rgb8a1unorm"
-  | "etc2-rgb8a1unorm-srgb"
-  | "etc2-rgba8unorm"
-  | "etc2-rgba8unorm-srgb"
-  | "eac-r11unorm"
-  | "eac-r11snorm"
-  | "eac-rg11unorm"
-  | "eac-rg11snorm"
-  | "astc-4x4-unorm"
-  | "astc-4x4-unorm-srgb"
-  | "astc-5x4-unorm"
-  | "astc-5x4-unorm-srgb"
-  | "astc-5x5-unorm"
-  | "astc-5x5-unorm-srgb"
-  | "astc-6x5-unorm"
-  | "astc-6x5-unorm-srgb"
-  | "astc-6x6-unorm"
-  | "astc-6x6-unorm-srgb"
-  | "astc-8x5-unorm"
-  | "astc-8x5-unorm-srgb"
-  | "astc-8x6-unorm"
-  | "astc-8x6-unorm-srgb"
-  | "astc-8x8-unorm"
-  | "astc-8x8-unorm-srgb"
-  | "astc-10x5-unorm"
-  | "astc-10x5-unorm-srgb"
-  | "astc-10x6-unorm"
-  | "astc-10x6-unorm-srgb"
-  | "astc-10x8-unorm"
-  | "astc-10x8-unorm-srgb"
-  | "astc-10x10-unorm"
-  | "astc-10x10-unorm-srgb"
-  | "astc-12x10-unorm"
-  | "astc-12x10-unorm-srgb"
-  | "astc-12x12-unorm"
-  | "astc-12x12-unorm-srgb";
+  | 'r8unorm'
+  | 'r8snorm'
+  | 'r8uint'
+  | 'r8sint'
+  | 'r16uint'
+  | 'r16sint'
+  | 'r16float'
+  | 'rg8unorm'
+  | 'rg8snorm'
+  | 'rg8uint'
+  | 'rg8sint'
+  | 'r32uint'
+  | 'r32sint'
+  | 'r32float'
+  | 'rg16uint'
+  | 'rg16sint'
+  | 'rg16float'
+  | 'rgba8unorm'
+  | 'rgba8unorm-srgb'
+  | 'rgba8snorm'
+  | 'rgba8uint'
+  | 'rgba8sint'
+  | 'bgra8unorm'
+  | 'bgra8unorm-srgb'
+  | 'rgb9e5ufloat'
+  | 'rgb10a2uint'
+  | 'rgb10a2unorm'
+  | 'rg11b10ufloat'
+  | 'rg32uint'
+  | 'rg32sint'
+  | 'rg32float'
+  | 'rgba16uint'
+  | 'rgba16sint'
+  | 'rgba16float'
+  | 'rgba32uint'
+  | 'rgba32sint'
+  | 'rgba32float'
+  | 'stencil8'
+  | 'depth16unorm'
+  | 'depth24plus'
+  | 'depth24plus-stencil8'
+  | 'depth32float'
+  | 'depth32float-stencil8'
+  | 'bc1-rgba-unorm'
+  | 'bc1-rgba-unorm-srgb'
+  | 'bc2-rgba-unorm'
+  | 'bc2-rgba-unorm-srgb'
+  | 'bc3-rgba-unorm'
+  | 'bc3-rgba-unorm-srgb'
+  | 'bc4-r-unorm'
+  | 'bc4-r-snorm'
+  | 'bc5-rg-unorm'
+  | 'bc5-rg-snorm'
+  | 'bc6h-rgb-ufloat'
+  | 'bc6h-rgb-float'
+  | 'bc7-rgba-unorm'
+  | 'bc7-rgba-unorm-srgb'
+  | 'etc2-rgb8unorm'
+  | 'etc2-rgb8unorm-srgb'
+  | 'etc2-rgb8a1unorm'
+  | 'etc2-rgb8a1unorm-srgb'
+  | 'etc2-rgba8unorm'
+  | 'etc2-rgba8unorm-srgb'
+  | 'eac-r11unorm'
+  | 'eac-r11snorm'
+  | 'eac-rg11unorm'
+  | 'eac-rg11snorm'
+  | 'astc-4x4-unorm'
+  | 'astc-4x4-unorm-srgb'
+  | 'astc-5x4-unorm'
+  | 'astc-5x4-unorm-srgb'
+  | 'astc-5x5-unorm'
+  | 'astc-5x5-unorm-srgb'
+  | 'astc-6x5-unorm'
+  | 'astc-6x5-unorm-srgb'
+  | 'astc-6x6-unorm'
+  | 'astc-6x6-unorm-srgb'
+  | 'astc-8x5-unorm'
+  | 'astc-8x5-unorm-srgb'
+  | 'astc-8x6-unorm'
+  | 'astc-8x6-unorm-srgb'
+  | 'astc-8x8-unorm'
+  | 'astc-8x8-unorm-srgb'
+  | 'astc-10x5-unorm'
+  | 'astc-10x5-unorm-srgb'
+  | 'astc-10x6-unorm'
+  | 'astc-10x6-unorm-srgb'
+  | 'astc-10x8-unorm'
+  | 'astc-10x8-unorm-srgb'
+  | 'astc-10x10-unorm'
+  | 'astc-10x10-unorm-srgb'
+  | 'astc-12x10-unorm'
+  | 'astc-12x10-unorm-srgb'
+  | 'astc-12x12-unorm'
+  | 'astc-12x12-unorm-srgb';
 
 /** @category GPU */
 declare class GPUSampler implements GPUObjectBase {
@@ -10497,24 +10322,24 @@ interface GPUSamplerDescriptor extends GPUObjectDescriptorBase {
 }
 
 /** @category GPU */
-type GPUAddressMode = "clamp-to-edge" | "repeat" | "mirror-repeat";
+type GPUAddressMode = 'clamp-to-edge' | 'repeat' | 'mirror-repeat';
 
 /** @category GPU */
-type GPUFilterMode = "nearest" | "linear";
+type GPUFilterMode = 'nearest' | 'linear';
 
 /** @category GPU */
-type GPUMipmapFilterMode = "nearest" | "linear";
+type GPUMipmapFilterMode = 'nearest' | 'linear';
 
 /** @category GPU */
 type GPUCompareFunction =
-  | "never"
-  | "less"
-  | "equal"
-  | "less-equal"
-  | "greater"
-  | "not-equal"
-  | "greater-equal"
-  | "always";
+  | 'never'
+  | 'less'
+  | 'equal'
+  | 'less-equal'
+  | 'greater'
+  | 'not-equal'
+  | 'greater-equal'
+  | 'always';
 
 /** @category GPU */
 declare class GPUBindGroupLayout implements GPUObjectBase {
@@ -10555,7 +10380,7 @@ interface GPUBufferBindingLayout {
 }
 
 /** @category GPU */
-type GPUBufferBindingType = "uniform" | "storage" | "read-only-storage";
+type GPUBufferBindingType = 'uniform' | 'storage' | 'read-only-storage';
 
 /** @category GPU */
 interface GPUSamplerBindingLayout {
@@ -10563,10 +10388,7 @@ interface GPUSamplerBindingLayout {
 }
 
 /** @category GPU */
-type GPUSamplerBindingType =
-  | "filtering"
-  | "non-filtering"
-  | "comparison";
+type GPUSamplerBindingType = 'filtering' | 'non-filtering' | 'comparison';
 
 /** @category GPU */
 interface GPUTextureBindingLayout {
@@ -10576,18 +10398,10 @@ interface GPUTextureBindingLayout {
 }
 
 /** @category GPU */
-type GPUTextureSampleType =
-  | "float"
-  | "unfilterable-float"
-  | "depth"
-  | "sint"
-  | "uint";
+type GPUTextureSampleType = 'float' | 'unfilterable-float' | 'depth' | 'sint' | 'uint';
 
 /** @category GPU */
-type GPUStorageTextureAccess =
-  | "write-only"
-  | "read-only"
-  | "read-write";
+type GPUStorageTextureAccess = 'write-only' | 'read-only' | 'read-write';
 
 /** @category GPU */
 interface GPUStorageTextureBindingLayout {
@@ -10608,10 +10422,7 @@ interface GPUBindGroupDescriptor extends GPUObjectDescriptorBase {
 }
 
 /** @category GPU */
-type GPUBindingResource =
-  | GPUSampler
-  | GPUTextureView
-  | GPUBufferBinding;
+type GPUBindingResource = GPUSampler | GPUTextureView | GPUBufferBinding;
 
 /** @category GPU */
 interface GPUBindGroupEntry {
@@ -10637,7 +10448,7 @@ interface GPUPipelineLayoutDescriptor extends GPUObjectDescriptorBase {
 }
 
 /** @category GPU */
-type GPUCompilationMessageType = "error" | "warning" | "info";
+type GPUCompilationMessageType = 'error' | 'warning' | 'info';
 
 /** @category GPU */
 interface GPUCompilationMessage {
@@ -10665,7 +10476,7 @@ interface GPUPipelineError extends DOMException {
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/GPUPipelineError/reason)
    */
-  readonly reason: "validation" | "internal";
+  readonly reason: 'validation' | 'internal';
 }
 
 /** @category GPU */
@@ -10676,7 +10487,7 @@ declare var GPUPipelineError: {
 
 /** @category GPU */
 interface GPUPipelineErrorInit {
-  reason: "validation" | "internal";
+  reason: 'validation' | 'internal';
 }
 
 /**
@@ -10726,7 +10537,7 @@ interface GPUShaderModuleDescriptor extends GPUObjectDescriptorBase {
 }
 
 /** @category GPU */
-type GPUAutoLayoutMode = "auto";
+type GPUAutoLayoutMode = 'auto';
 
 /** @category GPU */
 interface GPUPipelineDescriptorBase extends GPUObjectDescriptorBase {
@@ -10784,17 +10595,17 @@ interface GPUPrimitiveState {
 
 /** @category GPU */
 type GPUPrimitiveTopology =
-  | "point-list"
-  | "line-list"
-  | "line-strip"
-  | "triangle-list"
-  | "triangle-strip";
+  | 'point-list'
+  | 'line-list'
+  | 'line-strip'
+  | 'triangle-list'
+  | 'triangle-strip';
 
 /** @category GPU */
-type GPUFrontFace = "ccw" | "cw";
+type GPUFrontFace = 'ccw' | 'cw';
 
 /** @category GPU */
-type GPUCullMode = "none" | "front" | "back";
+type GPUCullMode = 'none' | 'front' | 'back';
 
 /** @category GPU */
 interface GPUMultisampleState {
@@ -10831,7 +10642,7 @@ declare class GPUColorWrite {
   static GREEN: 0x2;
   static BLUE: 0x4;
   static ALPHA: 0x8;
-  static ALL: 0xF;
+  static ALL: 0xf;
 }
 
 /** @category GPU */
@@ -10843,31 +10654,26 @@ interface GPUBlendComponent {
 
 /** @category GPU */
 type GPUBlendFactor =
-  | "zero"
-  | "one"
-  | "src"
-  | "one-minus-src"
-  | "src-alpha"
-  | "one-minus-src-alpha"
-  | "dst"
-  | "one-minus-dst"
-  | "dst-alpha"
-  | "one-minus-dst-alpha"
-  | "src-alpha-saturated"
-  | "constant"
-  | "one-minus-constant"
-  | "src1"
-  | "one-minus-src1"
-  | "src1-alpha"
-  | "one-minus-src1-alpha";
+  | 'zero'
+  | 'one'
+  | 'src'
+  | 'one-minus-src'
+  | 'src-alpha'
+  | 'one-minus-src-alpha'
+  | 'dst'
+  | 'one-minus-dst'
+  | 'dst-alpha'
+  | 'one-minus-dst-alpha'
+  | 'src-alpha-saturated'
+  | 'constant'
+  | 'one-minus-constant'
+  | 'src1'
+  | 'one-minus-src1'
+  | 'src1-alpha'
+  | 'one-minus-src1-alpha';
 
 /** @category GPU */
-type GPUBlendOperation =
-  | "add"
-  | "subtract"
-  | "reverse-subtract"
-  | "min"
-  | "max";
+type GPUBlendOperation = 'add' | 'subtract' | 'reverse-subtract' | 'min' | 'max';
 
 /** @category GPU */
 interface GPUDepthStencilState {
@@ -10897,54 +10703,54 @@ interface GPUStencilFaceState {
 
 /** @category GPU */
 type GPUStencilOperation =
-  | "keep"
-  | "zero"
-  | "replace"
-  | "invert"
-  | "increment-clamp"
-  | "decrement-clamp"
-  | "increment-wrap"
-  | "decrement-wrap";
+  | 'keep'
+  | 'zero'
+  | 'replace'
+  | 'invert'
+  | 'increment-clamp'
+  | 'decrement-clamp'
+  | 'increment-wrap'
+  | 'decrement-wrap';
 
 /** @category GPU */
-type GPUIndexFormat = "uint16" | "uint32";
+type GPUIndexFormat = 'uint16' | 'uint32';
 
 /** @category GPU */
 type GPUVertexFormat =
-  | "uint8x2"
-  | "uint8x4"
-  | "sint8x2"
-  | "sint8x4"
-  | "unorm8x2"
-  | "unorm8x4"
-  | "snorm8x2"
-  | "snorm8x4"
-  | "uint16x2"
-  | "uint16x4"
-  | "sint16x2"
-  | "sint16x4"
-  | "unorm16x2"
-  | "unorm16x4"
-  | "snorm16x2"
-  | "snorm16x4"
-  | "float16x2"
-  | "float16x4"
-  | "float32"
-  | "float32x2"
-  | "float32x3"
-  | "float32x4"
-  | "uint32"
-  | "uint32x2"
-  | "uint32x3"
-  | "uint32x4"
-  | "sint32"
-  | "sint32x2"
-  | "sint32x3"
-  | "sint32x4"
-  | "unorm10-10-10-2";
+  | 'uint8x2'
+  | 'uint8x4'
+  | 'sint8x2'
+  | 'sint8x4'
+  | 'unorm8x2'
+  | 'unorm8x4'
+  | 'snorm8x2'
+  | 'snorm8x4'
+  | 'uint16x2'
+  | 'uint16x4'
+  | 'sint16x2'
+  | 'sint16x4'
+  | 'unorm16x2'
+  | 'unorm16x4'
+  | 'snorm16x2'
+  | 'snorm16x4'
+  | 'float16x2'
+  | 'float16x4'
+  | 'float32'
+  | 'float32x2'
+  | 'float32x3'
+  | 'float32x4'
+  | 'uint32'
+  | 'uint32x2'
+  | 'uint32x3'
+  | 'uint32x4'
+  | 'sint32'
+  | 'sint32x2'
+  | 'sint32x3'
+  | 'sint32x4'
+  | 'unorm10-10-10-2';
 
 /** @category GPU */
-type GPUVertexStepMode = "vertex" | "instance";
+type GPUVertexStepMode = 'vertex' | 'instance';
 
 /** @category GPU */
 interface GPUVertexState extends GPUProgrammableStage {
@@ -11029,9 +10835,7 @@ declare class GPUCommandEncoder implements GPUObjectBase {
   label: string;
 
   beginRenderPass(descriptor: GPURenderPassDescriptor): GPURenderPassEncoder;
-  beginComputePass(
-    descriptor?: GPUComputePassDescriptor,
-  ): GPUComputePassEncoder;
+  beginComputePass(descriptor?: GPUComputePassDescriptor): GPUComputePassEncoder;
 
   copyBufferToBuffer(
     source: GPUBuffer,
@@ -11059,11 +10863,7 @@ declare class GPUCommandEncoder implements GPUObjectBase {
     copySize: GPUExtent3D,
   ): undefined;
 
-  clearBuffer(
-    destination: GPUBuffer,
-    destinationOffset?: number,
-    size?: number,
-  ): undefined;
+  clearBuffer(destination: GPUBuffer, destinationOffset?: number, size?: number): undefined;
 
   pushDebugGroup(groupLabel: string): undefined;
   popDebugGroup(): undefined;
@@ -11100,11 +10900,7 @@ interface GPUTexelCopyTextureInfo {
 
 /** @category GPU */
 interface GPUProgrammablePassEncoder {
-  setBindGroup(
-    index: number,
-    bindGroup: GPUBindGroup | null,
-    dynamicOffsets?: number[],
-  ): undefined;
+  setBindGroup(index: number, bindGroup: GPUBindGroup | null, dynamicOffsets?: number[]): undefined;
 
   setBindGroup(
     index: number,
@@ -11120,14 +10916,9 @@ interface GPUProgrammablePassEncoder {
 }
 
 /** @category GPU */
-declare class GPUComputePassEncoder
-  implements GPUObjectBase, GPUProgrammablePassEncoder {
+declare class GPUComputePassEncoder implements GPUObjectBase, GPUProgrammablePassEncoder {
   label: string;
-  setBindGroup(
-    index: number,
-    bindGroup: GPUBindGroup | null,
-    dynamicOffsets?: number[],
-  ): undefined;
+  setBindGroup(index: number, bindGroup: GPUBindGroup | null, dynamicOffsets?: number[]): undefined;
   setBindGroup(
     index: number,
     bindGroup: GPUBindGroup | null,
@@ -11140,10 +10931,7 @@ declare class GPUComputePassEncoder
   insertDebugMarker(markerLabel: string): undefined;
   setPipeline(pipeline: GPUComputePipeline): undefined;
   dispatchWorkgroups(x: number, y?: number, z?: number): undefined;
-  dispatchWorkgroupsIndirect(
-    indirectBuffer: GPUBuffer,
-    indirectOffset: number,
-  ): undefined;
+  dispatchWorkgroupsIndirect(indirectBuffer: GPUBuffer, indirectOffset: number): undefined;
 
   end(): undefined;
 }
@@ -11170,12 +10958,7 @@ interface GPURenderEncoderBase {
     offset?: number,
     size?: number,
   ): undefined;
-  setVertexBuffer(
-    slot: number,
-    buffer: GPUBuffer,
-    offset?: number,
-    size?: number,
-  ): undefined;
+  setVertexBuffer(slot: number, buffer: GPUBuffer, offset?: number, size?: number): undefined;
 
   draw(
     vertexCount: number,
@@ -11192,21 +10975,15 @@ interface GPURenderEncoderBase {
   ): undefined;
 
   drawIndirect(indirectBuffer: GPUBuffer, indirectOffset: number): undefined;
-  drawIndexedIndirect(
-    indirectBuffer: GPUBuffer,
-    indirectOffset: number,
-  ): undefined;
+  drawIndexedIndirect(indirectBuffer: GPUBuffer, indirectOffset: number): undefined;
 }
 
 /** @category GPU */
 declare class GPURenderPassEncoder
-  implements GPUObjectBase, GPUProgrammablePassEncoder, GPURenderEncoderBase {
+  implements GPUObjectBase, GPUProgrammablePassEncoder, GPURenderEncoderBase
+{
   label: string;
-  setBindGroup(
-    index: number,
-    bindGroup: GPUBindGroup | null,
-    dynamicOffsets?: number[],
-  ): undefined;
+  setBindGroup(index: number, bindGroup: GPUBindGroup | null, dynamicOffsets?: number[]): undefined;
   setBindGroup(
     index: number,
     bindGroup: GPUBindGroup | null,
@@ -11224,12 +11001,7 @@ declare class GPURenderPassEncoder
     offset?: number,
     size?: number,
   ): undefined;
-  setVertexBuffer(
-    slot: number,
-    buffer: GPUBuffer,
-    offset?: number,
-    size?: number,
-  ): undefined;
+  setVertexBuffer(slot: number, buffer: GPUBuffer, offset?: number, size?: number): undefined;
   draw(
     vertexCount: number,
     instanceCount?: number,
@@ -11244,10 +11016,7 @@ declare class GPURenderPassEncoder
     firstInstance?: number,
   ): undefined;
   drawIndirect(indirectBuffer: GPUBuffer, indirectOffset: number): undefined;
-  drawIndexedIndirect(
-    indirectBuffer: GPUBuffer,
-    indirectOffset: number,
-  ): undefined;
+  drawIndexedIndirect(indirectBuffer: GPUBuffer, indirectOffset: number): undefined;
 
   setViewport(
     x: number,
@@ -11258,12 +11027,7 @@ declare class GPURenderPassEncoder
     maxDepth: number,
   ): undefined;
 
-  setScissorRect(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-  ): undefined;
+  setScissorRect(x: number, y: number, width: number, height: number): undefined;
 
   setBlendConstant(color: GPUColor): undefined;
   setStencilReference(reference: number): undefined;
@@ -11316,10 +11080,10 @@ interface GPURenderPassDepthStencilAttachment {
 }
 
 /** @category GPU */
-type GPULoadOp = "load" | "clear";
+type GPULoadOp = 'load' | 'clear';
 
 /** @category GPU */
-type GPUStoreOp = "store" | "discard";
+type GPUStoreOp = 'store' | 'discard';
 
 /** @category GPU */
 declare class GPURenderBundle implements GPUObjectBase {
@@ -11331,7 +11095,8 @@ interface GPURenderBundleDescriptor extends GPUObjectDescriptorBase {}
 
 /** @category GPU */
 declare class GPURenderBundleEncoder
-  implements GPUObjectBase, GPUProgrammablePassEncoder, GPURenderEncoderBase {
+  implements GPUObjectBase, GPUProgrammablePassEncoder, GPURenderEncoderBase
+{
   label: string;
   draw(
     vertexCount: number,
@@ -11346,19 +11111,12 @@ declare class GPURenderBundleEncoder
     baseVertex?: number,
     firstInstance?: number,
   ): undefined;
-  drawIndexedIndirect(
-    indirectBuffer: GPUBuffer,
-    indirectOffset: number,
-  ): undefined;
+  drawIndexedIndirect(indirectBuffer: GPUBuffer, indirectOffset: number): undefined;
   drawIndirect(indirectBuffer: GPUBuffer, indirectOffset: number): undefined;
   insertDebugMarker(markerLabel: string): undefined;
   popDebugGroup(): undefined;
   pushDebugGroup(groupLabel: string): undefined;
-  setBindGroup(
-    index: number,
-    bindGroup: GPUBindGroup | null,
-    dynamicOffsets?: number[],
-  ): undefined;
+  setBindGroup(index: number, bindGroup: GPUBindGroup | null, dynamicOffsets?: number[]): undefined;
   setBindGroup(
     index: number,
     bindGroup: GPUBindGroup | null,
@@ -11373,12 +11131,7 @@ declare class GPURenderBundleEncoder
     size?: number,
   ): undefined;
   setPipeline(pipeline: GPURenderPipeline): undefined;
-  setVertexBuffer(
-    slot: number,
-    buffer: GPUBuffer,
-    offset?: number,
-    size?: number,
-  ): undefined;
+  setVertexBuffer(slot: number, buffer: GPUBuffer, offset?: number, size?: number): undefined;
 
   finish(descriptor?: GPURenderBundleDescriptor): GPURenderBundle;
 }
@@ -11478,10 +11231,10 @@ interface GPUQuerySetDescriptor extends GPUObjectDescriptorBase {
 }
 
 /** @category GPU */
-type GPUQueryType = "occlusion" | "timestamp";
+type GPUQueryType = 'occlusion' | 'timestamp';
 
 /** @category GPU */
-type GPUDeviceLostReason = "destroyed";
+type GPUDeviceLostReason = 'destroyed';
 
 /** @category GPU */
 interface GPUDeviceLostInfo {
@@ -11540,14 +11293,11 @@ declare var GPUInternalError: {
 };
 
 /** @category GPU */
-type GPUErrorFilter = "out-of-memory" | "validation" | "internal";
+type GPUErrorFilter = 'out-of-memory' | 'validation' | 'internal';
 
 /** @category GPU */
 declare class GPUUncapturedErrorEvent extends Event {
-  constructor(
-    type: string,
-    gpuUncapturedErrorEventInitDict: GPUUncapturedErrorEventInit,
-  );
+  constructor(type: string, gpuUncapturedErrorEventInitDict: GPUUncapturedErrorEventInit);
 
   readonly error: GPUError;
 }
@@ -11589,7 +11339,7 @@ interface GPUExtent3DDict {
 type GPUExtent3D = number[] | GPUExtent3DDict;
 
 /** @category GPU */
-type GPUCanvasAlphaMode = "opaque" | "premultiplied";
+type GPUCanvasAlphaMode = 'opaque' | 'premultiplied';
 
 /** @category GPU */
 interface GPUCanvasConfiguration {
@@ -11597,7 +11347,7 @@ interface GPUCanvasConfiguration {
   format: GPUTextureFormat;
   usage?: GPUTextureUsageFlags;
   viewFormats?: GPUTextureFormat[];
-  colorSpace?: "srgb" | "display-p3";
+  colorSpace?: 'srgb' | 'display-p3';
   alphaMode?: GPUCanvasAlphaMode;
 }
 
@@ -11891,10 +11641,7 @@ interface WebSocket extends EventTarget {
  */
 declare var WebSocket: {
   readonly prototype: WebSocket;
-  new (
-    url: string | URL,
-    protocolsOrOptions?: string | string[] | WebSocketOptions,
-  ): WebSocket;
+  new (url: string | URL, protocolsOrOptions?: string | string[] | WebSocketOptions): WebSocket;
   readonly CLOSED: number;
   readonly CLOSING: number;
   readonly CONNECTING: number;
@@ -11968,7 +11715,7 @@ interface WebSocketOptions {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/binaryType
  * @category WebSockets
  */
-type BinaryType = "arraybuffer" | "blob";
+type BinaryType = 'arraybuffer' | 'blob';
 
 // Copyright 2018-2025 the Deno authors. MIT license.
 
@@ -12033,14 +11780,14 @@ declare var Storage: {
  *
  * @category Canvas
  */
-type ColorSpaceConversion = "default" | "none";
+type ColorSpaceConversion = 'default' | 'none';
 
 /**
  * Specifies how the bitmap image should be oriented.
  *
  * @category Canvas
  */
-type ImageOrientation = "flipY" | "from-image" | "none";
+type ImageOrientation = 'flipY' | 'from-image' | 'none';
 
 /**
  * Specifies whether the bitmap's color channels should be premultiplied by
@@ -12048,7 +11795,7 @@ type ImageOrientation = "flipY" | "from-image" | "none";
  *
  * @category Canvas
  */
-type PremultiplyAlpha = "default" | "none" | "premultiply";
+type PremultiplyAlpha = 'default' | 'none' | 'premultiply';
 
 /**
  * Specifies the algorithm to be used for resizing the input to match the
@@ -12056,7 +11803,7 @@ type PremultiplyAlpha = "default" | "none" | "premultiply";
  *
  * @category Canvas
  */
-type ResizeQuality = "high" | "low" | "medium" | "pixelated";
+type ResizeQuality = 'high' | 'low' | 'medium' | 'pixelated';
 
 /**
  * The `ImageBitmapSource` type represents an image data source that can be
@@ -12222,7 +11969,7 @@ declare var ImageBitmap: {
 /// <reference lib="esnext" />
 
 /** @category Crypto */
-declare var crypto: Crypto;
+declare let crypto: Crypto;
 
 /** @category Crypto */
 interface Algorithm {
@@ -12239,19 +11986,19 @@ type AlgorithmIdentifier = string | Algorithm;
 /** @category Crypto */
 type HashAlgorithmIdentifier = AlgorithmIdentifier;
 /** @category Crypto */
-type KeyType = "private" | "public" | "secret";
+type KeyType = 'private' | 'public' | 'secret';
 /** @category Crypto */
 type KeyUsage =
-  | "decrypt"
-  | "deriveBits"
-  | "deriveKey"
-  | "encrypt"
-  | "sign"
-  | "unwrapKey"
-  | "verify"
-  | "wrapKey";
+  | 'decrypt'
+  | 'deriveBits'
+  | 'deriveKey'
+  | 'encrypt'
+  | 'sign'
+  | 'unwrapKey'
+  | 'verify'
+  | 'wrapKey';
 /** @category Crypto */
-type KeyFormat = "jwk" | "pkcs8" | "raw" | "spki";
+type KeyFormat = 'jwk' | 'pkcs8' | 'raw' | 'spki';
 /** @category Crypto */
 type NamedCurve = string;
 /** @category Crypto */
@@ -12573,13 +12320,9 @@ interface SubtleCrypto {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey
    */
   importKey(
-    format: "jwk",
+    format: 'jwk',
     keyData: JsonWebKey,
-    algorithm:
-      | AlgorithmIdentifier
-      | HmacImportParams
-      | RsaHashedImportParams
-      | EcKeyImportParams,
+    algorithm: AlgorithmIdentifier | HmacImportParams | RsaHashedImportParams | EcKeyImportParams,
     extractable: boolean,
     keyUsages: KeyUsage[],
   ): Promise<CryptoKey>;
@@ -12600,13 +12343,9 @@ interface SubtleCrypto {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey
    */
   importKey(
-    format: Exclude<KeyFormat, "jwk">,
+    format: Exclude<KeyFormat, 'jwk'>,
     keyData: BufferSource,
-    algorithm:
-      | AlgorithmIdentifier
-      | HmacImportParams
-      | RsaHashedImportParams
-      | EcKeyImportParams,
+    algorithm: AlgorithmIdentifier | HmacImportParams | RsaHashedImportParams | EcKeyImportParams,
     extractable: boolean,
     keyUsages: KeyUsage[],
   ): Promise<CryptoKey>;
@@ -12623,7 +12362,7 @@ interface SubtleCrypto {
    *
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/exportKey
    */
-  exportKey(format: "jwk", key: CryptoKey): Promise<JsonWebKey>;
+  exportKey(format: 'jwk', key: CryptoKey): Promise<JsonWebKey>;
   /**
    * Exports a cryptographic key in raw, PKCS8, or SPKI format.
    *
@@ -12636,10 +12375,7 @@ interface SubtleCrypto {
    *
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/exportKey
    */
-  exportKey(
-    format: Exclude<KeyFormat, "jwk">,
-    key: CryptoKey,
-  ): Promise<ArrayBuffer>;
+  exportKey(format: Exclude<KeyFormat, 'jwk'>, key: CryptoKey): Promise<ArrayBuffer>;
   /**
    * Generates a digital signature using a private cryptographic key.
    *
@@ -12688,10 +12424,7 @@ interface SubtleCrypto {
    *
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
    */
-  digest(
-    algorithm: AlgorithmIdentifier,
-    data: BufferSource,
-  ): Promise<ArrayBuffer>;
+  digest(algorithm: AlgorithmIdentifier, data: BufferSource): Promise<ArrayBuffer>;
   /**
    * Encrypts data using a cryptographic key.
    *
@@ -12705,12 +12438,7 @@ interface SubtleCrypto {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt
    */
   encrypt(
-    algorithm:
-      | AlgorithmIdentifier
-      | RsaOaepParams
-      | AesCbcParams
-      | AesGcmParams
-      | AesCtrParams,
+    algorithm: AlgorithmIdentifier | RsaOaepParams | AesCbcParams | AesGcmParams | AesCtrParams,
     key: CryptoKey,
     data: BufferSource,
   ): Promise<ArrayBuffer>;
@@ -12725,12 +12453,7 @@ interface SubtleCrypto {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt
    */
   decrypt(
-    algorithm:
-      | AlgorithmIdentifier
-      | RsaOaepParams
-      | AesCbcParams
-      | AesGcmParams
-      | AesCtrParams,
+    algorithm: AlgorithmIdentifier | RsaOaepParams | AesCbcParams | AesGcmParams | AesCtrParams,
     key: CryptoKey,
     data: BufferSource,
   ): Promise<ArrayBuffer>;
@@ -12745,11 +12468,7 @@ interface SubtleCrypto {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveBits
    */
   deriveBits(
-    algorithm:
-      | AlgorithmIdentifier
-      | HkdfParams
-      | Pbkdf2Params
-      | EcdhKeyDeriveParams,
+    algorithm: AlgorithmIdentifier | HkdfParams | Pbkdf2Params | EcdhKeyDeriveParams,
     baseKey: CryptoKey,
     length: number,
   ): Promise<ArrayBuffer>;
@@ -12768,11 +12487,7 @@ interface SubtleCrypto {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey
    */
   deriveKey(
-    algorithm:
-      | AlgorithmIdentifier
-      | HkdfParams
-      | Pbkdf2Params
-      | EcdhKeyDeriveParams,
+    algorithm: AlgorithmIdentifier | HkdfParams | Pbkdf2Params | EcdhKeyDeriveParams,
     baseKey: CryptoKey,
     derivedKeyType:
       | AlgorithmIdentifier
@@ -12797,11 +12512,7 @@ interface SubtleCrypto {
     format: KeyFormat,
     key: CryptoKey,
     wrappingKey: CryptoKey,
-    wrapAlgorithm:
-      | AlgorithmIdentifier
-      | RsaOaepParams
-      | AesCbcParams
-      | AesCtrParams,
+    wrapAlgorithm: AlgorithmIdentifier | RsaOaepParams | AesCbcParams | AesCtrParams,
   ): Promise<ArrayBuffer>;
   /**
    * Unwraps (decrypts) a previously wrapped key.
@@ -12826,11 +12537,7 @@ interface SubtleCrypto {
     format: KeyFormat,
     wrappedKey: BufferSource,
     unwrappingKey: CryptoKey,
-    unwrapAlgorithm:
-      | AlgorithmIdentifier
-      | RsaOaepParams
-      | AesCbcParams
-      | AesCtrParams,
+    unwrapAlgorithm: AlgorithmIdentifier | RsaOaepParams | AesCbcParams | AesCtrParams,
     unwrappedKeyAlgorithm:
       | AlgorithmIdentifier
       | HmacImportParams
@@ -12919,8 +12626,8 @@ declare var Crypto: {
  * @category Messaging
  */
 interface BroadcastChannelEventMap {
-  "message": MessageEvent;
-  "messageerror": MessageEvent;
+  message: MessageEvent;
+  messageerror: MessageEvent;
 }
 
 /**
@@ -12982,14 +12689,14 @@ declare var BroadcastChannel: {
 declare namespace Deno {
   /** @category Network */
   export interface NetAddr {
-    transport: "tcp" | "udp";
+    transport: 'tcp' | 'udp';
     hostname: string;
     port: number;
   }
 
   /** @category Network */
   export interface UnixAddr {
-    transport: "unix" | "unixpacket";
+    transport: 'unix' | 'unixpacket';
     path: string;
   }
 
@@ -12998,7 +12705,7 @@ declare namespace Deno {
    * @category Network
    */
   export interface VsockAddr {
-    transport: "vsock";
+    transport: 'vsock';
     cid: number;
     port: number;
   }
@@ -13181,8 +12888,7 @@ declare namespace Deno {
   }
 
   /** @category Network */
-  export interface TcpListenOptions extends ListenOptions {
-  }
+  export interface TcpListenOptions extends ListenOptions {}
 
   /** Listen announces on the local transport address.
    *
@@ -13198,9 +12904,7 @@ declare namespace Deno {
    * @tags allow-net
    * @category Network
    */
-  export function listen(
-    options: TcpListenOptions & { transport?: "tcp" },
-  ): TcpListener;
+  export function listen(options: TcpListenOptions & { transport?: 'tcp' }): TcpListener;
 
   /** Options which can be set when opening a Unix listener via
    * {@linkcode Deno.listen} or {@linkcode Deno.listenDatagram}.
@@ -13224,9 +12928,7 @@ declare namespace Deno {
    * @category Network
    */
   // deno-lint-ignore adjacent-overload-signatures
-  export function listen(
-    options: UnixListenOptions & { transport: "unix" },
-  ): UnixListener;
+  export function listen(options: UnixListenOptions & { transport: 'unix' }): UnixListener;
 
   /** Options which can be set when opening a VSOCK listener via
    * {@linkcode Deno.listen}.
@@ -13256,9 +12958,7 @@ declare namespace Deno {
    * @category Network
    */
   // deno-lint-ignore adjacent-overload-signatures
-  export function listen(
-    options: VsockListenOptions & { transport: "vsock" },
-  ): VsockListener;
+  export function listen(options: VsockListenOptions & { transport: 'vsock' }): VsockListener;
 
   /**
    * Provides certified key material from strings. The key material is provided in
@@ -13279,7 +12979,7 @@ declare namespace Deno {
    */
   export interface TlsCertifiedKeyPem {
     /** The format of this key material, which must be PEM. */
-    keyFormat?: "pem";
+    keyFormat?: 'pem';
     /** Private key in `PEM` format. RSA, EC, and PKCS8-format keys are supported. */
     key: string;
     /** Certificate chain in `PEM` format. */
@@ -13288,7 +12988,7 @@ declare namespace Deno {
 
   /** @category Network */
   export interface ListenTlsOptions extends TcpListenOptions {
-    transport?: "tcp";
+    transport?: 'tcp';
 
     /** Application-Layer Protocol Negotiation (ALPN) protocols to announce to
      * the client. If not specified, no ALPN extension will be included in the
@@ -13313,9 +13013,7 @@ declare namespace Deno {
    * @tags allow-net
    * @category Network
    */
-  export function listenTls(
-    options: ListenTlsOptions & TlsCertifiedKeyPem,
-  ): TlsListener;
+  export function listenTls(options: ListenTlsOptions & TlsCertifiedKeyPem): TlsListener;
 
   /** @category Network */
   export interface ConnectOptions {
@@ -13327,7 +13025,7 @@ declare namespace Deno {
      * @default {"127.0.0.1"} */
     hostname?: string;
     /** The transport layer protocol to use. */
-    transport?: "tcp";
+    transport?: 'tcp';
     /** An {@linkcode AbortSignal} to close the tcp connection. */
     signal?: AbortSignal;
   }
@@ -13364,7 +13062,7 @@ declare namespace Deno {
 
   /** @category Network */
   export interface UnixConnectOptions {
-    transport: "unix";
+    transport: 'unix';
     path: string;
   }
 
@@ -13395,7 +13093,7 @@ declare namespace Deno {
    * @category Network
    */
   export interface VsockConnectOptions {
-    transport: "vsock";
+    transport: 'vsock';
     cid: number;
     port: number;
   }
@@ -13538,10 +13236,7 @@ declare namespace Deno {
    * @tags allow-net
    * @category Network
    */
-  export function startTls(
-    conn: TcpConn,
-    options?: StartTlsOptions,
-  ): Promise<TlsConn>;
+  export function startTls(conn: TcpConn, options?: StartTlsOptions): Promise<TlsConn>;
 
   /**
    * **UNSTABLE**: New API, yet to be vetted.
@@ -13594,7 +13289,7 @@ declare namespace Deno {
      * The congestion control algorithm used when sending data over this connection.
      * @default {"default"}
      */
-    congestionControl?: "throughput" | "low-latency" | "default";
+    congestionControl?: 'throughput' | 'low-latency' | 'default';
   }
 
   /**
@@ -13602,8 +13297,7 @@ declare namespace Deno {
    * @experimental
    * @category Network
    */
-  export interface ConnectQuicOptions<ZRTT extends boolean>
-    extends QuicTransportOptions {
+  export interface ConnectQuicOptions<ZRTT extends boolean> extends QuicTransportOptions {
     /** The port to connect to. */
     port: number;
     /** A literal IP address or host name that can be resolved to an IP address. */
@@ -13675,8 +13369,7 @@ declare namespace Deno {
    * @experimental
    * @category Network
    */
-  export interface QuicAcceptOptions<ZRTT extends boolean>
-    extends QuicServerTransportOptions {
+  export interface QuicAcceptOptions<ZRTT extends boolean> extends QuicServerTransportOptions {
     /** Application-Layer Protocol Negotiation (ALPN) protocols to announce to
      * the client. QUIC requires the use of ALPN.
      */
@@ -13833,13 +13526,9 @@ declare namespace Deno {
      * with errors. */
     close(info?: QuicCloseInfo): void;
     /** Opens and returns a bidirectional stream. */
-    createBidirectionalStream(
-      options?: QuicSendStreamOptions,
-    ): Promise<QuicBidirectionalStream>;
+    createBidirectionalStream(options?: QuicSendStreamOptions): Promise<QuicBidirectionalStream>;
     /** Opens and returns a unidirectional stream. */
-    createUnidirectionalStream(
-      options?: QuicSendStreamOptions,
-    ): Promise<QuicSendStream>;
+    createUnidirectionalStream(options?: QuicSendStreamOptions): Promise<QuicSendStream>;
     /** Send a datagram. The provided data cannot be larger than
      * `maxDatagramSize`. */
     sendDatagram(data: Uint8Array): Promise<void>;
@@ -13865,9 +13554,7 @@ declare namespace Deno {
     /** Returns a promise that resolves when the connection is closed. */
     readonly closed: Promise<QuicCloseInfo>;
     /** A stream of bidirectional streams opened by the peer. */
-    readonly incomingBidirectionalStreams: ReadableStream<
-      QuicBidirectionalStream
-    >;
+    readonly incomingBidirectionalStreams: ReadableStream<QuicBidirectionalStream>;
     /** A stream of unidirectional streams opened by the peer. */
     readonly incomingUnidirectionalStreams: ReadableStream<QuicReceiveStream>;
     /** Returns the datagram stream for sending and receiving datagrams. */
@@ -13893,8 +13580,7 @@ declare namespace Deno {
    * @experimental
    * @category Network
    */
-  export interface QuicSendStream
-    extends WritableStream<Uint8Array<ArrayBufferLike>> {
+  export interface QuicSendStream extends WritableStream<Uint8Array<ArrayBufferLike>> {
     /** Indicates the send priority of this stream relative to other streams for
      * which the value has been set. */
     sendOrder: number;
@@ -13911,8 +13597,7 @@ declare namespace Deno {
    * @experimental
    * @category Network
    */
-  export interface QuicReceiveStream
-    extends ReadableStream<Uint8Array<ArrayBuffer>> {
+  export interface QuicReceiveStream extends ReadableStream<Uint8Array<ArrayBuffer>> {
     /**
      * 62-bit stream ID, unique within this connection.
      */
@@ -13944,7 +13629,7 @@ declare namespace Deno {
    */
   export function connectQuic<ZRTT extends boolean>(
     options: ConnectQuicOptions<ZRTT>,
-  ): ZRTT extends true ? (QuicConn | Promise<QuicConn>) : Promise<QuicConn>;
+  ): ZRTT extends true ? QuicConn | Promise<QuicConn> : Promise<QuicConn>;
 
   /**
    * **UNSTABLE**: New API, yet to be vetted.
@@ -13954,9 +13639,7 @@ declare namespace Deno {
    * @category Network
    * @experimental
    */
-  export function upgradeWebTransport(
-    conn: QuicConn,
-  ): Promise<WebTransport & { url: string }>;
+  export function upgradeWebTransport(conn: QuicConn): Promise<WebTransport & { url: string }>;
 
   export {}; // only export exports
 }
@@ -14091,10 +13774,7 @@ declare namespace WebAssembly {
      * Given a `Module` and string, returns a copy of the contents of all custom sections in the
      * module with the given string name.
      */
-    static customSections(
-      moduleObject: Module,
-      sectionName: string,
-    ): ArrayBuffer[];
+    static customSections(moduleObject: Module, sectionName: string): ArrayBuffer[];
 
     /** Given a `Module`, returns an array containing descriptions of all the declared exports. */
     static exports(moduleObject: Module): ModuleExportDescriptor[];
@@ -14212,11 +13892,11 @@ declare namespace WebAssembly {
   }
 
   /** @category Wasm */
-  export type ImportExportKind = "function" | "global" | "memory" | "table";
+  export type ImportExportKind = 'function' | 'global' | 'memory' | 'table';
   /** @category Wasm */
-  export type TableKind = "anyfunc";
+  export type TableKind = 'anyfunc';
   /** @category Wasm */
-  export type ValueType = "f32" | "f64" | "i32" | "i64";
+  export type ValueType = 'f32' | 'f64' | 'i32' | 'i64';
   /** @category Wasm */
   export type ExportValue = Function | Global | Memory | Table;
   /** @category Wasm */
@@ -14250,9 +13930,7 @@ declare namespace WebAssembly {
    *
    * @category Wasm
    */
-  export function compileStreaming(
-    source: Response | Promise<Response>,
-  ): Promise<Module>;
+  export function compileStreaming(source: Response | Promise<Response>): Promise<Module>;
 
   /**
    * The WebAssembly.instantiate() function allows you to compile and instantiate
@@ -14284,10 +13962,7 @@ declare namespace WebAssembly {
    *
    * @category Wasm
    */
-  export function instantiate(
-    moduleObject: Module,
-    importObject?: Imports,
-  ): Promise<Instance>;
+  export function instantiate(moduleObject: Module, importObject?: Imports): Promise<Instance>;
 
   /**
    * The `WebAssembly.instantiateStreaming()` function compiles and instantiates a
@@ -14436,7 +14111,7 @@ type AllowSharedBufferSource = ArrayBufferView | ArrayBufferLike;
  *
  * @category I/O
  */
-declare var console: Console;
+declare let console: Console;
 
 /** @category Events */
 interface ErrorEventInit extends EventInit {
@@ -14477,26 +14152,23 @@ interface PromiseRejectionEvent extends Event {
 /** @category Events */
 declare var PromiseRejectionEvent: {
   readonly prototype: PromiseRejectionEvent;
-  new (
-    type: string,
-    eventInitDict?: PromiseRejectionEventInit,
-  ): PromiseRejectionEvent;
+  new (type: string, eventInitDict?: PromiseRejectionEventInit): PromiseRejectionEvent;
 };
 
 /** @category Workers */
 interface AbstractWorkerEventMap {
-  "error": ErrorEvent;
+  error: ErrorEvent;
 }
 
 /** @category Workers */
 interface WorkerEventMap extends AbstractWorkerEventMap {
-  "message": MessageEvent;
-  "messageerror": MessageEvent;
+  message: MessageEvent;
+  messageerror: MessageEvent;
 }
 
 /** @category Workers */
 interface WorkerOptions {
-  type?: "classic" | "module";
+  type?: 'classic' | 'module';
   name?: string;
 }
 
@@ -14712,17 +14384,10 @@ interface Performance extends EventTarget {
 
   /** Stores the `DOMHighResTimeStamp` duration between two marks along with the
    * associated name (a "measure"). */
-  measure(
-    measureName: string,
-    options?: PerformanceMeasureOptions,
-  ): PerformanceMeasure;
+  measure(measureName: string, options?: PerformanceMeasureOptions): PerformanceMeasure;
   /** Stores the `DOMHighResTimeStamp` duration between two marks along with the
    * associated name (a "measure"). */
-  measure(
-    measureName: string,
-    startMark?: string,
-    endMark?: string,
-  ): PerformanceMeasure;
+  measure(measureName: string, startMark?: string, endMark?: string): PerformanceMeasure;
 
   /** Returns a current time from Deno's start in fractional milliseconds.
    *
@@ -14744,7 +14409,7 @@ declare var Performance: {
 };
 
 /** @category Performance */
-declare var performance: Performance;
+declare let performance: Performance;
 
 /** @category Performance */
 interface PerformanceMarkOptions {
@@ -14807,7 +14472,7 @@ declare var PerformanceEntry: {
  */
 interface PerformanceMark extends PerformanceEntry {
   readonly detail: any;
-  readonly entryType: "mark";
+  readonly entryType: 'mark';
 }
 
 /** `PerformanceMark` is an abstract interface for `PerformanceEntry` objects
@@ -14831,7 +14496,7 @@ declare var PerformanceMark: {
  */
 interface PerformanceMeasure extends PerformanceEntry {
   readonly detail: any;
-  readonly entryType: "measure";
+  readonly entryType: 'measure';
 }
 
 /** `PerformanceMeasure` is an abstract interface for `PerformanceEntry` objects
@@ -14867,7 +14532,7 @@ declare var CustomEvent: {
 /** @category Platform */
 interface ErrorConstructor {
   /** See https://v8.dev/docs/stack-trace-api#stack-trace-collection-for-custom-exceptions. */
-  captureStackTrace(error: Object, constructor?: Function): void;
+  captureStackTrace(error: object, constructor?: Function): void;
   stackTraceLimit: number;
   // TODO(nayeemrmn): Support `Error.prepareStackTrace()`. We currently use this
   // internally in a way that makes it unavailable for users.
@@ -14922,10 +14587,7 @@ interface Cache {
    * 1. You cannot match cache objects using by relative paths.
    * 2. You cannot pass options like `ignoreVary`, `ignoreMethod`, `ignoreSearch`.
    */
-  match(
-    request: RequestInfo | URL,
-    options?: CacheQueryOptions,
-  ): Promise<Response | undefined>;
+  match(request: RequestInfo | URL, options?: CacheQueryOptions): Promise<Response | undefined>;
   /**
    * Delete cache object matching the provided request.
    *
@@ -14933,10 +14595,7 @@ interface Cache {
    * 1. You cannot delete cache objects using by relative paths.
    * 2. You cannot pass options like `ignoreVary`, `ignoreMethod`, `ignoreSearch`.
    */
-  delete(
-    request: RequestInfo | URL,
-    options?: CacheQueryOptions,
-  ): Promise<boolean>;
+  delete(request: RequestInfo | URL, options?: CacheQueryOptions): Promise<boolean>;
 }
 
 /** @category Cache */
@@ -14977,9 +14636,9 @@ interface CacheQueryOptions {
  * @category Platform
  */
 interface WindowEventMap {
-  "error": ErrorEvent;
-  "unhandledrejection": PromiseRejectionEvent;
-  "rejectionhandled": PromiseRejectionEvent;
+  error: ErrorEvent;
+  unhandledrejection: PromiseRejectionEvent;
+  rejectionhandled: PromiseRejectionEvent;
 }
 
 /**
@@ -15009,12 +14668,8 @@ interface Window extends EventTarget {
   onload: ((this: Window, ev: Event) => any) | null;
   onbeforeunload: ((this: Window, ev: Event) => any) | null;
   onunload: ((this: Window, ev: Event) => any) | null;
-  onunhandledrejection:
-    | ((this: Window, ev: PromiseRejectionEvent) => any)
-    | null;
-  onrejectionhandled:
-    | ((this: Window, ev: PromiseRejectionEvent) => any)
-    | null;
+  onunhandledrejection: ((this: Window, ev: PromiseRejectionEvent) => any) | null;
+  onrejectionhandled: ((this: Window, ev: PromiseRejectionEvent) => any) | null;
   close: () => void;
   readonly closed: boolean;
   alert: (message?: string) => void;
@@ -15032,10 +14687,7 @@ interface Window extends EventTarget {
 
   addEventListener<K extends keyof WindowEventMap>(
     type: K,
-    listener: (
-      this: Window,
-      ev: WindowEventMap[K],
-    ) => any,
+    listener: (this: Window, ev: WindowEventMap[K]) => any,
     options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
@@ -15045,10 +14697,7 @@ interface Window extends EventTarget {
   ): void;
   removeEventListener<K extends keyof WindowEventMap>(
     type: K,
-    listener: (
-      this: Window,
-      ev: WindowEventMap[K],
-    ) => any,
+    listener: (this: Window, ev: WindowEventMap[K]) => any,
     options?: boolean | EventListenerOptions,
   ): void;
   removeEventListener(
@@ -15077,7 +14726,7 @@ declare var Window: {
  * @ignore
  * @category Platform
  */
-declare var window: Window & typeof globalThis;
+declare let window: Window & typeof globalThis;
 
 /**
  * Reference to the global object itself.
@@ -15085,7 +14734,7 @@ declare var window: Window & typeof globalThis;
  *
  * @category Platform
  */
-declare var self: Window & typeof globalThis;
+declare let self: Window & typeof globalThis;
 
 /**
  * Indicates whether the current window (context) is closed.
@@ -15093,7 +14742,7 @@ declare var self: Window & typeof globalThis;
  *
  * @category Platform
  */
-declare var closed: boolean;
+declare let closed: boolean;
 
 /**
  * Exits the current Deno process.
@@ -15132,7 +14781,7 @@ declare function close(): void;
  *
  * @category Events
  */
-declare var onerror: ((this: Window, ev: ErrorEvent) => any) | null;
+declare let onerror: ((this: Window, ev: ErrorEvent) => any) | null;
 
 /**
  * Load event handler for the window.
@@ -15140,7 +14789,7 @@ declare var onerror: ((this: Window, ev: ErrorEvent) => any) | null;
  *
  * @category Events
  */
-declare var onload: ((this: Window, ev: Event) => any) | null;
+declare let onload: ((this: Window, ev: Event) => any) | null;
 
 /**
  * Before unload event handler for the window.
@@ -15148,7 +14797,7 @@ declare var onload: ((this: Window, ev: Event) => any) | null;
  *
  * @category Events
  */
-declare var onbeforeunload: ((this: Window, ev: Event) => any) | null;
+declare let onbeforeunload: ((this: Window, ev: Event) => any) | null;
 
 /**
  * Unload event handler for the window.
@@ -15156,7 +14805,7 @@ declare var onbeforeunload: ((this: Window, ev: Event) => any) | null;
  *
  * @category Events
  */
-declare var onunload: ((this: Window, ev: Event) => any) | null;
+declare let onunload: ((this: Window, ev: Event) => any) | null;
 
 /**
  * Event handler for unhandled promise rejections.
@@ -15175,9 +14824,7 @@ declare var onunload: ((this: Window, ev: Event) => any) | null;
  *
  * @category Events
  */
-declare var onunhandledrejection:
-  | ((this: Window, ev: PromiseRejectionEvent) => any)
-  | null;
+declare let onunhandledrejection: ((this: Window, ev: PromiseRejectionEvent) => any) | null;
 
 /**
  * Deno's `localStorage` API provides a way to store key-value pairs in a
@@ -15221,7 +14868,7 @@ declare var onunhandledrejection:
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
  * @category Storage */
-declare var localStorage: Storage;
+declare let localStorage: Storage;
 
 /**
  * Deno's `sessionStorage` API operates similarly to the {@linkcode localStorage} API,
@@ -15259,7 +14906,7 @@ declare var localStorage: Storage;
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
  * @category Storage
  */
-declare var sessionStorage: Storage;
+declare let sessionStorage: Storage;
 /** @category Cache */
 /**
  * Provides access to the Cache API. Returns a CacheStorage object, which enables storing, retrieving, and managing request/response pairs in a cache.
@@ -15350,7 +14997,7 @@ declare var Navigator: {
  *
  * @category Platform
  */
-declare var navigator: Navigator;
+declare let navigator: Navigator;
 
 /**
  * Shows the given message and waits for the enter key pressed.
@@ -15429,9 +15076,7 @@ declare function prompt(message?: string, defaultValue?: string): string | null;
  *
  * @category Events
  */
-declare function addEventListener<
-  K extends keyof WindowEventMap,
->(
+declare function addEventListener<K extends keyof WindowEventMap>(
   type: K,
   listener: (this: Window, ev: WindowEventMap[K]) => any,
   options?: boolean | AddEventListenerOptions,
@@ -15453,9 +15098,7 @@ declare function addEventListener(
  *
  * @category Events
  */
-declare function removeEventListener<
-  K extends keyof WindowEventMap,
->(
+declare function removeEventListener<K extends keyof WindowEventMap>(
   type: K,
   listener: (this: Window, ev: WindowEventMap[K]) => any,
   options?: boolean | EventListenerOptions,
@@ -15553,10 +15196,10 @@ declare var Location: {
 // TODO(nayeemrmn): Move this to `extensions/web` where its implementation is.
 // The types there must first be split into window, worker and global types.
 /** @category Platform */
-declare var location: Location;
+declare let location: Location;
 
 /** @category Platform */
-declare var name: string;
+declare let name: string;
 
 // Copyright 2018-2025 the Deno authors. MIT license.
 
@@ -15578,21 +15221,21 @@ declare namespace Deno {
      * @category Bundler
      * @experimental
      */
-    export type Platform = "browser" | "deno";
+    export type Platform = 'browser' | 'deno';
 
     /**
      * The output format of the bundle.
      * @category Bundler
      * @experimental
      */
-    export type Format = "esm" | "cjs" | "iife";
+    export type Format = 'esm' | 'cjs' | 'iife';
 
     /**
      * The source map type of the bundle.
      * @category Bundler
      * @experimental
      */
-    export type SourceMapType = "linked" | "inline" | "external";
+    export type SourceMapType = 'linked' | 'inline' | 'external';
 
     /**
      * How to handle packages.
@@ -15602,7 +15245,7 @@ declare namespace Deno {
      * @category Bundler
      * @experimental
      */
-    export type PackageHandling = "bundle" | "external";
+    export type PackageHandling = 'bundle' | 'external';
 
     /**
      * Options for the bundle.
@@ -15731,9 +15374,7 @@ declare namespace Deno {
    * @category Bundle
    * @experimental
    */
-  export function bundle(
-    options: Deno.bundle.Options,
-  ): Promise<Deno.bundle.Result>;
+  export function bundle(options: Deno.bundle.Options): Promise<Deno.bundle.Result>;
 
   /** **UNSTABLE**: New API, yet to be vetted.
    *
@@ -15753,16 +15394,14 @@ declare namespace Deno {
    * @experimental
    */
   export class UnsafeWindowSurface {
-    constructor(
-      options: {
-        system: "cocoa" | "win32" | "x11" | "wayland";
-        windowHandle: Deno.PointerValue<unknown>;
-        displayHandle: Deno.PointerValue<unknown>;
-        width: number;
-        height: number;
-      },
-    );
-    getContext(context: "webgpu"): GPUCanvasContext;
+    constructor(options: {
+      system: 'cocoa' | 'win32' | 'x11' | 'wayland';
+      windowHandle: Deno.PointerValue<unknown>;
+      displayHandle: Deno.PointerValue<unknown>;
+      width: number;
+      height: number;
+    });
+    getContext(context: 'webgpu'): GPUCanvasContext;
     present(): void;
     /**
      * This method should be invoked when the size of the window changes.
@@ -15807,19 +15446,12 @@ declare namespace Deno {
    * @category Network
    * @experimental
    */
-  export interface DatagramConn
-    extends AsyncIterable<[Uint8Array<ArrayBuffer>, Addr]> {
+  export interface DatagramConn extends AsyncIterable<[Uint8Array<ArrayBuffer>, Addr]> {
     /** Joins an IPv4 multicast group. */
-    joinMulticastV4(
-      address: string,
-      networkInterface: string,
-    ): Promise<MulticastV4Membership>;
+    joinMulticastV4(address: string, networkInterface: string): Promise<MulticastV4Membership>;
 
     /** Joins an IPv6 multicast group. */
-    joinMulticastV6(
-      address: string,
-      networkInterface: number,
-    ): Promise<MulticastV6Membership>;
+    joinMulticastV6(address: string, networkInterface: number): Promise<MulticastV6Membership>;
 
     /** Waits for and resolves to the next message to the instance.
      *
@@ -15835,9 +15467,7 @@ declare namespace Deno {
     close(): void;
     /** Return the address of the instance. */
     readonly addr: Addr;
-    [Symbol.asyncIterator](): AsyncIterableIterator<
-      [Uint8Array<ArrayBuffer>, Addr]
-    >;
+    [Symbol.asyncIterator](): AsyncIterableIterator<[Uint8Array<ArrayBuffer>, Addr]>;
   }
 
   /**
@@ -15903,9 +15533,7 @@ declare namespace Deno {
    * @category Network
    * @experimental
    */
-  export function listenDatagram(
-    options: UdpListenOptions & { transport: "udp" },
-  ): DatagramConn;
+  export function listenDatagram(options: UdpListenOptions & { transport: 'udp' }): DatagramConn;
 
   /** **UNSTABLE**: New API, yet to be vetted.
    *
@@ -15925,7 +15553,7 @@ declare namespace Deno {
    * @experimental
    */
   export function listenDatagram(
-    options: UnixListenOptions & { transport: "unixpacket" },
+    options: UnixListenOptions & { transport: 'unixpacket' },
   ): DatagramConn;
 
   /** **UNSTABLE**: New API, yet to be vetted.
@@ -15954,11 +15582,14 @@ declare namespace Deno {
    * @category Cloud
    * @experimental
    */
-  export type CronScheduleExpression = number | { exact: number | number[] } | {
-    start?: number;
-    end?: number;
-    every?: number;
-  };
+  export type CronScheduleExpression =
+    | number
+    | { exact: number | number[] }
+    | {
+        start?: number;
+        end?: number;
+        every?: number;
+      };
 
   /** **UNSTABLE**: New API, yet to be vetted.
    *
@@ -16094,13 +15725,7 @@ declare namespace Deno {
    * @category Cloud
    * @experimental
    */
-  export type KvKeyPart =
-    | Uint8Array
-    | string
-    | number
-    | bigint
-    | boolean
-    | symbol;
+  export type KvKeyPart = Uint8Array | string | number | bigint | boolean | symbol;
 
   /** **UNSTABLE**: New API, yet to be vetted.
    *
@@ -16112,7 +15737,7 @@ declare namespace Deno {
    * @category Cloud
    * @experimental
    */
-  export type KvConsistencyLevel = "strong" | "eventual";
+  export type KvConsistencyLevel = 'strong' | 'eventual';
 
   /** **UNSTABLE**: New API, yet to be vetted.
    *
@@ -16166,15 +15791,13 @@ declare namespace Deno {
    * @category Cloud
    * @experimental
    */
-  export type KvMutation =
-    & { key: KvKey }
-    & (
-      | { type: "set"; value: unknown; expireIn?: number }
-      | { type: "delete" }
-      | { type: "sum"; value: KvU64 }
-      | { type: "max"; value: KvU64 }
-      | { type: "min"; value: KvU64 }
-    );
+  export type KvMutation = { key: KvKey } & (
+    | { type: 'set'; value: unknown; expireIn?: number }
+    | { type: 'delete' }
+    | { type: 'sum'; value: KvU64 }
+    | { type: 'max'; value: KvU64 }
+    | { type: 'min'; value: KvU64 }
+  );
 
   /** **UNSTABLE**: New API, yet to be vetted.
    *
@@ -16226,11 +15849,13 @@ declare namespace Deno {
    * @category Cloud
    * @experimental
    */
-  export type KvEntryMaybe<T> = KvEntry<T> | {
-    key: KvKey;
-    value: null;
-    versionstamp: null;
-  };
+  export type KvEntryMaybe<T> =
+    | KvEntry<T>
+    | {
+        key: KvKey;
+        value: null;
+        versionstamp: null;
+      };
 
   /** **UNSTABLE**: New API, yet to be vetted.
    *
@@ -16546,11 +16171,7 @@ declare namespace Deno {
      * key may still be visible for some additional time. If the `expireIn`
      * option is not specified, the key will not expire.
      */
-    set(
-      key: KvKey,
-      value: unknown,
-      options?: { expireIn?: number },
-    ): Promise<KvCommitResult>;
+    set(key: KvKey, value: unknown, options?: { expireIn?: number }): Promise<KvCommitResult>;
 
     /**
      * Delete the value for the given key from the database. If no value exists
@@ -16602,10 +16223,7 @@ declare namespace Deno {
      * list operation. See the documentation for {@linkcode Deno.KvListOptions}
      * for more information.
      */
-    list<T = unknown>(
-      selector: KvListSelector,
-      options?: KvListOptions,
-    ): KvListIterator<T>;
+    list<T = unknown>(selector: KvListSelector, options?: KvListOptions): KvListIterator<T>;
 
     /**
      * Add a value into the database queue to be delivered to the queue
@@ -16791,28 +16409,28 @@ declare namespace Deno {
      * @experimental
      */
     export interface MediaBundle {
-      "text/plain"?: string;
-      "text/html"?: string;
-      "image/svg+xml"?: string;
-      "text/markdown"?: string;
-      "application/javascript"?: string;
+      'text/plain'?: string;
+      'text/html'?: string;
+      'image/svg+xml'?: string;
+      'text/markdown'?: string;
+      'application/javascript'?: string;
 
       // Images (per Jupyter spec) must be base64 encoded. We could _allow_
       // accepting Uint8Array or ArrayBuffer within `display` calls, however we still
       // must encode them for jupyter.
-      "image/png"?: string; // WISH: Uint8Array | ArrayBuffer
-      "image/jpeg"?: string; // WISH: Uint8Array | ArrayBuffer
-      "image/gif"?: string; // WISH: Uint8Array | ArrayBuffer
-      "application/pdf"?: string; // WISH: Uint8Array | ArrayBuffer
+      'image/png'?: string; // WISH: Uint8Array | ArrayBuffer
+      'image/jpeg'?: string; // WISH: Uint8Array | ArrayBuffer
+      'image/gif'?: string; // WISH: Uint8Array | ArrayBuffer
+      'application/pdf'?: string; // WISH: Uint8Array | ArrayBuffer
 
       // NOTE: all JSON types must be objects at the top level (no arrays, strings, or other primitives)
-      "application/json"?: object;
-      "application/geo+json"?: object;
-      "application/vdom.v1+json"?: object;
-      "application/vnd.plotly.v1+json"?: object;
-      "application/vnd.vega.v5+json"?: VegaObject;
-      "application/vnd.vegalite.v4+json"?: VegaObject;
-      "application/vnd.vegalite.v5+json"?: VegaObject;
+      'application/json'?: object;
+      'application/geo+json'?: object;
+      'application/vdom.v1+json'?: object;
+      'application/vnd.plotly.v1+json'?: object;
+      'application/vnd.vega.v5+json'?: VegaObject;
+      'application/vnd.vegalite.v4+json'?: VegaObject;
+      'application/vnd.vegalite.v5+json'?: VegaObject;
 
       // Must support a catch all for custom media types / mimetypes
       [key: string]: string | object | undefined;
@@ -16842,10 +16460,7 @@ declare namespace Deno {
      * @category Jupyter
      * @experimental
      */
-    export function display(
-      obj: unknown,
-      options?: DisplayOptions,
-    ): Promise<void>;
+    export function display(obj: unknown, options?: DisplayOptions): Promise<void>;
 
     /**
      * Show Markdown in Jupyter frontends with a tagged template function.
@@ -16870,10 +16485,7 @@ declare namespace Deno {
      * @category Jupyter
      * @experimental
      */
-    export function md(
-      strings: TemplateStringsArray,
-      ...values: unknown[]
-    ): Displayable;
+    export function md(strings: TemplateStringsArray, ...values: unknown[]): Displayable;
 
     /**
      * Show HTML in Jupyter frontends with a tagged template function.
@@ -16890,10 +16502,7 @@ declare namespace Deno {
      * @category Jupyter
      * @experimental
      */
-    export function html(
-      strings: TemplateStringsArray,
-      ...values: unknown[]
-    ): Displayable;
+    export function html(strings: TemplateStringsArray, ...values: unknown[]): Displayable;
 
     /**
      * SVG Tagged Template Function.
@@ -16909,10 +16518,7 @@ declare namespace Deno {
      * @category Jupyter
      * @experimental
      */
-    export function svg(
-      strings: TemplateStringsArray,
-      ...values: unknown[]
-    ): Displayable;
+    export function svg(strings: TemplateStringsArray, ...values: unknown[]): Displayable;
 
     /**
      * Display a JPG or PNG image.
@@ -17113,16 +16719,11 @@ declare namespace Deno {
      * @category Linter
      * @experimental
      */
-    export type LintVisitor =
-      & {
-        [P in Node["type"]]?: (node: Extract<Node, { type: P }>) => void;
-      }
-      & {
-        [P in Node["type"] as `${P}:exit`]?: (
-          node: Extract<Node, { type: P }>,
-        ) => void;
-      }
-      & // Custom selectors which cannot be typed by us
+    export type LintVisitor = {
+      [P in Node['type']]?: (node: Extract<Node, { type: P }>) => void;
+    } & {
+      [P in Node['type'] as `${P}:exit`]?: (node: Extract<Node, { type: P }>) => void;
+    } & // Custom selectors which cannot be typed by us
       // deno-lint-ignore no-explicit-any
       Partial<{ [key: string]: (node: any) => void }>;
 
@@ -17179,20 +16780,16 @@ declare namespace Deno {
      * @category Linter
      * @experimental
      */
-    export function runPlugin(
-      plugin: Plugin,
-      fileName: string,
-      source: string,
-    ): Diagnostic[];
+    export function runPlugin(plugin: Plugin, fileName: string, source: string): Diagnostic[];
 
     /**
      * @category Linter
      * @experimental
      */
     export interface Program {
-      type: "Program";
+      type: 'Program';
       range: Range;
-      sourceType: "module" | "script";
+      sourceType: 'module' | 'script';
       body: Statement[];
       comments: Array<LineComment | BlockComment>;
     }
@@ -17202,11 +16799,11 @@ declare namespace Deno {
      * @experimental
      */
     export interface ImportSpecifier {
-      type: "ImportSpecifier";
+      type: 'ImportSpecifier';
       range: Range;
       imported: Identifier | StringLiteral;
       local: Identifier;
-      importKind: "type" | "value";
+      importKind: 'type' | 'value';
       parent: ExportAllDeclaration | ExportNamedDeclaration | ImportDeclaration;
     }
 
@@ -17215,7 +16812,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ImportDefaultSpecifier {
-      type: "ImportDefaultSpecifier";
+      type: 'ImportDefaultSpecifier';
       range: Range;
       local: Identifier;
       parent: ImportDeclaration;
@@ -17226,7 +16823,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ImportNamespaceSpecifier {
-      type: "ImportNamespaceSpecifier";
+      type: 'ImportNamespaceSpecifier';
       range: Range;
       local: Identifier;
       parent: ImportDeclaration;
@@ -17237,15 +16834,11 @@ declare namespace Deno {
      * @experimental
      */
     export interface ImportAttribute {
-      type: "ImportAttribute";
+      type: 'ImportAttribute';
       range: Range;
       key: Identifier | Literal;
       value: Literal;
-      parent:
-        | ExportAllDeclaration
-        | ExportNamedDeclaration
-        | ImportDeclaration
-        | TSImportType;
+      parent: ExportAllDeclaration | ExportNamedDeclaration | ImportDeclaration | TSImportType;
     }
 
     /**
@@ -17254,15 +16847,11 @@ declare namespace Deno {
      * @experimental
      */
     export interface ImportDeclaration {
-      type: "ImportDeclaration";
+      type: 'ImportDeclaration';
       range: Range;
-      importKind: "type" | "value";
+      importKind: 'type' | 'value';
       source: StringLiteral;
-      specifiers: Array<
-        | ImportDefaultSpecifier
-        | ImportNamespaceSpecifier
-        | ImportSpecifier
-      >;
+      specifiers: Array<ImportDefaultSpecifier | ImportNamespaceSpecifier | ImportSpecifier>;
       attributes: ImportAttribute[];
       parent: Node;
     }
@@ -17272,7 +16861,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ExportDefaultDeclaration {
-      type: "ExportDefaultDeclaration";
+      type: 'ExportDefaultDeclaration';
       range: Range;
       declaration:
         | ClassDeclaration
@@ -17284,7 +16873,7 @@ declare namespace Deno {
         | TSModuleDeclaration
         | TSTypeAliasDeclaration
         | VariableDeclaration;
-      exportKind: "type" | "value";
+      exportKind: 'type' | 'value';
       parent: BlockStatement | Program | TSModuleBlock;
     }
 
@@ -17293,9 +16882,9 @@ declare namespace Deno {
      * @experimental
      */
     export interface ExportNamedDeclaration {
-      type: "ExportNamedDeclaration";
+      type: 'ExportNamedDeclaration';
       range: Range;
-      exportKind: "type" | "value";
+      exportKind: 'type' | 'value';
       specifiers: ExportSpecifier[];
       declaration:
         | ClassDeclaration
@@ -17318,9 +16907,9 @@ declare namespace Deno {
      * @experimental
      */
     export interface ExportAllDeclaration {
-      type: "ExportAllDeclaration";
+      type: 'ExportAllDeclaration';
       range: Range;
-      exportKind: "type" | "value";
+      exportKind: 'type' | 'value';
       exported: Identifier | null;
       source: StringLiteral;
       attributes: ImportAttribute[];
@@ -17332,7 +16921,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSNamespaceExportDeclaration {
-      type: "TSNamespaceExportDeclaration";
+      type: 'TSNamespaceExportDeclaration';
       range: Range;
       id: Identifier;
       parent: Node;
@@ -17343,9 +16932,9 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSImportEqualsDeclaration {
-      type: "TSImportEqualsDeclaration";
+      type: 'TSImportEqualsDeclaration';
       range: Range;
-      importKind: "type" | "value";
+      importKind: 'type' | 'value';
       id: Identifier;
       moduleReference: Identifier | TSExternalModuleReference | TSQualifiedName;
       parent: Node;
@@ -17356,7 +16945,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSExternalModuleReference {
-      type: "TSExternalModuleReference";
+      type: 'TSExternalModuleReference';
       range: Range;
       expression: StringLiteral;
       parent: Node;
@@ -17367,9 +16956,9 @@ declare namespace Deno {
      * @experimental
      */
     export interface ExportSpecifier {
-      type: "ExportSpecifier";
+      type: 'ExportSpecifier';
       range: Range;
-      exportKind: "type" | "value";
+      exportKind: 'type' | 'value';
       exported: Identifier | StringLiteral;
       local: Identifier | StringLiteral;
       parent: ExportNamedDeclaration;
@@ -17381,10 +16970,10 @@ declare namespace Deno {
      * @experimental
      */
     export interface VariableDeclaration {
-      type: "VariableDeclaration";
+      type: 'VariableDeclaration';
       range: Range;
       declare: boolean;
-      kind: "let" | "var" | "const" | "await using" | "using";
+      kind: 'let' | 'var' | 'const' | 'await using' | 'using';
       declarations: VariableDeclarator[];
       parent: Node;
     }
@@ -17396,7 +16985,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface VariableDeclarator {
-      type: "VariableDeclarator";
+      type: 'VariableDeclarator';
       range: Range;
       id: ArrayPattern | ObjectPattern | Identifier;
       init: Expression | null;
@@ -17422,7 +17011,7 @@ declare namespace Deno {
      * @category Linter
      * @experimental
      */
-    export type Accessibility = "private" | "protected" | "public";
+    export type Accessibility = 'private' | 'protected' | 'public';
 
     /**
      * Declares a function in the current scope
@@ -17430,7 +17019,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface FunctionDeclaration {
-      type: "FunctionDeclaration";
+      type: 'FunctionDeclaration';
       range: Range;
       declare: boolean;
       async: boolean;
@@ -17440,11 +17029,7 @@ declare namespace Deno {
       returnType: TSTypeAnnotation | undefined;
       body: BlockStatement | null;
       params: Parameter[];
-      parent:
-        | BlockStatement
-        | ExportDefaultDeclaration
-        | ExportNamedDeclaration
-        | Program;
+      parent: BlockStatement | ExportDefaultDeclaration | ExportNamedDeclaration | Program;
     }
 
     /**
@@ -17453,7 +17038,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface Decorator {
-      type: "Decorator";
+      type: 'Decorator';
       range: Range;
       expression:
         | ArrayExpression
@@ -17487,7 +17072,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ClassDeclaration {
-      type: "ClassDeclaration";
+      type: 'ClassDeclaration';
       range: Range;
       declare: boolean;
       abstract: boolean;
@@ -17529,7 +17114,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ClassExpression {
-      type: "ClassExpression";
+      type: 'ClassExpression';
       range: Range;
       declare: boolean;
       abstract: boolean;
@@ -17571,7 +17156,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ClassBody {
-      type: "ClassBody";
+      type: 'ClassBody';
       range: Range;
       body: Array<
         | AccessorProperty
@@ -17594,7 +17179,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface StaticBlock {
-      type: "StaticBlock";
+      type: 'StaticBlock';
       range: Range;
       body: Statement[];
       parent: ClassBody;
@@ -17608,7 +17193,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface AccessorProperty {
-      type: "AccessorProperty";
+      type: 'AccessorProperty';
       range: Range;
       declare: boolean;
       computed: boolean;
@@ -17628,7 +17213,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface PropertyDefinition {
-      type: "PropertyDefinition";
+      type: 'PropertyDefinition';
       range: Range;
       declare: boolean;
       computed: boolean;
@@ -17638,12 +17223,7 @@ declare namespace Deno {
       static: boolean;
       accessibility: Accessibility | undefined;
       decorators: Decorator[];
-      key:
-        | Expression
-        | Identifier
-        | NumberLiteral
-        | StringLiteral
-        | PrivateIdentifier;
+      key: Expression | Identifier | NumberLiteral | StringLiteral | PrivateIdentifier;
       value: Expression | null;
       typeAnnotation: TSTypeAnnotation | undefined;
       parent: ClassBody;
@@ -17654,7 +17234,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface MethodDefinition {
-      type: "MethodDefinition";
+      type: 'MethodDefinition';
       range: Range;
       declare: boolean;
       computed: boolean;
@@ -17662,15 +17242,10 @@ declare namespace Deno {
       override: boolean;
       readonly: boolean;
       static: boolean;
-      kind: "constructor" | "get" | "method" | "set";
+      kind: 'constructor' | 'get' | 'method' | 'set';
       accessibility: Accessibility | undefined;
       decorators: Decorator[];
-      key:
-        | PrivateIdentifier
-        | Identifier
-        | NumberLiteral
-        | StringLiteral
-        | Expression;
+      key: PrivateIdentifier | Identifier | NumberLiteral | StringLiteral | Expression;
       value: FunctionExpression | TSEmptyBodyFunctionExpression;
       parent: ClassBody;
     }
@@ -17680,7 +17255,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface BlockStatement {
-      type: "BlockStatement";
+      type: 'BlockStatement';
       range: Range;
       body: Statement[];
       parent:
@@ -17705,7 +17280,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface DebuggerStatement {
-      type: "DebuggerStatement";
+      type: 'DebuggerStatement';
       range: Range;
       parent:
         | Program
@@ -17730,7 +17305,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface WithStatement {
-      type: "WithStatement";
+      type: 'WithStatement';
       range: Range;
       object: Expression;
       body: Statement;
@@ -17756,7 +17331,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ReturnStatement {
-      type: "ReturnStatement";
+      type: 'ReturnStatement';
       range: Range;
       argument: Expression | null;
       parent:
@@ -17781,7 +17356,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface LabeledStatement {
-      type: "LabeledStatement";
+      type: 'LabeledStatement';
       range: Range;
       label: Identifier;
       body: Statement;
@@ -17817,7 +17392,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface BreakStatement {
-      type: "BreakStatement";
+      type: 'BreakStatement';
       range: Range;
       label: Identifier | null;
       parent:
@@ -17842,7 +17417,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ContinueStatement {
-      type: "ContinueStatement";
+      type: 'ContinueStatement';
       range: Range;
       label: Identifier | null;
       parent:
@@ -17868,7 +17443,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface IfStatement {
-      type: "IfStatement";
+      type: 'IfStatement';
       range: Range;
       test: Expression;
       consequent: Statement;
@@ -17895,7 +17470,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface SwitchStatement {
-      type: "SwitchStatement";
+      type: 'SwitchStatement';
       range: Range;
       discriminant: Expression;
       cases: SwitchCase[];
@@ -17921,7 +17496,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface SwitchCase {
-      type: "SwitchCase";
+      type: 'SwitchCase';
       range: Range;
       test: Expression | null;
       consequent: Statement[];
@@ -17935,7 +17510,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ThrowStatement {
-      type: "ThrowStatement";
+      type: 'ThrowStatement';
       range: Range;
       argument: Expression;
       parent:
@@ -17960,7 +17535,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface WhileStatement {
-      type: "WhileStatement";
+      type: 'WhileStatement';
       range: Range;
       test: Expression;
       body: Statement;
@@ -17986,7 +17561,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface DoWhileStatement {
-      type: "DoWhileStatement";
+      type: 'DoWhileStatement';
       range: Range;
       test: Expression;
       body: Statement;
@@ -18012,7 +17587,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ForStatement {
-      type: "ForStatement";
+      type: 'ForStatement';
       range: Range;
       init: Expression | VariableDeclaration | null;
       test: Expression | null;
@@ -18040,7 +17615,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ForInStatement {
-      type: "ForInStatement";
+      type: 'ForInStatement';
       range: Range;
       left: Expression | VariableDeclaration;
       right: Expression;
@@ -18067,7 +17642,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ForOfStatement {
-      type: "ForOfStatement";
+      type: 'ForOfStatement';
       range: Range;
       await: boolean;
       left: Expression | VariableDeclaration;
@@ -18095,7 +17670,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ExpressionStatement {
-      type: "ExpressionStatement";
+      type: 'ExpressionStatement';
       range: Range;
       expression: Expression;
       parent:
@@ -18120,7 +17695,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TryStatement {
-      type: "TryStatement";
+      type: 'TryStatement';
       range: Range;
       block: BlockStatement;
       handler: CatchClause | null;
@@ -18147,7 +17722,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface CatchClause {
-      type: "CatchClause";
+      type: 'CatchClause';
       range: Range;
       param: ArrayPattern | ObjectPattern | Identifier | null;
       body: BlockStatement;
@@ -18160,7 +17735,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ArrayExpression {
-      type: "ArrayExpression";
+      type: 'ArrayExpression';
       range: Range;
       elements: Array<Expression | SpreadElement>;
       parent: Node;
@@ -18172,7 +17747,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ObjectExpression {
-      type: "ObjectExpression";
+      type: 'ObjectExpression';
       range: Range;
       properties: Array<Property | SpreadElement>;
       parent: Node;
@@ -18184,32 +17759,32 @@ declare namespace Deno {
      * @experimental
      */
     export interface BinaryExpression {
-      type: "BinaryExpression";
+      type: 'BinaryExpression';
       range: Range;
       operator:
-        | "&"
-        | "**"
-        | "*"
-        | "||"
-        | "|"
-        | "^"
-        | "==="
-        | "=="
-        | "!=="
-        | "!="
-        | ">="
-        | ">>>"
-        | ">>"
-        | ">"
-        | "in"
-        | "instanceof"
-        | "<="
-        | "<<"
-        | "<"
-        | "-"
-        | "%"
-        | "+"
-        | "/";
+        | '&'
+        | '**'
+        | '*'
+        | '||'
+        | '|'
+        | '^'
+        | '==='
+        | '=='
+        | '!=='
+        | '!='
+        | '>='
+        | '>>>'
+        | '>>'
+        | '>'
+        | 'in'
+        | 'instanceof'
+        | '<='
+        | '<<'
+        | '<'
+        | '-'
+        | '%'
+        | '+'
+        | '/';
       left: Expression | PrivateIdentifier;
       right: Expression;
       parent: Node;
@@ -18221,9 +17796,9 @@ declare namespace Deno {
      * @experimental
      */
     export interface LogicalExpression {
-      type: "LogicalExpression";
+      type: 'LogicalExpression';
       range: Range;
-      operator: "&&" | "??" | "||";
+      operator: '&&' | '??' | '||';
       left: Expression;
       right: Expression;
       parent: Node;
@@ -18236,7 +17811,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface FunctionExpression {
-      type: "FunctionExpression";
+      type: 'FunctionExpression';
       range: Range;
       async: boolean;
       generator: boolean;
@@ -18254,7 +17829,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ArrowFunctionExpression {
-      type: "ArrowFunctionExpression";
+      type: 'ArrowFunctionExpression';
       range: Range;
       async: boolean;
       generator: boolean;
@@ -18272,7 +17847,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ThisExpression {
-      type: "ThisExpression";
+      type: 'ThisExpression';
       range: Range;
       parent: Node;
     }
@@ -18283,7 +17858,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface Super {
-      type: "Super";
+      type: 'Super';
       range: Range;
       parent: Node;
     }
@@ -18294,9 +17869,9 @@ declare namespace Deno {
      * @experimental
      */
     export interface UnaryExpression {
-      type: "UnaryExpression";
+      type: 'UnaryExpression';
       range: Range;
-      operator: "!" | "+" | "~" | "-" | "delete" | "typeof" | "void";
+      operator: '!' | '+' | '~' | '-' | 'delete' | 'typeof' | 'void';
       argument: Expression;
       parent: Node;
     }
@@ -18307,7 +17882,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface NewExpression {
-      type: "NewExpression";
+      type: 'NewExpression';
       range: Range;
       callee: Expression;
       typeArguments: TSTypeParameterInstantiation | undefined;
@@ -18321,7 +17896,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ImportExpression {
-      type: "ImportExpression";
+      type: 'ImportExpression';
       range: Range;
       source: Expression;
       options: Expression | null;
@@ -18334,7 +17909,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface CallExpression {
-      type: "CallExpression";
+      type: 'CallExpression';
       range: Range;
       optional: boolean;
       callee: Expression;
@@ -18349,10 +17924,10 @@ declare namespace Deno {
      * @experimental
      */
     export interface UpdateExpression {
-      type: "UpdateExpression";
+      type: 'UpdateExpression';
       range: Range;
       prefix: boolean;
-      operator: "++" | "--";
+      operator: '++' | '--';
       argument: Expression;
       parent: Node;
     }
@@ -18363,25 +17938,25 @@ declare namespace Deno {
      * @experimental
      */
     export interface AssignmentExpression {
-      type: "AssignmentExpression";
+      type: 'AssignmentExpression';
       range: Range;
       operator:
-        | "&&="
-        | "&="
-        | "**="
-        | "*="
-        | "||="
-        | "|="
-        | "^="
-        | "="
-        | ">>="
-        | ">>>="
-        | "<<="
-        | "-="
-        | "%="
-        | "+="
-        | "??="
-        | "/=";
+        | '&&='
+        | '&='
+        | '**='
+        | '*='
+        | '||='
+        | '|='
+        | '^='
+        | '='
+        | '>>='
+        | '>>>='
+        | '<<='
+        | '-='
+        | '%='
+        | '+='
+        | '??='
+        | '/=';
       left: Expression;
       right: Expression;
       parent: Node;
@@ -18393,7 +17968,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ConditionalExpression {
-      type: "ConditionalExpression";
+      type: 'ConditionalExpression';
       range: Range;
       test: Expression;
       consequent: Expression;
@@ -18407,7 +17982,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface MemberExpression {
-      type: "MemberExpression";
+      type: 'MemberExpression';
       range: Range;
       optional: boolean;
       computed: boolean;
@@ -18422,12 +17997,9 @@ declare namespace Deno {
      * @experimental
      */
     export interface ChainExpression {
-      type: "ChainExpression";
+      type: 'ChainExpression';
       range: Range;
-      expression:
-        | CallExpression
-        | MemberExpression
-        | TSNonNullExpression;
+      expression: CallExpression | MemberExpression | TSNonNullExpression;
       parent: Node;
     }
 
@@ -18437,7 +18009,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface SequenceExpression {
-      type: "SequenceExpression";
+      type: 'SequenceExpression';
       range: Range;
       expressions: Expression[];
       parent: Node;
@@ -18449,7 +18021,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TemplateLiteral {
-      type: "TemplateLiteral";
+      type: 'TemplateLiteral';
       range: Range;
       quasis: TemplateElement[];
       expressions: Expression[];
@@ -18462,7 +18034,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TemplateElement {
-      type: "TemplateElement";
+      type: 'TemplateElement';
       range: Range;
       tail: boolean;
       raw: string;
@@ -18476,7 +18048,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TaggedTemplateExpression {
-      type: "TaggedTemplateExpression";
+      type: 'TaggedTemplateExpression';
       range: Range;
       tag: Expression;
       typeArguments: TSTypeParameterInstantiation | undefined;
@@ -18490,7 +18062,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface YieldExpression {
-      type: "YieldExpression";
+      type: 'YieldExpression';
       range: Range;
       delegate: boolean;
       argument: Expression | null;
@@ -18503,7 +18075,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface AwaitExpression {
-      type: "AwaitExpression";
+      type: 'AwaitExpression';
       range: Range;
       argument: Expression;
       parent: Node;
@@ -18515,7 +18087,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface MetaProperty {
-      type: "MetaProperty";
+      type: 'MetaProperty';
       range: Range;
       meta: Identifier;
       property: Identifier;
@@ -18529,7 +18101,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface Identifier {
-      type: "Identifier";
+      type: 'Identifier';
       range: Range;
       name: string;
       optional: boolean;
@@ -18543,7 +18115,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface PrivateIdentifier {
-      type: "PrivateIdentifier";
+      type: 'PrivateIdentifier';
       range: Range;
       name: string;
       parent:
@@ -18561,7 +18133,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface AssignmentPattern {
-      type: "AssignmentPattern";
+      type: 'AssignmentPattern';
       range: Range;
       left: ArrayPattern | ObjectPattern | Identifier;
       right: Expression;
@@ -18574,7 +18146,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ArrayPattern {
-      type: "ArrayPattern";
+      type: 'ArrayPattern';
       range: Range;
       optional: boolean;
       typeAnnotation: TSTypeAnnotation | undefined;
@@ -18596,7 +18168,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface ObjectPattern {
-      type: "ObjectPattern";
+      type: 'ObjectPattern';
       range: Range;
       optional: boolean;
       typeAnnotation: TSTypeAnnotation | undefined;
@@ -18610,7 +18182,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface RestElement {
-      type: "RestElement";
+      type: 'RestElement';
       range: Range;
       typeAnnotation: TSTypeAnnotation | undefined;
       argument:
@@ -18628,14 +18200,10 @@ declare namespace Deno {
      * @experimental
      */
     export interface SpreadElement {
-      type: "SpreadElement";
+      type: 'SpreadElement';
       range: Range;
       argument: Expression;
-      parent:
-        | ArrayExpression
-        | CallExpression
-        | NewExpression
-        | ObjectExpression;
+      parent: ArrayExpression | CallExpression | NewExpression | ObjectExpression;
     }
 
     /**
@@ -18643,12 +18211,12 @@ declare namespace Deno {
      * @experimental
      */
     export interface Property {
-      type: "Property";
+      type: 'Property';
       range: Range;
       shorthand: boolean;
       computed: boolean;
       method: boolean;
-      kind: "get" | "init" | "set";
+      kind: 'get' | 'init' | 'set';
       key: Expression | Identifier | NumberLiteral | StringLiteral;
       value:
         | AssignmentPattern
@@ -18671,7 +18239,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface BigIntLiteral {
-      type: "Literal";
+      type: 'Literal';
       range: Range;
       raw: string;
       bigint: string;
@@ -18685,9 +18253,9 @@ declare namespace Deno {
      * @experimental
      */
     export interface BooleanLiteral {
-      type: "Literal";
+      type: 'Literal';
       range: Range;
-      raw: "false" | "true";
+      raw: 'false' | 'true';
       value: boolean;
       parent: Node;
     }
@@ -18703,7 +18271,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface NumberLiteral {
-      type: "Literal";
+      type: 'Literal';
       range: Range;
       raw: string;
       value: number;
@@ -18716,9 +18284,9 @@ declare namespace Deno {
      * @experimental
      */
     export interface NullLiteral {
-      type: "Literal";
+      type: 'Literal';
       range: Range;
-      raw: "null";
+      raw: 'null';
       value: null;
       parent: Node;
     }
@@ -18734,7 +18302,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface StringLiteral {
-      type: "Literal";
+      type: 'Literal';
       range: Range;
       raw: string;
       value: string;
@@ -18751,7 +18319,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface RegExpLiteral {
-      type: "Literal";
+      type: 'Literal';
       range: Range;
       raw: string;
       regex: {
@@ -18781,7 +18349,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXIdentifier {
-      type: "JSXIdentifier";
+      type: 'JSXIdentifier';
       range: Range;
       name: string;
       parent:
@@ -18798,15 +18366,11 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXNamespacedName {
-      type: "JSXNamespacedName";
+      type: 'JSXNamespacedName';
       range: Range;
       namespace: JSXIdentifier;
       name: JSXIdentifier;
-      parent:
-        | JSXOpeningElement
-        | JSXAttribute
-        | JSXClosingElement
-        | JSXMemberExpression;
+      parent: JSXOpeningElement | JSXAttribute | JSXClosingElement | JSXMemberExpression;
     }
 
     /**
@@ -18815,7 +18379,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXEmptyExpression {
-      type: "JSXEmptyExpression";
+      type: 'JSXEmptyExpression';
       range: Range;
       parent: JSXAttribute | JSXElement | JSXFragment;
     }
@@ -18826,7 +18390,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXElement {
-      type: "JSXElement";
+      type: 'JSXElement';
       range: Range;
       openingElement: JSXOpeningElement;
       closingElement: JSXClosingElement | null;
@@ -18840,13 +18404,10 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXOpeningElement {
-      type: "JSXOpeningElement";
+      type: 'JSXOpeningElement';
       range: Range;
       selfClosing: boolean;
-      name:
-        | JSXIdentifier
-        | JSXMemberExpression
-        | JSXNamespacedName;
+      name: JSXIdentifier | JSXMemberExpression | JSXNamespacedName;
       attributes: Array<JSXAttribute | JSXSpreadAttribute>;
       typeArguments: TSTypeParameterInstantiation | undefined;
       parent: JSXElement;
@@ -18858,14 +18419,10 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXAttribute {
-      type: "JSXAttribute";
+      type: 'JSXAttribute';
       range: Range;
       name: JSXIdentifier | JSXNamespacedName;
-      value:
-        | JSXElement
-        | JSXExpressionContainer
-        | Literal
-        | null;
+      value: JSXElement | JSXExpressionContainer | Literal | null;
       parent: JSXOpeningElement;
     }
 
@@ -18875,7 +18432,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXSpreadAttribute {
-      type: "JSXSpreadAttribute";
+      type: 'JSXSpreadAttribute';
       range: Range;
       argument: Expression;
       parent: JSXOpeningElement;
@@ -18888,12 +18445,9 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXClosingElement {
-      type: "JSXClosingElement";
+      type: 'JSXClosingElement';
       range: Range;
-      name:
-        | JSXIdentifier
-        | JSXMemberExpression
-        | JSXNamespacedName;
+      name: JSXIdentifier | JSXMemberExpression | JSXNamespacedName;
       parent: JSXElement;
     }
 
@@ -18904,7 +18458,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXFragment {
-      type: "JSXFragment";
+      type: 'JSXFragment';
       range: Range;
       openingFragment: JSXOpeningFragment;
       closingFragment: JSXClosingFragment;
@@ -18918,7 +18472,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXOpeningFragment {
-      type: "JSXOpeningFragment";
+      type: 'JSXOpeningFragment';
       range: Range;
       parent: JSXFragment;
     }
@@ -18929,7 +18483,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXClosingFragment {
-      type: "JSXClosingFragment";
+      type: 'JSXClosingFragment';
       range: Range;
       parent: JSXFragment;
     }
@@ -18940,7 +18494,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXExpressionContainer {
-      type: "JSXExpressionContainer";
+      type: 'JSXExpressionContainer';
       range: Range;
       expression: Expression | JSXEmptyExpression;
       parent: JSXAttribute | JSXElement | JSXFragment;
@@ -18952,7 +18506,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXText {
-      type: "JSXText";
+      type: 'JSXText';
       range: Range;
       raw: string;
       value: string;
@@ -18965,12 +18519,9 @@ declare namespace Deno {
      * @experimental
      */
     export interface JSXMemberExpression {
-      type: "JSXMemberExpression";
+      type: 'JSXMemberExpression';
       range: Range;
-      object:
-        | JSXIdentifier
-        | JSXMemberExpression
-        | JSXNamespacedName;
+      object: JSXIdentifier | JSXMemberExpression | JSXNamespacedName;
       property: JSXIdentifier;
       parent: JSXOpeningElement | JSXClosingElement;
     }
@@ -18980,21 +18531,17 @@ declare namespace Deno {
      * @category Linter
      * @experimental
      */
-    export type JSXChild =
-      | JSXElement
-      | JSXExpressionContainer
-      | JSXFragment
-      | JSXText;
+    export type JSXChild = JSXElement | JSXExpressionContainer | JSXFragment | JSXText;
 
     /**
      * @category Linter
      * @experimental
      */
     export interface TSModuleDeclaration {
-      type: "TSModuleDeclaration";
+      type: 'TSModuleDeclaration';
       range: Range;
       declare: boolean;
-      kind: "global" | "module" | "namespace";
+      kind: 'global' | 'module' | 'namespace';
       id: Identifier | Literal | TSQualifiedName;
       body: TSModuleBlock | undefined;
       parent:
@@ -19021,7 +18568,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSModuleBlock {
-      type: "TSModuleBlock";
+      type: 'TSModuleBlock';
       range: Range;
       body: Array<
         | ExportAllDeclaration
@@ -19040,7 +18587,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSClassImplements {
-      type: "TSClassImplements";
+      type: 'TSClassImplements';
       range: Range;
       expression: Expression;
       typeArguments: TSTypeParameterInstantiation | undefined;
@@ -19052,14 +18599,14 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSAbstractMethodDefinition {
-      type: "TSAbstractMethodDefinition";
+      type: 'TSAbstractMethodDefinition';
       range: Range;
       computed: boolean;
       optional: boolean;
       override: boolean;
       static: boolean;
       accessibility: Accessibility | undefined;
-      kind: "method";
+      kind: 'method';
       key: Expression | Identifier | NumberLiteral | StringLiteral;
       value: FunctionExpression | TSEmptyBodyFunctionExpression;
       parent: Node;
@@ -19070,7 +18617,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSAbstractPropertyDefinition {
-      type: "TSAbstractPropertyDefinition";
+      type: 'TSAbstractPropertyDefinition';
       range: Range;
       computed: boolean;
       optional: boolean;
@@ -19081,12 +18628,7 @@ declare namespace Deno {
       readonly: boolean;
       accessibility: Accessibility | undefined;
       decorators: Decorator[];
-      key:
-        | Expression
-        | PrivateIdentifier
-        | Identifier
-        | NumberLiteral
-        | StringLiteral;
+      key: Expression | PrivateIdentifier | Identifier | NumberLiteral | StringLiteral;
       typeAnnotation: TSTypeAnnotation | undefined;
       value: Expression | null;
       parent: ClassBody;
@@ -19097,7 +18639,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSEmptyBodyFunctionExpression {
-      type: "TSEmptyBodyFunctionExpression";
+      type: 'TSEmptyBodyFunctionExpression';
       range: Range;
       declare: boolean;
       expression: boolean;
@@ -19108,11 +18650,7 @@ declare namespace Deno {
       typeParameters: TSTypeParameterDeclaration | undefined;
       params: Parameter[];
       returnType: TSTypeAnnotation | undefined;
-      parent:
-        | MethodDefinition
-        | Property
-        | TSAbstractMethodDefinition
-        | TSParameterProperty;
+      parent: MethodDefinition | Property | TSAbstractMethodDefinition | TSParameterProperty;
     }
 
     /**
@@ -19120,19 +18658,14 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSParameterProperty {
-      type: "TSParameterProperty";
+      type: 'TSParameterProperty';
       range: Range;
       override: boolean;
       readonly: boolean;
       static: boolean;
       accessibility: Accessibility | undefined;
       decorators: Decorator[];
-      parameter:
-        | AssignmentPattern
-        | ArrayPattern
-        | ObjectPattern
-        | Identifier
-        | RestElement;
+      parameter: AssignmentPattern | ArrayPattern | ObjectPattern | Identifier | RestElement;
       parent:
         | ArrowFunctionExpression
         | FunctionDeclaration
@@ -19146,7 +18679,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSCallSignatureDeclaration {
-      type: "TSCallSignatureDeclaration";
+      type: 'TSCallSignatureDeclaration';
       range: Range;
       typeParameters: TSTypeParameterDeclaration | undefined;
       params: Parameter[];
@@ -19159,18 +18692,13 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSPropertySignature {
-      type: "TSPropertySignature";
+      type: 'TSPropertySignature';
       range: Range;
       computed: boolean;
       optional: boolean;
       readonly: boolean;
       static: boolean;
-      key:
-        | PrivateIdentifier
-        | Expression
-        | Identifier
-        | NumberLiteral
-        | StringLiteral;
+      key: PrivateIdentifier | Expression | Identifier | NumberLiteral | StringLiteral;
       typeAnnotation: TSTypeAnnotation | undefined;
       parent: TSInterfaceBody | TSTypeLiteral;
     }
@@ -19180,7 +18708,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSDeclareFunction {
-      type: "TSDeclareFunction";
+      type: 'TSDeclareFunction';
       range: Range;
       async: boolean;
       declare: boolean;
@@ -19201,7 +18729,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSEnumDeclaration {
-      type: "TSEnumDeclaration";
+      type: 'TSEnumDeclaration';
       range: Range;
       declare: boolean;
       const: boolean;
@@ -19216,7 +18744,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSEnumBody {
-      type: "TSEnumBody";
+      type: 'TSEnumBody';
       range: Range;
       members: TSEnumMember[];
       parent: TSEnumDeclaration;
@@ -19228,12 +18756,9 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSEnumMember {
-      type: "TSEnumMember";
+      type: 'TSEnumMember';
       range: Range;
-      id:
-        | Identifier
-        | NumberLiteral
-        | StringLiteral;
+      id: Identifier | NumberLiteral | StringLiteral;
       initializer: Expression | undefined;
       parent: TSEnumBody;
     }
@@ -19243,7 +18768,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSTypeAssertion {
-      type: "TSTypeAssertion";
+      type: 'TSTypeAssertion';
       range: Range;
       expression: Expression;
       typeAnnotation: TypeNode;
@@ -19255,7 +18780,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSTypeParameterInstantiation {
-      type: "TSTypeParameterInstantiation";
+      type: 'TSTypeParameterInstantiation';
       range: Range;
       params: TypeNode[];
       parent:
@@ -19277,7 +18802,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSTypeAliasDeclaration {
-      type: "TSTypeAliasDeclaration";
+      type: 'TSTypeAliasDeclaration';
       range: Range;
       declare: boolean;
       id: Identifier;
@@ -19291,7 +18816,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSSatisfiesExpression {
-      type: "TSSatisfiesExpression";
+      type: 'TSSatisfiesExpression';
       range: Range;
       expression: Expression;
       typeAnnotation: TypeNode;
@@ -19303,7 +18828,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSAsExpression {
-      type: "TSAsExpression";
+      type: 'TSAsExpression';
       range: Range;
       expression: Expression;
       typeAnnotation: TypeNode;
@@ -19315,7 +18840,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSInstantiationExpression {
-      type: "TSInstantiationExpression";
+      type: 'TSInstantiationExpression';
       range: Range;
       expression: Expression;
       typeArguments: TSTypeParameterInstantiation;
@@ -19327,7 +18852,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSNonNullExpression {
-      type: "TSNonNullExpression";
+      type: 'TSNonNullExpression';
       range: Range;
       expression: Expression;
       parent: Node;
@@ -19338,7 +18863,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSThisType {
-      type: "TSThisType";
+      type: 'TSThisType';
       range: Range;
       parent: Node;
     }
@@ -19348,7 +18873,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSInterfaceDeclaration {
-      type: "TSInterfaceDeclaration";
+      type: 'TSInterfaceDeclaration';
       range: Range;
       declare: boolean;
       id: Identifier;
@@ -19363,7 +18888,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSInterfaceBody {
-      type: "TSInterfaceBody";
+      type: 'TSInterfaceBody';
       range: Range;
       body: Array<
         | TSCallSignatureDeclaration
@@ -19380,7 +18905,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSConstructSignatureDeclaration {
-      type: "TSConstructSignatureDeclaration";
+      type: 'TSConstructSignatureDeclaration';
       range: Range;
       typeParameters: TSTypeParameterDeclaration | undefined;
       params: Parameter[];
@@ -19393,13 +18918,13 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSMethodSignature {
-      type: "TSMethodSignature";
+      type: 'TSMethodSignature';
       range: Range;
       computed: boolean;
       optional: boolean;
       readonly: boolean;
       static: boolean;
-      kind: "get" | "set" | "method";
+      kind: 'get' | 'set' | 'method';
       key: Expression | Identifier | NumberLiteral | StringLiteral;
       returnType: TSTypeAnnotation | undefined;
       params: Parameter[];
@@ -19412,7 +18937,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSInterfaceHeritage {
-      type: "TSInterfaceHeritage";
+      type: 'TSInterfaceHeritage';
       range: Range;
       expression: Expression;
       typeArguments: TSTypeParameterInstantiation | undefined;
@@ -19424,7 +18949,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSIndexSignature {
-      type: "TSIndexSignature";
+      type: 'TSIndexSignature';
       range: Range;
       readonly: boolean;
       static: boolean;
@@ -19438,7 +18963,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSUnionType {
-      type: "TSUnionType";
+      type: 'TSUnionType';
       range: Range;
       types: TypeNode[];
       parent: Node;
@@ -19449,7 +18974,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSIntersectionType {
-      type: "TSIntersectionType";
+      type: 'TSIntersectionType';
       range: Range;
       types: TypeNode[];
       parent: Node;
@@ -19460,7 +18985,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSInferType {
-      type: "TSInferType";
+      type: 'TSInferType';
       range: Range;
       typeParameter: TSTypeParameter;
       parent: Node;
@@ -19471,9 +18996,9 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSTypeOperator {
-      type: "TSTypeOperator";
+      type: 'TSTypeOperator';
       range: Range;
-      operator: "keyof" | "readonly" | "unique";
+      operator: 'keyof' | 'readonly' | 'unique';
       typeAnnotation: TypeNode;
       parent: Node;
     }
@@ -19483,7 +19008,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSIndexedAccessType {
-      type: "TSIndexedAccessType";
+      type: 'TSIndexedAccessType';
       range: Range;
       indexType: TypeNode;
       objectType: TypeNode;
@@ -19498,7 +19023,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSAnyKeyword {
-      type: "TSAnyKeyword";
+      type: 'TSAnyKeyword';
       range: Range;
       parent: Node;
     }
@@ -19508,7 +19033,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSUnknownKeyword {
-      type: "TSUnknownKeyword";
+      type: 'TSUnknownKeyword';
       range: Range;
       parent: Node;
     }
@@ -19518,7 +19043,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSNumberKeyword {
-      type: "TSNumberKeyword";
+      type: 'TSNumberKeyword';
       range: Range;
       parent: Node;
     }
@@ -19528,7 +19053,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSObjectKeyword {
-      type: "TSObjectKeyword";
+      type: 'TSObjectKeyword';
       range: Range;
       parent: Node;
     }
@@ -19538,7 +19063,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSBooleanKeyword {
-      type: "TSBooleanKeyword";
+      type: 'TSBooleanKeyword';
       range: Range;
       parent: Node;
     }
@@ -19548,7 +19073,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSBigIntKeyword {
-      type: "TSBigIntKeyword";
+      type: 'TSBigIntKeyword';
       range: Range;
       parent: Node;
     }
@@ -19558,7 +19083,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSStringKeyword {
-      type: "TSStringKeyword";
+      type: 'TSStringKeyword';
       range: Range;
       parent: Node;
     }
@@ -19568,7 +19093,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSSymbolKeyword {
-      type: "TSSymbolKeyword";
+      type: 'TSSymbolKeyword';
       range: Range;
       parent: Node;
     }
@@ -19578,7 +19103,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSVoidKeyword {
-      type: "TSVoidKeyword";
+      type: 'TSVoidKeyword';
       range: Range;
       parent: Node;
     }
@@ -19588,7 +19113,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSUndefinedKeyword {
-      type: "TSUndefinedKeyword";
+      type: 'TSUndefinedKeyword';
       range: Range;
       parent: Node;
     }
@@ -19598,7 +19123,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSNullKeyword {
-      type: "TSNullKeyword";
+      type: 'TSNullKeyword';
       range: Range;
       parent: Node;
     }
@@ -19608,7 +19133,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSNeverKeyword {
-      type: "TSNeverKeyword";
+      type: 'TSNeverKeyword';
       range: Range;
       parent: Node;
     }
@@ -19618,7 +19143,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSIntrinsicKeyword {
-      type: "TSIntrinsicKeyword";
+      type: 'TSIntrinsicKeyword';
       range: Range;
       parent: Node;
     }
@@ -19628,7 +19153,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSRestType {
-      type: "TSRestType";
+      type: 'TSRestType';
       range: Range;
       typeAnnotation: TypeNode;
       parent: Node;
@@ -19639,7 +19164,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSConditionalType {
-      type: "TSConditionalType";
+      type: 'TSConditionalType';
       range: Range;
       checkType: TypeNode;
       extendsType: TypeNode;
@@ -19653,7 +19178,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSMappedType {
-      type: "TSMappedType";
+      type: 'TSMappedType';
       range: Range;
       readonly: boolean;
       optional: boolean;
@@ -19669,7 +19194,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSLiteralType {
-      type: "TSLiteralType";
+      type: 'TSLiteralType';
       range: Range;
       literal: Literal | TemplateLiteral | UnaryExpression | UpdateExpression;
       parent: Node;
@@ -19680,7 +19205,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSTemplateLiteralType {
-      type: "TSTemplateLiteralType";
+      type: 'TSTemplateLiteralType';
       range: Range;
       quasis: TemplateElement[];
       types: TypeNode[];
@@ -19692,7 +19217,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSTypeLiteral {
-      type: "TSTypeLiteral";
+      type: 'TSTypeLiteral';
       range: Range;
       members: Array<
         | TSCallSignatureDeclaration
@@ -19709,7 +19234,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSOptionalType {
-      type: "TSOptionalType";
+      type: 'TSOptionalType';
       range: Range;
       typeAnnotation: TypeNode;
       parent: Node;
@@ -19720,7 +19245,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSTypeAnnotation {
-      type: "TSTypeAnnotation";
+      type: 'TSTypeAnnotation';
       range: Range;
       typeAnnotation: TypeNode;
       parent: Node;
@@ -19731,7 +19256,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSArrayType {
-      type: "TSArrayType";
+      type: 'TSArrayType';
       range: Range;
       elementType: TypeNode;
       parent: Node;
@@ -19742,7 +19267,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSTypeQuery {
-      type: "TSTypeQuery";
+      type: 'TSTypeQuery';
       range: Range;
       exprName: Identifier | ThisExpression | TSQualifiedName | TSImportType;
       typeArguments: TSTypeParameterInstantiation | undefined;
@@ -19754,7 +19279,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSTypeReference {
-      type: "TSTypeReference";
+      type: 'TSTypeReference';
       range: Range;
       typeName: Identifier | ThisExpression | TSQualifiedName;
       typeArguments: TSTypeParameterInstantiation | undefined;
@@ -19766,7 +19291,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSTypePredicate {
-      type: "TSTypePredicate";
+      type: 'TSTypePredicate';
       range: Range;
       asserts: boolean;
       parameterName: Identifier | TSThisType;
@@ -19779,7 +19304,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSTupleType {
-      type: "TSTupleType";
+      type: 'TSTupleType';
       range: Range;
       elementTypes: TypeNode[];
       parent: Node;
@@ -19790,7 +19315,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSNamedTupleMember {
-      type: "TSNamedTupleMember";
+      type: 'TSNamedTupleMember';
       range: Range;
       label: Identifier;
       elementType: TypeNode;
@@ -19803,7 +19328,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSTypeParameterDeclaration {
-      type: "TSTypeParameterDeclaration";
+      type: 'TSTypeParameterDeclaration';
       range: Range;
       params: TSTypeParameter[];
       parent: Node;
@@ -19814,7 +19339,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSTypeParameter {
-      type: "TSTypeParameter";
+      type: 'TSTypeParameter';
       range: Range;
       in: boolean;
       out: boolean;
@@ -19830,7 +19355,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSImportType {
-      type: "TSImportType";
+      type: 'TSImportType';
       range: Range;
       argument: TypeNode;
       qualifier: Identifier | ThisExpression | TSQualifiedName | null;
@@ -19843,7 +19368,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSExportAssignment {
-      type: "TSExportAssignment";
+      type: 'TSExportAssignment';
       range: Range;
       expression: Expression;
       parent: Node;
@@ -19854,7 +19379,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSFunctionType {
-      type: "TSFunctionType";
+      type: 'TSFunctionType';
       range: Range;
       params: Parameter[];
       returnType: TSTypeAnnotation | undefined;
@@ -19867,7 +19392,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface TSQualifiedName {
-      type: "TSQualifiedName";
+      type: 'TSQualifiedName';
       range: Range;
       left: Identifier | ThisExpression | TSQualifiedName;
       right: Identifier;
@@ -20004,7 +19529,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface LineComment {
-      type: "Line";
+      type: 'Line';
       range: Range;
       value: string;
     }
@@ -20015,7 +19540,7 @@ declare namespace Deno {
      * @experimental
      */
     export interface BlockComment {
-      type: "Block";
+      type: 'Block';
       range: Range;
       value: string;
     }
@@ -20262,15 +19787,15 @@ declare namespace Temporal {
    * @experimental
    */
   export type RoundingMode =
-    | "ceil"
-    | "floor"
-    | "expand"
-    | "trunc"
-    | "halfCeil"
-    | "halfFloor"
-    | "halfExpand"
-    | "halfTrunc"
-    | "halfEven";
+    | 'ceil'
+    | 'floor'
+    | 'expand'
+    | 'trunc'
+    | 'halfCeil'
+    | 'halfFloor'
+    | 'halfExpand'
+    | 'halfTrunc'
+    | 'halfEven';
 
   /**
    * Options for assigning fields using `with()` or entire objects with
@@ -20290,7 +19815,7 @@ declare namespace Temporal {
      *
      * The default is `'constrain'`.
      */
-    overflow?: "constrain" | "reject";
+    overflow?: 'constrain' | 'reject';
   };
 
   /**
@@ -20312,7 +19837,7 @@ declare namespace Temporal {
      *
      * The default is `'constrain'`.
      */
-    overflow?: "constrain" | "balance";
+    overflow?: 'constrain' | 'balance';
   };
 
   /**
@@ -20344,7 +19869,7 @@ declare namespace Temporal {
      *
      * The default is `'compatible'`.
      */
-    disambiguation?: "compatible" | "earlier" | "later" | "reject";
+    disambiguation?: 'compatible' | 'earlier' | 'later' | 'reject';
   };
 
   /**
@@ -20384,7 +19909,7 @@ declare namespace Temporal {
      * be used to choose the correct instant. However, if the offset is used
      * then the `disambiguation` option will be ignored.
      */
-    offset?: "use" | "prefer" | "ignore" | "reject";
+    offset?: 'use' | 'prefer' | 'ignore' | 'reject';
   };
 
   /**
@@ -20410,25 +19935,25 @@ declare namespace Temporal {
      *
      * The default is `'constrain'`.
      */
-    overflow?: "constrain" | "reject";
+    overflow?: 'constrain' | 'reject';
   };
 
   /**
    * @category Temporal
    * @experimental
    */
-  export type DateUnit = "year" | "month" | "week" | "day";
+  export type DateUnit = 'year' | 'month' | 'week' | 'day';
   /**
    * @category Temporal
    * @experimental
    */
   export type TimeUnit =
-    | "hour"
-    | "minute"
-    | "second"
-    | "millisecond"
-    | "microsecond"
-    | "nanosecond";
+    | 'hour'
+    | 'minute'
+    | 'second'
+    | 'millisecond'
+    | 'microsecond'
+    | 'nanosecond';
   /**
    * @category Temporal
    * @experimental
@@ -20444,23 +19969,23 @@ declare namespace Temporal {
    * @experimental
    */
   export type PluralUnit<T extends DateTimeUnit> = {
-    year: "years";
-    month: "months";
-    week: "weeks";
-    day: "days";
-    hour: "hours";
-    minute: "minutes";
-    second: "seconds";
-    millisecond: "milliseconds";
-    microsecond: "microseconds";
-    nanosecond: "nanoseconds";
+    year: 'years';
+    month: 'months';
+    week: 'weeks';
+    day: 'days';
+    hour: 'hours';
+    minute: 'minutes';
+    second: 'seconds';
+    millisecond: 'milliseconds';
+    microsecond: 'microseconds';
+    nanosecond: 'nanoseconds';
   }[T];
 
   /**
    * @category Temporal
    * @experimental
    */
-  export type LargestUnit<T extends DateTimeUnit> = "auto" | T | PluralUnit<T>;
+  export type LargestUnit<T extends DateTimeUnit> = 'auto' | T | PluralUnit<T>;
   /**
    * @category Temporal
    * @experimental
@@ -20479,10 +20004,8 @@ declare namespace Temporal {
    * @experimental
    */
   export type ToStringPrecisionOptions = {
-    fractionalSecondDigits?: "auto" | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
-    smallestUnit?: SmallestUnit<
-      "minute" | "second" | "millisecond" | "microsecond" | "nanosecond"
-    >;
+    fractionalSecondDigits?: 'auto' | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+    smallestUnit?: SmallestUnit<'minute' | 'second' | 'millisecond' | 'microsecond' | 'nanosecond'>;
 
     /**
      * Controls how rounding is performed:
@@ -20506,16 +20029,14 @@ declare namespace Temporal {
    * @experimental
    */
   export type ShowCalendarOption = {
-    calendarName?: "auto" | "always" | "never" | "critical";
+    calendarName?: 'auto' | 'always' | 'never' | 'critical';
   };
 
   /**
    * @category Temporal
    * @experimental
    */
-  export type CalendarTypeToStringOptions = Partial<
-    ToStringPrecisionOptions & ShowCalendarOption
-  >;
+  export type CalendarTypeToStringOptions = Partial<ToStringPrecisionOptions & ShowCalendarOption>;
 
   /**
    * @category Temporal
@@ -20523,8 +20044,8 @@ declare namespace Temporal {
    */
   export type ZonedDateTimeToStringOptions = Partial<
     CalendarTypeToStringOptions & {
-      timeZoneName?: "auto" | "never" | "critical";
-      offset?: "auto" | "never";
+      timeZoneName?: 'auto' | 'never' | 'critical';
+      offset?: 'auto' | 'never';
     }
   >;
 
@@ -20611,37 +20132,37 @@ declare namespace Temporal {
   export type RoundTo<T extends DateTimeUnit> =
     | SmallestUnit<T>
     | {
-      /**
-       * The unit to round to. For example, to round to the nearest minute,
-       * use `smallestUnit: 'minute'`. This option is required. Note that the
-       * same-named property is optional when passed to `until` or `since`
-       * methods, because those methods do no rounding by default.
-       */
-      smallestUnit: SmallestUnit<T>;
+        /**
+         * The unit to round to. For example, to round to the nearest minute,
+         * use `smallestUnit: 'minute'`. This option is required. Note that the
+         * same-named property is optional when passed to `until` or `since`
+         * methods, because those methods do no rounding by default.
+         */
+        smallestUnit: SmallestUnit<T>;
 
-      /**
-       * Allows rounding to an integer number of units. For example, to round to
-       * increments of a half hour, use `{ smallestUnit: 'minute',
-       * roundingIncrement: 30 }`.
-       */
-      roundingIncrement?: number;
+        /**
+         * Allows rounding to an integer number of units. For example, to round to
+         * increments of a half hour, use `{ smallestUnit: 'minute',
+         * roundingIncrement: 30 }`.
+         */
+        roundingIncrement?: number;
 
-      /**
-       * Controls how rounding is performed:
-       * - `halfExpand`: Round to the nearest of the values allowed by
-       *   `roundingIncrement` and `smallestUnit`. When there is a tie, round up.
-       *   This mode is the default.
-       * - `ceil`: Always round up, towards the end of time.
-       * - `trunc`: Always round down, towards the beginning of time.
-       * - `floor`: Also round down, towards the beginning of time. This mode acts
-       *   the same as `trunc`, but it's included for consistency with
-       *   `Temporal.Duration.round()` where negative values are allowed and
-       *   `trunc` rounds towards zero, unlike `floor` which rounds towards
-       *   negative infinity which is usually unexpected. For this reason, `trunc`
-       *   is recommended for most use cases.
-       */
-      roundingMode?: RoundingMode;
-    };
+        /**
+         * Controls how rounding is performed:
+         * - `halfExpand`: Round to the nearest of the values allowed by
+         *   `roundingIncrement` and `smallestUnit`. When there is a tie, round up.
+         *   This mode is the default.
+         * - `ceil`: Always round up, towards the end of time.
+         * - `trunc`: Always round down, towards the beginning of time.
+         * - `floor`: Also round down, towards the beginning of time. This mode acts
+         *   the same as `trunc`, but it's included for consistency with
+         *   `Temporal.Duration.round()` where negative values are allowed and
+         *   `trunc` rounds towards zero, unlike `floor` which rounds towards
+         *   negative infinity which is usually unexpected. For this reason, `trunc`
+         *   is recommended for most use cases.
+         */
+        roundingMode?: RoundingMode;
+      };
 
   /**
    * The `round` method of the `Temporal.Duration` accepts one required
@@ -20656,70 +20177,68 @@ declare namespace Temporal {
    */
   export type DurationRoundTo =
     | SmallestUnit<DateTimeUnit>
-    | (
-      & (
+    | ((
         | {
-          /**
-           * The unit to round to. For example, to round to the nearest
-           * minute, use `smallestUnit: 'minute'`. This property is normally
-           * required, but is optional if `largestUnit` is provided and not
-           * undefined.
-           */
-          smallestUnit: SmallestUnit<DateTimeUnit>;
+            /**
+             * The unit to round to. For example, to round to the nearest
+             * minute, use `smallestUnit: 'minute'`. This property is normally
+             * required, but is optional if `largestUnit` is provided and not
+             * undefined.
+             */
+            smallestUnit: SmallestUnit<DateTimeUnit>;
 
-          /**
-           * The largest unit to allow in the resulting `Temporal.Duration`
-           * object.
-           *
-           * Larger units will be "balanced" into smaller units. For example,
-           * if `largestUnit` is `'minute'` then a two-hour duration will be
-           * output as a 120-minute duration.
-           *
-           * Valid values include `'year'`, `'month'`, `'week'`, `'day'`,
-           * `'hour'`, `'minute'`, `'second'`, `'millisecond'`,
-           * `'microsecond'`, `'nanosecond'` and `'auto'`.
-           *
-           * The default is `'auto'`, which means "the largest nonzero unit in
-           * the input duration". This default prevents expanding durations to
-           * larger units unless the caller opts into this behavior.
-           *
-           * If `smallestUnit` is larger, then `smallestUnit` will be used as
-           * `largestUnit`, superseding a caller-supplied or default value.
-           */
-          largestUnit?: LargestUnit<DateTimeUnit>;
-        }
+            /**
+             * The largest unit to allow in the resulting `Temporal.Duration`
+             * object.
+             *
+             * Larger units will be "balanced" into smaller units. For example,
+             * if `largestUnit` is `'minute'` then a two-hour duration will be
+             * output as a 120-minute duration.
+             *
+             * Valid values include `'year'`, `'month'`, `'week'`, `'day'`,
+             * `'hour'`, `'minute'`, `'second'`, `'millisecond'`,
+             * `'microsecond'`, `'nanosecond'` and `'auto'`.
+             *
+             * The default is `'auto'`, which means "the largest nonzero unit in
+             * the input duration". This default prevents expanding durations to
+             * larger units unless the caller opts into this behavior.
+             *
+             * If `smallestUnit` is larger, then `smallestUnit` will be used as
+             * `largestUnit`, superseding a caller-supplied or default value.
+             */
+            largestUnit?: LargestUnit<DateTimeUnit>;
+          }
         | {
-          /**
-           * The unit to round to. For example, to round to the nearest
-           * minute, use `smallestUnit: 'minute'`. This property is normally
-           * required, but is optional if `largestUnit` is provided and not
-           * undefined.
-           */
-          smallestUnit?: SmallestUnit<DateTimeUnit>;
+            /**
+             * The unit to round to. For example, to round to the nearest
+             * minute, use `smallestUnit: 'minute'`. This property is normally
+             * required, but is optional if `largestUnit` is provided and not
+             * undefined.
+             */
+            smallestUnit?: SmallestUnit<DateTimeUnit>;
 
-          /**
-           * The largest unit to allow in the resulting `Temporal.Duration`
-           * object.
-           *
-           * Larger units will be "balanced" into smaller units. For example,
-           * if `largestUnit` is `'minute'` then a two-hour duration will be
-           * output as a 120-minute duration.
-           *
-           * Valid values include `'year'`, `'month'`, `'week'`, `'day'`,
-           * `'hour'`, `'minute'`, `'second'`, `'millisecond'`,
-           * `'microsecond'`, `'nanosecond'` and `'auto'`.
-           *
-           * The default is `'auto'`, which means "the largest nonzero unit in
-           * the input duration". This default prevents expanding durations to
-           * larger units unless the caller opts into this behavior.
-           *
-           * If `smallestUnit` is larger, then `smallestUnit` will be used as
-           * `largestUnit`, superseding a caller-supplied or default value.
-           */
-          largestUnit: LargestUnit<DateTimeUnit>;
-        }
-      )
-      & {
+            /**
+             * The largest unit to allow in the resulting `Temporal.Duration`
+             * object.
+             *
+             * Larger units will be "balanced" into smaller units. For example,
+             * if `largestUnit` is `'minute'` then a two-hour duration will be
+             * output as a 120-minute duration.
+             *
+             * Valid values include `'year'`, `'month'`, `'week'`, `'day'`,
+             * `'hour'`, `'minute'`, `'second'`, `'millisecond'`,
+             * `'microsecond'`, `'nanosecond'` and `'auto'`.
+             *
+             * The default is `'auto'`, which means "the largest nonzero unit in
+             * the input duration". This default prevents expanding durations to
+             * larger units unless the caller opts into this behavior.
+             *
+             * If `smallestUnit` is larger, then `smallestUnit` will be used as
+             * `largestUnit`, superseding a caller-supplied or default value.
+             */
+            largestUnit: LargestUnit<DateTimeUnit>;
+          }
+      ) & {
         /**
          * Allows rounding to an integer number of units. For example, to round
          * to increments of a half hour, use `{ smallestUnit: 'minute',
@@ -20776,8 +20295,7 @@ declare namespace Temporal {
           | PlainDateTimeLike
           | ZonedDateTimeLike
           | string;
-      }
-    );
+      });
 
   /**
    * Options to control behavior of `Duration.prototype.total()`
@@ -20788,40 +20306,40 @@ declare namespace Temporal {
   export type DurationTotalOf =
     | TotalUnit<DateTimeUnit>
     | {
-      /**
-       * The unit to convert the duration to. This option is required.
-       */
-      unit: TotalUnit<DateTimeUnit>;
+        /**
+         * The unit to convert the duration to. This option is required.
+         */
+        unit: TotalUnit<DateTimeUnit>;
 
-      /**
-       * The starting point to use when variable-length units (years, months,
-       * weeks depending on the calendar) are involved. This option is required if
-       * any of the following are true:
-       * - `unit` is `'week'` or larger units
-       * - `this` has a nonzero value for `weeks` or larger units
-       *
-       * This value must be either a `Temporal.PlainDateTime`, a
-       * `Temporal.ZonedDateTime`, or a string or object value that can be passed
-       * to `from()` of those types. Examples:
-       * - `'2020-01-01T00:00-08:00[America/Los_Angeles]'`
-       * - `'2020-01-01'`
-       * - `Temporal.PlainDate.from('2020-01-01')`
-       *
-       * `Temporal.ZonedDateTime` will be tried first because it's more
-       * specific, with `Temporal.PlainDateTime` as a fallback.
-       *
-       * If the value resolves to a `Temporal.ZonedDateTime`, then operation will
-       * adjust for DST and other time zone transitions. Otherwise (including if
-       * this option is omitted), then the operation will ignore time zone
-       * transitions and all days will be assumed to be 24 hours long.
-       */
-      relativeTo?:
-        | Temporal.ZonedDateTime
-        | Temporal.PlainDateTime
-        | ZonedDateTimeLike
-        | PlainDateTimeLike
-        | string;
-    };
+        /**
+         * The starting point to use when variable-length units (years, months,
+         * weeks depending on the calendar) are involved. This option is required if
+         * any of the following are true:
+         * - `unit` is `'week'` or larger units
+         * - `this` has a nonzero value for `weeks` or larger units
+         *
+         * This value must be either a `Temporal.PlainDateTime`, a
+         * `Temporal.ZonedDateTime`, or a string or object value that can be passed
+         * to `from()` of those types. Examples:
+         * - `'2020-01-01T00:00-08:00[America/Los_Angeles]'`
+         * - `'2020-01-01'`
+         * - `Temporal.PlainDate.from('2020-01-01')`
+         *
+         * `Temporal.ZonedDateTime` will be tried first because it's more
+         * specific, with `Temporal.PlainDateTime` as a fallback.
+         *
+         * If the value resolves to a `Temporal.ZonedDateTime`, then operation will
+         * adjust for DST and other time zone transitions. Otherwise (including if
+         * this option is omitted), then the operation will ignore time zone
+         * transitions and all days will be assumed to be 24 hours long.
+         */
+        relativeTo?:
+          | Temporal.ZonedDateTime
+          | Temporal.PlainDateTime
+          | ZonedDateTimeLike
+          | PlainDateTimeLike
+          | string;
+      };
 
   /**
    * Options to control behavior of `Duration.compare()`
@@ -20864,9 +20382,12 @@ declare namespace Temporal {
    * @category Temporal
    * @experimental
    */
-  export type TransitionDirection = "next" | "previous" | {
-    direction: "next" | "previous";
-  };
+  export type TransitionDirection =
+    | 'next'
+    | 'previous'
+    | {
+        direction: 'next' | 'previous';
+      };
 
   /**
    * @category Temporal
@@ -20895,9 +20416,7 @@ declare namespace Temporal {
    * @experimental
    */
   export class Duration {
-    static from(
-      item: Temporal.Duration | DurationLike | string,
-    ): Temporal.Duration;
+    static from(item: Temporal.Duration | DurationLike | string): Temporal.Duration;
     static compare(
       one: Temporal.Duration | DurationLike | string,
       two: Temporal.Duration | DurationLike | string,
@@ -20940,14 +20459,11 @@ declare namespace Temporal {
     ): Temporal.Duration;
     round(roundTo: DurationRoundTo): Temporal.Duration;
     total(totalOf: DurationTotalOf): number;
-    toLocaleString(
-      locales?: string | string[],
-      options?: Intl.DateTimeFormatOptions,
-    ): string;
+    toLocaleString(locales?: string | string[], options?: Intl.DateTimeFormatOptions): string;
     toJSON(): string;
     toString(options?: ToStringPrecisionOptions): string;
     valueOf(): never;
-    readonly [Symbol.toStringTag]: "Temporal.Duration";
+    readonly [Symbol.toStringTag]: 'Temporal.Duration';
   }
 
   /**
@@ -20981,61 +20497,35 @@ declare namespace Temporal {
     equals(other: Temporal.Instant | string): boolean;
     add(
       durationLike:
-        | Omit<
-          Temporal.Duration | DurationLike,
-          "years" | "months" | "weeks" | "days"
-        >
+        | Omit<Temporal.Duration | DurationLike, 'years' | 'months' | 'weeks' | 'days'>
         | string,
     ): Temporal.Instant;
     subtract(
       durationLike:
-        | Omit<
-          Temporal.Duration | DurationLike,
-          "years" | "months" | "weeks" | "days"
-        >
+        | Omit<Temporal.Duration | DurationLike, 'years' | 'months' | 'weeks' | 'days'>
         | string,
     ): Temporal.Instant;
     until(
       other: Temporal.Instant | string,
       options?: DifferenceOptions<
-        | "hour"
-        | "minute"
-        | "second"
-        | "millisecond"
-        | "microsecond"
-        | "nanosecond"
+        'hour' | 'minute' | 'second' | 'millisecond' | 'microsecond' | 'nanosecond'
       >,
     ): Temporal.Duration;
     since(
       other: Temporal.Instant | string,
       options?: DifferenceOptions<
-        | "hour"
-        | "minute"
-        | "second"
-        | "millisecond"
-        | "microsecond"
-        | "nanosecond"
+        'hour' | 'minute' | 'second' | 'millisecond' | 'microsecond' | 'nanosecond'
       >,
     ): Temporal.Duration;
     round(
-      roundTo: RoundTo<
-        | "hour"
-        | "minute"
-        | "second"
-        | "millisecond"
-        | "microsecond"
-        | "nanosecond"
-      >,
+      roundTo: RoundTo<'hour' | 'minute' | 'second' | 'millisecond' | 'microsecond' | 'nanosecond'>,
     ): Temporal.Instant;
     toZonedDateTimeISO(tzLike: TimeZoneLike): Temporal.ZonedDateTime;
-    toLocaleString(
-      locales?: string | string[],
-      options?: Intl.DateTimeFormatOptions,
-    ): string;
+    toLocaleString(locales?: string | string[], options?: Intl.DateTimeFormatOptions): string;
     toJSON(): string;
     toString(options?: InstantToStringOptions): string;
     valueOf(): never;
-    readonly [Symbol.toStringTag]: "Temporal.Instant";
+    readonly [Symbol.toStringTag]: 'Temporal.Instant';
   }
 
   /**
@@ -21087,12 +20577,7 @@ declare namespace Temporal {
       one: Temporal.PlainDate | PlainDateLike | string,
       two: Temporal.PlainDate | PlainDateLike | string,
     ): ComparisonResult;
-    constructor(
-      isoYear: number,
-      isoMonth: number,
-      isoDay: number,
-      calendar?: string,
-    );
+    constructor(isoYear: number, isoMonth: number, isoDay: number, calendar?: string);
     readonly era: string | undefined;
     readonly eraYear: number | undefined;
     readonly year: number;
@@ -21110,10 +20595,7 @@ declare namespace Temporal {
     readonly monthsInYear: number;
     readonly inLeapYear: boolean;
     equals(other: Temporal.PlainDate | PlainDateLike | string): boolean;
-    with(
-      dateLike: PlainDateLike,
-      options?: AssignmentOptions,
-    ): Temporal.PlainDate;
+    with(dateLike: PlainDateLike, options?: AssignmentOptions): Temporal.PlainDate;
     withCalendar(calendar: CalendarLike): Temporal.PlainDate;
     add(
       durationLike: Temporal.Duration | DurationLike | string,
@@ -21125,11 +20607,11 @@ declare namespace Temporal {
     ): Temporal.PlainDate;
     until(
       other: Temporal.PlainDate | PlainDateLike | string,
-      options?: DifferenceOptions<"year" | "month" | "week" | "day">,
+      options?: DifferenceOptions<'year' | 'month' | 'week' | 'day'>,
     ): Temporal.Duration;
     since(
       other: Temporal.PlainDate | PlainDateLike | string,
-      options?: DifferenceOptions<"year" | "month" | "week" | "day">,
+      options?: DifferenceOptions<'year' | 'month' | 'week' | 'day'>,
     ): Temporal.Duration;
     toPlainDateTime(
       temporalTime?: Temporal.PlainTime | PlainTimeLike | string,
@@ -21138,20 +20620,17 @@ declare namespace Temporal {
       timeZoneAndTime:
         | string
         | {
-          timeZone: TimeZoneLike;
-          plainTime?: Temporal.PlainTime | PlainTimeLike | string;
-        },
+            timeZone: TimeZoneLike;
+            plainTime?: Temporal.PlainTime | PlainTimeLike | string;
+          },
     ): Temporal.ZonedDateTime;
     toPlainYearMonth(): Temporal.PlainYearMonth;
     toPlainMonthDay(): Temporal.PlainMonthDay;
-    toLocaleString(
-      locales?: string | string[],
-      options?: Intl.DateTimeFormatOptions,
-    ): string;
+    toLocaleString(locales?: string | string[], options?: Intl.DateTimeFormatOptions): string;
     toJSON(): string;
     toString(options?: ShowCalendarOption): string;
     valueOf(): never;
-    readonly [Symbol.toStringTag]: "Temporal.PlainDate";
+    readonly [Symbol.toStringTag]: 'Temporal.PlainDate';
   }
 
   /**
@@ -21231,13 +20710,8 @@ declare namespace Temporal {
     readonly monthsInYear: number;
     readonly inLeapYear: boolean;
     equals(other: Temporal.PlainDateTime | PlainDateTimeLike | string): boolean;
-    with(
-      dateTimeLike: PlainDateTimeLike,
-      options?: AssignmentOptions,
-    ): Temporal.PlainDateTime;
-    withPlainTime(
-      timeLike?: Temporal.PlainTime | PlainTimeLike | string,
-    ): Temporal.PlainDateTime;
+    with(dateTimeLike: PlainDateTimeLike, options?: AssignmentOptions): Temporal.PlainDateTime;
+    withPlainTime(timeLike?: Temporal.PlainTime | PlainTimeLike | string): Temporal.PlainDateTime;
     withCalendar(calendar: CalendarLike): Temporal.PlainDateTime;
     add(
       durationLike: Temporal.Duration | DurationLike | string,
@@ -21250,58 +20724,46 @@ declare namespace Temporal {
     until(
       other: Temporal.PlainDateTime | PlainDateTimeLike | string,
       options?: DifferenceOptions<
-        | "year"
-        | "month"
-        | "week"
-        | "day"
-        | "hour"
-        | "minute"
-        | "second"
-        | "millisecond"
-        | "microsecond"
-        | "nanosecond"
+        | 'year'
+        | 'month'
+        | 'week'
+        | 'day'
+        | 'hour'
+        | 'minute'
+        | 'second'
+        | 'millisecond'
+        | 'microsecond'
+        | 'nanosecond'
       >,
     ): Temporal.Duration;
     since(
       other: Temporal.PlainDateTime | PlainDateTimeLike | string,
       options?: DifferenceOptions<
-        | "year"
-        | "month"
-        | "week"
-        | "day"
-        | "hour"
-        | "minute"
-        | "second"
-        | "millisecond"
-        | "microsecond"
-        | "nanosecond"
+        | 'year'
+        | 'month'
+        | 'week'
+        | 'day'
+        | 'hour'
+        | 'minute'
+        | 'second'
+        | 'millisecond'
+        | 'microsecond'
+        | 'nanosecond'
       >,
     ): Temporal.Duration;
     round(
       roundTo: RoundTo<
-        | "day"
-        | "hour"
-        | "minute"
-        | "second"
-        | "millisecond"
-        | "microsecond"
-        | "nanosecond"
+        'day' | 'hour' | 'minute' | 'second' | 'millisecond' | 'microsecond' | 'nanosecond'
       >,
     ): Temporal.PlainDateTime;
-    toZonedDateTime(
-      tzLike: TimeZoneLike,
-      options?: ToInstantOptions,
-    ): Temporal.ZonedDateTime;
+    toZonedDateTime(tzLike: TimeZoneLike, options?: ToInstantOptions): Temporal.ZonedDateTime;
     toPlainDate(): Temporal.PlainDate;
     toPlainTime(): Temporal.PlainTime;
-    toLocaleString(
-      locales?: string | string[],
-      options?: Intl.DateTimeFormatOptions,
-    ): string;
+    toLocaleString(locales?: string | string[], options?: Intl.DateTimeFormatOptions): string;
     toJSON(): string;
     toString(options?: CalendarTypeToStringOptions): string;
     valueOf(): never;
-    readonly [Symbol.toStringTag]: "Temporal.PlainDateTime";
+    readonly [Symbol.toStringTag]: 'Temporal.PlainDateTime';
   }
 
   /**
@@ -21333,29 +20795,18 @@ declare namespace Temporal {
       item: Temporal.PlainMonthDay | PlainMonthDayLike | string,
       options?: AssignmentOptions,
     ): Temporal.PlainMonthDay;
-    constructor(
-      isoMonth: number,
-      isoDay: number,
-      calendar?: string,
-      referenceISOYear?: number,
-    );
+    constructor(isoMonth: number, isoDay: number, calendar?: string, referenceISOYear?: number);
     readonly monthCode: string;
     readonly day: number;
     readonly calendarId: string;
     equals(other: Temporal.PlainMonthDay | PlainMonthDayLike | string): boolean;
-    with(
-      monthDayLike: PlainMonthDayLike,
-      options?: AssignmentOptions,
-    ): Temporal.PlainMonthDay;
+    with(monthDayLike: PlainMonthDayLike, options?: AssignmentOptions): Temporal.PlainMonthDay;
     toPlainDate(year: { year: number }): Temporal.PlainDate;
-    toLocaleString(
-      locales?: string | string[],
-      options?: Intl.DateTimeFormatOptions,
-    ): string;
+    toLocaleString(locales?: string | string[], options?: Intl.DateTimeFormatOptions): string;
     toJSON(): string;
     toString(options?: ShowCalendarOption): string;
     valueOf(): never;
-    readonly [Symbol.toStringTag]: "Temporal.PlainMonthDay";
+    readonly [Symbol.toStringTag]: 'Temporal.PlainMonthDay';
   }
 
   /**
@@ -21428,43 +20879,23 @@ declare namespace Temporal {
     until(
       other: Temporal.PlainTime | PlainTimeLike | string,
       options?: DifferenceOptions<
-        | "hour"
-        | "minute"
-        | "second"
-        | "millisecond"
-        | "microsecond"
-        | "nanosecond"
+        'hour' | 'minute' | 'second' | 'millisecond' | 'microsecond' | 'nanosecond'
       >,
     ): Temporal.Duration;
     since(
       other: Temporal.PlainTime | PlainTimeLike | string,
       options?: DifferenceOptions<
-        | "hour"
-        | "minute"
-        | "second"
-        | "millisecond"
-        | "microsecond"
-        | "nanosecond"
+        'hour' | 'minute' | 'second' | 'millisecond' | 'microsecond' | 'nanosecond'
       >,
     ): Temporal.Duration;
     round(
-      roundTo: RoundTo<
-        | "hour"
-        | "minute"
-        | "second"
-        | "millisecond"
-        | "microsecond"
-        | "nanosecond"
-      >,
+      roundTo: RoundTo<'hour' | 'minute' | 'second' | 'millisecond' | 'microsecond' | 'nanosecond'>,
     ): Temporal.PlainTime;
-    toLocaleString(
-      locales?: string | string[],
-      options?: Intl.DateTimeFormatOptions,
-    ): string;
+    toLocaleString(locales?: string | string[], options?: Intl.DateTimeFormatOptions): string;
     toJSON(): string;
     toString(options?: ToStringPrecisionOptions): string;
     valueOf(): never;
-    readonly [Symbol.toStringTag]: "Temporal.PlainTime";
+    readonly [Symbol.toStringTag]: 'Temporal.PlainTime';
   }
 
   /**
@@ -21507,12 +20938,7 @@ declare namespace Temporal {
       one: Temporal.PlainYearMonth | PlainYearMonthLike | string,
       two: Temporal.PlainYearMonth | PlainYearMonthLike | string,
     ): ComparisonResult;
-    constructor(
-      isoYear: number,
-      isoMonth: number,
-      calendar?: string,
-      referenceISODay?: number,
-    );
+    constructor(isoYear: number, isoMonth: number, calendar?: string, referenceISODay?: number);
     readonly era: string | undefined;
     readonly eraYear: number | undefined;
     readonly year: number;
@@ -21523,13 +20949,8 @@ declare namespace Temporal {
     readonly daysInYear: number;
     readonly monthsInYear: number;
     readonly inLeapYear: boolean;
-    equals(
-      other: Temporal.PlainYearMonth | PlainYearMonthLike | string,
-    ): boolean;
-    with(
-      yearMonthLike: PlainYearMonthLike,
-      options?: AssignmentOptions,
-    ): Temporal.PlainYearMonth;
+    equals(other: Temporal.PlainYearMonth | PlainYearMonthLike | string): boolean;
+    with(yearMonthLike: PlainYearMonthLike, options?: AssignmentOptions): Temporal.PlainYearMonth;
     add(
       durationLike: Temporal.Duration | DurationLike | string,
       options?: ArithmeticOptions,
@@ -21540,21 +20961,18 @@ declare namespace Temporal {
     ): Temporal.PlainYearMonth;
     until(
       other: Temporal.PlainYearMonth | PlainYearMonthLike | string,
-      options?: DifferenceOptions<"year" | "month">,
+      options?: DifferenceOptions<'year' | 'month'>,
     ): Temporal.Duration;
     since(
       other: Temporal.PlainYearMonth | PlainYearMonthLike | string,
-      options?: DifferenceOptions<"year" | "month">,
+      options?: DifferenceOptions<'year' | 'month'>,
     ): Temporal.Duration;
     toPlainDate(day: { day: number }): Temporal.PlainDate;
-    toLocaleString(
-      locales?: string | string[],
-      options?: Intl.DateTimeFormatOptions,
-    ): string;
+    toLocaleString(locales?: string | string[], options?: Intl.DateTimeFormatOptions): string;
     toJSON(): string;
     toString(options?: ShowCalendarOption): string;
     valueOf(): never;
-    readonly [Symbol.toStringTag]: "Temporal.PlainYearMonth";
+    readonly [Symbol.toStringTag]: 'Temporal.PlainYearMonth';
   }
 
   /**
@@ -21626,9 +21044,7 @@ declare namespace Temporal {
       zonedDateTimeLike: ZonedDateTimeLike,
       options?: ZonedDateTimeAssignmentOptions,
     ): Temporal.ZonedDateTime;
-    withPlainTime(
-      timeLike?: Temporal.PlainTime | PlainTimeLike | string,
-    ): Temporal.ZonedDateTime;
+    withPlainTime(timeLike?: Temporal.PlainTime | PlainTimeLike | string): Temporal.ZonedDateTime;
     withCalendar(calendar: CalendarLike): Temporal.ZonedDateTime;
     withTimeZone(timeZone: TimeZoneLike): Temporal.ZonedDateTime;
     add(
@@ -21642,60 +21058,49 @@ declare namespace Temporal {
     until(
       other: Temporal.ZonedDateTime | ZonedDateTimeLike | string,
       options?: Temporal.DifferenceOptions<
-        | "year"
-        | "month"
-        | "week"
-        | "day"
-        | "hour"
-        | "minute"
-        | "second"
-        | "millisecond"
-        | "microsecond"
-        | "nanosecond"
+        | 'year'
+        | 'month'
+        | 'week'
+        | 'day'
+        | 'hour'
+        | 'minute'
+        | 'second'
+        | 'millisecond'
+        | 'microsecond'
+        | 'nanosecond'
       >,
     ): Temporal.Duration;
     since(
       other: Temporal.ZonedDateTime | ZonedDateTimeLike | string,
       options?: Temporal.DifferenceOptions<
-        | "year"
-        | "month"
-        | "week"
-        | "day"
-        | "hour"
-        | "minute"
-        | "second"
-        | "millisecond"
-        | "microsecond"
-        | "nanosecond"
+        | 'year'
+        | 'month'
+        | 'week'
+        | 'day'
+        | 'hour'
+        | 'minute'
+        | 'second'
+        | 'millisecond'
+        | 'microsecond'
+        | 'nanosecond'
       >,
     ): Temporal.Duration;
     round(
       roundTo: RoundTo<
-        | "day"
-        | "hour"
-        | "minute"
-        | "second"
-        | "millisecond"
-        | "microsecond"
-        | "nanosecond"
+        'day' | 'hour' | 'minute' | 'second' | 'millisecond' | 'microsecond' | 'nanosecond'
       >,
     ): Temporal.ZonedDateTime;
     startOfDay(): Temporal.ZonedDateTime;
-    getTimeZoneTransition(
-      direction: TransitionDirection,
-    ): Temporal.ZonedDateTime | null;
+    getTimeZoneTransition(direction: TransitionDirection): Temporal.ZonedDateTime | null;
     toInstant(): Temporal.Instant;
     toPlainDateTime(): Temporal.PlainDateTime;
     toPlainDate(): Temporal.PlainDate;
     toPlainTime(): Temporal.PlainTime;
-    toLocaleString(
-      locales?: string | string[],
-      options?: Intl.DateTimeFormatOptions,
-    ): string;
+    toLocaleString(locales?: string | string[], options?: Intl.DateTimeFormatOptions): string;
     toJSON(): string;
     toString(options?: ZonedDateTimeToStringOptions): string;
     valueOf(): never;
-    readonly [Symbol.toStringTag]: "Temporal.ZonedDateTime";
+    readonly [Symbol.toStringTag]: 'Temporal.ZonedDateTime';
   }
 
   /**
@@ -21779,7 +21184,7 @@ declare namespace Temporal {
      */
     timeZoneId: () => string;
 
-    readonly [Symbol.toStringTag]: "Temporal.Now";
+    readonly [Symbol.toStringTag]: 'Temporal.Now';
   };
 }
 
@@ -21875,7 +21280,7 @@ declare namespace Intl {
      * - 'endRange': The part is from the end date
      * - 'shared': The part is shared between both dates (like separators)
      */
-    source: "shared" | "startRange" | "endRange";
+    source: 'shared' | 'startRange' | 'endRange';
   }
 
   /**
@@ -21907,9 +21312,7 @@ declare namespace Intl {
      * console.log(formatter.format(date)); // Output: "Sunday, January 1, 2023"
      * ```
      */
-    formatToParts(
-      date?: Formattable | number,
-    ): globalThis.Intl.DateTimeFormatPart[];
+    formatToParts(date?: Formattable | number): globalThis.Intl.DateTimeFormatPart[];
 
     /**
      * Format a date range in the most concise way based on the locale and
@@ -21958,14 +21361,8 @@ declare namespace Intl {
      * // ]
      * ```
      */
-    formatRangeToParts<T extends Formattable>(
-      startDate: T,
-      endDate: T,
-    ): DateTimeFormatRangePart[];
-    formatRangeToParts(
-      startDate: Date | number,
-      endDate: Date | number,
-    ): DateTimeFormatRangePart[];
+    formatRangeToParts<T extends Formattable>(startDate: T, endDate: T): DateTimeFormatRangePart[];
+    formatRangeToParts(startDate: Date | number, endDate: Date | number): DateTimeFormatRangePart[];
   }
 
   /**
@@ -21974,9 +21371,9 @@ declare namespace Intl {
    */
   export interface DateTimeFormatOptions {
     // TODO: remove the props below after TS lib declarations are updated
-    dayPeriod?: "narrow" | "short" | "long";
-    dateStyle?: "full" | "long" | "medium" | "short";
-    timeStyle?: "full" | "long" | "medium" | "short";
+    dayPeriod?: 'narrow' | 'short' | 'long';
+    dateStyle?: 'full' | 'long' | 'medium' | 'short';
+    timeStyle?: 'full' | 'long' | 'medium' | 'short';
   }
 }
 
@@ -22005,19 +21402,19 @@ interface Uint8Array {
    *
    * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/toBase64)
    */
-  toBase64(options?: {
-    alphabet?: "base64" | "base64url";
-    omitPadding?: boolean;
-  }): string;
+  toBase64(options?: { alphabet?: 'base64' | 'base64url'; omitPadding?: boolean }): string;
   /**
    * Populates this `Uint8Array` object with data from a base64 string.
    *
    * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/setFromBase64)
    */
-  setFromBase64(string: string, options?: {
-    alphabet?: "base64" | "base64url";
-    lastChunkHandling?: "loose" | "strict" | "stop-before-partial";
-  }): { read: number; written: number };
+  setFromBase64(
+    string: string,
+    options?: {
+      alphabet?: 'base64' | 'base64url';
+      lastChunkHandling?: 'loose' | 'strict' | 'stop-before-partial';
+    },
+  ): { read: number; written: number };
   /**
    * Converts this `Uint8Array` object to a hex string.
    *
@@ -22042,10 +21439,13 @@ interface Uint8ArrayConstructor {
    *
    * [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/fromBase64)
    */
-  fromBase64(string: string, options?: {
-    alphabet?: "base64" | "base64url";
-    lastChunkHandling?: "loose" | "strict" | "stop-before-partial";
-  }): Uint8Array<ArrayBuffer>;
+  fromBase64(
+    string: string,
+    options?: {
+      alphabet?: 'base64' | 'base64url';
+      lastChunkHandling?: 'loose' | 'strict' | 'stop-before-partial';
+    },
+  ): Uint8Array<ArrayBuffer>;
   /**
    * Creates a new `Uint8Array` object from a hex string.
    *

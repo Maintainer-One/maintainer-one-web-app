@@ -1,6 +1,6 @@
-import { GameConfig } from "./gameConfig.ts";
-import type { Player, PointZone, Team, Tick, Intent, TeamIntentGenerator } from "./utils/types";
-import { MatchPCG } from "./utils/random.ts";
+import { GameConfig } from './gameConfig.ts';
+import type { Player, PointZone, Team, Tick, Intent, TeamIntentGenerator } from './utils/types';
+import { MatchPCG } from './utils/random.ts';
 
 export class GameEngine {
   private prng: MatchPCG;
@@ -15,7 +15,7 @@ export class GameEngine {
     public awayTeam: Team,
     public awayPlayers: Player[],
     public awayIntentGenerator: TeamIntentGenerator,
-    seed: bigint = 1067780n
+    seed: bigint = 1067780n,
   ) {
     this.prng = new MatchPCG(seed);
     this.pointZoneCoolDown = GameConfig.INITIAL_POINT_ZONE_COOL_DOWN;
@@ -35,14 +35,16 @@ export class GameEngine {
     }
 
     // PLAYER INTENT LOGIC
-    let intents = [
-      ...(this.homeIntentGenerator(this.homeTeam, this.awayTeam, this.players, this.pointZones) || []),
-      ...(this.awayIntentGenerator(this.awayTeam, this.homeTeam, this.players, this.pointZones) || []),
+    const intents = [
+      ...(this.homeIntentGenerator(this.homeTeam, this.awayTeam, this.players, this.pointZones) ||
+        []),
+      ...(this.awayIntentGenerator(this.awayTeam, this.homeTeam, this.players, this.pointZones) ||
+        []),
     ];
 
     // Apply intents if valid
-    for (let player of this.players) {
-      let intent = intents.find((intent) => player.id === intent.playerId);
+    for (const player of this.players) {
+      const intent = intents.find((intent) => player.id === intent.playerId);
       player.targetX = player.x;
       player.targetY = player.y;
       player.intentX = player.x;
@@ -52,12 +54,18 @@ export class GameEngine {
       if (intent !== undefined) {
         player.intentX = intent.x;
         player.intentY = intent.y;
-        
+
         const dx = Math.abs(intent.x - player.x);
         const dy = Math.abs(intent.y - player.y);
 
-        if (dx + dy <= 1) { // 4-way movement only
-          if (intent.x >= 0 && intent.x < GameConfig.GRID_WIDTH && intent.y >= 0 && intent.y < GameConfig.GRID_HEIGHT) {
+        if (dx + dy <= 1) {
+          // 4-way movement only
+          if (
+            intent.x >= 0 &&
+            intent.x < GameConfig.GRID_WIDTH &&
+            intent.y >= 0 &&
+            intent.y < GameConfig.GRID_HEIGHT
+          ) {
             player.targetX = intent.x;
             player.targetY = intent.y;
             player.intentStatus = 'success'; // Tentative success
@@ -73,30 +81,33 @@ export class GameEngine {
     let resolving = true;
     while (resolving) {
       resolving = false;
-      let targetCounts: Record<string, Player[]> = {};
-      
-      for (let player of this.players) {
-        let key = `${player.targetX},${player.targetY}`;
+      const targetCounts: Record<string, Player[]> = {};
+
+      for (const player of this.players) {
+        const key = `${player.targetX},${player.targetY}`;
         if (!targetCounts[key]) targetCounts[key] = [];
         targetCounts[key].push(player);
       }
 
       // NO-SWAPPING LOGIC
-      for (let playerA of this.players) {
+      for (const playerA of this.players) {
         if (playerA.targetX === playerA.x && playerA.targetY === playerA.y) continue;
-        
-        for (let playerB of this.players) {
+
+        for (const playerB of this.players) {
           if (playerA.id === playerB.id) continue;
           if (playerB.targetX === playerB.x && playerB.targetY === playerB.y) continue;
 
           // Check if they are trying to swap places
-          if (playerA.targetX === playerB.x && playerA.targetY === playerB.y &&
-              playerB.targetX === playerA.x && playerB.targetY === playerA.y) {
-            
+          if (
+            playerA.targetX === playerB.x &&
+            playerA.targetY === playerB.y &&
+            playerB.targetX === playerA.x &&
+            playerB.targetY === playerA.y
+          ) {
             playerA.targetX = playerA.x;
             playerA.targetY = playerA.y;
             playerA.intentStatus = 'collision';
-            
+
             playerB.targetX = playerB.x;
             playerB.targetY = playerB.y;
             playerB.intentStatus = 'collision';
@@ -105,9 +116,9 @@ export class GameEngine {
         }
       }
 
-      for (let [key, playersMovingHere] of Object.entries(targetCounts)) {
+      for (const [key, playersMovingHere] of Object.entries(targetCounts)) {
         if (playersMovingHere.length > 1) {
-          for (let p of playersMovingHere) {
+          for (const p of playersMovingHere) {
             if (p.targetX !== p.x || p.targetY !== p.y) {
               p.targetX = p.x;
               p.targetY = p.y;
@@ -120,7 +131,7 @@ export class GameEngine {
     }
 
     // UPDATE POSITIONS
-    for (let player of this.players) {
+    for (const player of this.players) {
       if (player.targetX !== undefined && player.targetY !== undefined) {
         player.x = player.targetX;
         player.y = player.targetY;
@@ -130,10 +141,10 @@ export class GameEngine {
     }
 
     // SCORING LOGIC (After movement)
-    for (let [index, pointZone] of this.pointZones.entries()) {
-      for (let player of this.players) {
+    for (const [index, pointZone] of this.pointZones.entries()) {
+      for (const player of this.players) {
         if (player.x === pointZone.x && player.y === pointZone.y) {
-          let team = this.homeTeam.id === player.teamId ? this.homeTeam : this.awayTeam;
+          const team = this.homeTeam.id === player.teamId ? this.homeTeam : this.awayTeam;
           team.score += 1;
 
           this.pointZones.splice(index, 1);
@@ -143,10 +154,10 @@ export class GameEngine {
     }
 
     // SNAPSHOT TICK (at the end)
-    let tick: Tick = {
+    const tick: Tick = {
       homeTeam: { ...this.homeTeam },
       awayTeam: { ...this.awayTeam },
-      players: this.players.map(p => ({ ...p })),
+      players: this.players.map((p) => ({ ...p })),
       pointZones: [...this.pointZones],
     };
 

@@ -341,11 +341,11 @@
     name="description"
     content="Competitive Engineering. Open Source Strategy. Alpha Release estimated for Q3 2026."
   />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
   <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
     crossorigin="anonymous"
+    href="https://fonts.gstatic.com"
+    rel="preconnect"
   >
   <link
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
@@ -354,15 +354,17 @@
 </svelte:head>
 
 <div
+  data-component="home-page"
   class="bg-black min-h-screen text-gray-200 selection:bg-red-900 selection:text-stone-200 overflow-x-hidden flex flex-col"
   style="font-family: 'JetBrains Mono', monospace"
 >
   <section
+    data-component="hero-section"
     class="relative grow flex flex-col items-center justify-center p-6 border-b border-gray-800 min-h-[calc(100vh-3rem)]"
   >
     <canvas
-      bind:this={canvas}
       class="absolute inset-0 z-0 opacity-50"
+      bind:this={canvas}
     ></canvas>
 
     <div
@@ -377,7 +379,7 @@
         class="w-24 h-24 text-red-700 mx-auto mb-8 drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]"
       />
 
-      <h1 class="text-4xl md:text-6xl font-bold tracking-tighter text-white">
+      <h1 data-component="hero-title" class="text-4xl md:text-6xl font-bold tracking-tighter text-white">
         MAINTAINER ONE
       </h1>
 
@@ -390,6 +392,7 @@
       </p>
 
       <div
+        data-component="status-badge"
         class="inline-block border border-red-900/50 bg-red-900/10 px-3 py-1 rounded text-red-500 text-xs tracking-widest mb-4 pointer-events-auto"
       >
         STATUS: PRE-ALPHA
@@ -402,6 +405,7 @@
   </section>
 
   <section
+    data-component="pitch-section"
     class="max-w-5xl mx-auto py-24 px-6 grid md:grid-cols-2 gap-16 relative z-10 bg-black"
   >
     <div class="space-y-8">
@@ -442,7 +446,7 @@
       </ul>
     </div>
 
-    <div class="space-y-8">
+    <div data-component="upcoming-section" class="space-y-8">
       <h2
         class="text-3xl font-bold text-stone-200 border-l-4 border-red-600 pl-4"
       >
@@ -491,7 +495,7 @@
     </div>
   </section>
 
-  <section class="border-t border-gray-900 bg-black py-20 px-6 relative z-10">
+  <section data-component="interest-section" class="border-t border-gray-900 bg-black py-20 px-6 relative z-10">
     <div class="max-w-4xl mx-auto">
       <div class="mb-8 text-center">
         <h2 class="text-xl font-bold text-stone-200 mb-2 tracking-widest">
@@ -504,18 +508,19 @@
 
       <div class="grid md:grid-cols-2 gap-6">
         <a
-          href="https://github.com/Maintainer-One"
-          target="_blank"
-          rel="noreferrer"
+          data-component="interest-link-github"
           class="group block p-6 border border-gray-800 hover:border-red-900 bg-gray-900/20 hover:bg-red-900/10 transition-all duration-300"
+          href="https://github.com/Maintainer-One"
+          rel="noreferrer"
+          target="_blank"
         >
           <div class="flex justify-between items-start mb-4">
             <span
               class="text-red-500 text-xs font-bold tracking-widest border border-red-900/50 px-2 py-1 bg-red-900/20"
             >CONTRIBUTE</span>
             <svg
-              viewBox="0 0 24 24"
               class="w-6 h-6 fill-gray-400 group-hover:fill-white transition-colors"
+              viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
@@ -530,18 +535,19 @@
         </a>
 
         <a
-          href="https://github.com/Maintainer-One"
-          target="_blank"
-          rel="noreferrer"
+          data-component="interest-link-design"
           class="group block p-6 border border-gray-800 hover:border-green-900 bg-gray-900/20 hover:bg-green-900/10 transition-all duration-300"
+          href="https://github.com/Maintainer-One"
+          rel="noreferrer"
+          target="_blank"
         >
           <div class="flex justify-between items-start mb-4">
             <span
               class="text-green-500 text-xs font-bold tracking-widest border border-green-900/50 px-2 py-1 bg-green-900/20"
             >DESIGN</span>
             <svg
-              viewBox="0 0 24 24"
               class="w-6 h-6 fill-gray-400 group-hover:fill-white transition-colors"
+              viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
@@ -559,6 +565,7 @@
   </section>
 
   <footer
+    data-component="footer"
     class="text-center py-12 text-gray-600 text-xs border-t border-gray-900 relative z-10 bg-black"
   >
     <p>MAINTAINER ONE || 2026</p>

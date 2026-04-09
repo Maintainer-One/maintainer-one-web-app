@@ -11,9 +11,9 @@
     "prepare": "svelte-kit sync || echo ''",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "format": "deno fmt",
-    "lint": "deno lint",
-    "lint:fix": "deno lint --fix"
+    "format": "deno run -A npm:prettier --write .",
+    "lint": "deno run -A npm:eslint .",
+    "lint:fix": "deno run -A npm:eslint . --fix"
   },
   "nodeModulesDir": "auto",
   "exports": {},
@@ -38,10 +38,20 @@
     "@tailwindcss/vite": "npm:@tailwindcss/vite",
     "@types/deno": "npm:@types/deno@^2.5.0",
     "codemirror": "npm:codemirror@^6.0.2",
+    "eslint": "npm:eslint@^9.14.0",
+    "eslint-config-prettier": "npm:eslint-config-prettier@^9.1.0",
+    "eslint-plugin-svelte": "npm:eslint-plugin-svelte@^2.46.0",
+    "eslint-plugin-tailwindcss": "npm:eslint-plugin-tailwindcss@^3.17.5",
+    "globals": "npm:globals@^15.11.0",
+    "prettier": "npm:prettier@^3.3.3",
+    "prettier-plugin-svelte": "npm:prettier-plugin-svelte@^3.2.7",
+    "prettier-plugin-tailwindcss": "npm:prettier-plugin-tailwindcss@^0.6.8",
     "sucrase": "npm:sucrase@^3.35.1",
     "svelte": "npm:svelte",
     "svelte-check": "npm:svelte-check",
+    "svelte-eslint-parser": "npm:svelte-eslint-parser@^0.43.0",
     "tailwindcss": "npm:tailwindcss",
+    "typescript-eslint": "npm:typescript-eslint@^8.13.0",
     "vite": "npm:vite"
   }
 }
