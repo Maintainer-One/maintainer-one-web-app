@@ -23,13 +23,6 @@ export class GameEngine {
   }
 
   public executeTick(): Tick {
-    let tick: Tick = {
-      homeTeam: { ...this.homeTeam },
-      awayTeam: { ...this.awayTeam },
-      players: [],
-      pointZones: [],
-    };
-
     // POINT ZONE LOGIC
     if (this.pointZoneCoolDown === 0) {
       this.pointZones.push({
@@ -52,8 +45,13 @@ export class GameEngine {
       let intent = intents.find((intent) => player.id === intent.playerId);
       player.targetX = player.x;
       player.targetY = player.y;
+      player.intentX = player.x;
+      player.intentY = player.y;
 
       if (intent !== undefined) {
+        player.intentX = intent.x;
+        player.intentY = intent.y;
+        
         if (intent.x >= 0 && intent.x < GameConfig.GRID_WIDTH && intent.y >= 0 && intent.y < GameConfig.GRID_HEIGHT) {
           player.targetX = intent.x;
           player.targetY = intent.y;
@@ -106,7 +104,17 @@ export class GameEngine {
       }
     }
 
-    // If any players are on the current point zone we increment score and remove the point zone
+    // UPDATE POSITIONS
+    for (let player of this.players) {
+      if (player.targetX !== undefined && player.targetY !== undefined) {
+        player.x = player.targetX;
+        player.y = player.targetY;
+        delete player.targetX;
+        delete player.targetY;
+      }
+    }
+
+    // SCORING LOGIC (After movement)
     for (let [index, pointZone] of this.pointZones.entries()) {
       for (let player of this.players) {
         if (player.x === pointZone.x && player.y === pointZone.y) {
@@ -119,17 +127,13 @@ export class GameEngine {
       }
     }
 
-    tick.pointZones = [...this.pointZones];
-
-    for (let player of this.players) {
-      if (player.targetX !== undefined && player.targetY !== undefined) {
-        player.x = player.targetX;
-        player.y = player.targetY;
-        delete player.targetX;
-        delete player.targetY;
-      }
-      tick.players.push({ ...player });
-    }
+    // SNAPSHOT TICK (at the end)
+    let tick: Tick = {
+      homeTeam: { ...this.homeTeam },
+      awayTeam: { ...this.awayTeam },
+      players: this.players.map(p => ({ ...p })),
+      pointZones: [...this.pointZones],
+    };
 
     return tick;
   }

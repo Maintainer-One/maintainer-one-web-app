@@ -137,58 +137,183 @@ export function generateIntents(team, opponent, players, pointZones) {
     }
   });
 
+  let pings = $state<{x: number, y: number, color: string, radius: number, opacity: number}[]>([]);
+  let tickStartTime = $state(Date.now());
+
+  function triggerPing(x: number, y: number, color: string) {
+    pings.push({ 
+      x: x * cellSize + cellSize / 2, 
+      y: y * cellSize + cellSize / 2, 
+      color, 
+      radius: cellSize / 2, 
+      opacity: 1 
+    });
+  }
+
+  // Track tick transitions for interpolation
+  let prevTickIndex = -1;
   $effect(() => {
+    if (tick === prevTickIndex) return;
+    tickStartTime = Date.now();
+    
+    const currentTick = game.ticks[tick];
+    const prevTickSnapshot = prevTickIndex >= 0 ? game.ticks[prevTickIndex] : null;
+    
+    if (prevTickSnapshot && tick > prevTickIndex) {
+      if (currentTick.homeTeam.score > prevTickSnapshot.homeTeam.score) {
+        const captured = prevTickSnapshot.pointZones.find(pz => !currentTick.pointZones.some(cz => cz.x === pz.x && cz.y === pz.y));
+        if (captured) triggerPing(captured.x, captured.y, currentTick.homeTeam.color);
+      }
+      if (currentTick.awayTeam.score > prevTickSnapshot.awayTeam.score) {
+        const captured = prevTickSnapshot.pointZones.find(pz => !currentTick.pointZones.some(cz => cz.x === pz.x && cz.y === pz.y));
+        if (captured) triggerPing(captured.x, captured.y, currentTick.awayTeam.color);
+      }
+    }
+    prevTickIndex = tick;
+  });
+
+  onMount(() => {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const currentTick = game.ticks[tick];
-    if (!currentTick) return;
+    let frame: number;
+    const render = () => {
+      // 1. UPDATE ANIMATION STATE
+      pings = pings
+        .map(p => ({ ...p, radius: p.radius + 1.5, opacity: p.opacity - 0.02 }))
+        .filter(p => p.opacity > 0);
 
-    ctx.clearRect(0, 0, width, height);
+      const now = Date.now();
+      let progress = isPlaying ? Math.min(1, (now - tickStartTime) / playbackSpeed) : 1;
 
-    // Draw grid control heatmap
-    for (let square of controlStats.map) {
-      ctx.fillStyle = hexToRgba(square.color, 0.15);
-      ctx.fillRect(square.x * cellSize, square.y * cellSize, cellSize, cellSize);
-    }
+      // 2. CLEAR CANVAS
+      ctx.clearRect(0, 0, width, height);
 
-    // Draw grid lines
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (let i = 0; i <= gridSize; i++) {
-      ctx.moveTo(i * cellSize, 0); ctx.lineTo(i * cellSize, height);
-      ctx.moveTo(0, i * cellSize); ctx.lineTo(width, i * cellSize);
-    }
-    ctx.stroke();
+      const currentTick = game.ticks[tick];
+      const prevTick = tick > 0 ? game.ticks[tick - 1] : currentTick;
 
-    // Draw point zones
-    currentTick.pointZones.forEach(pz => {
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = "#EFBF04";
-      ctx.fillStyle = "#EFBF04";
-      ctx.fillRect(pz.x * cellSize + cellSize*0.25, pz.y * cellSize + cellSize*0.25, cellSize*0.5, cellSize*0.5);
-      ctx.shadowBlur = 0;
-    });
+      // 3. DRAW GRID & HEATMAP
+      for (let square of controlStats.map) {
+        ctx.fillStyle = hexToRgba(square.color, 0.15);
+        ctx.fillRect(square.x * cellSize, square.y * cellSize, cellSize, cellSize);
+      }
 
-    // Draw players
-    currentTick.players.forEach(p => {
-      let team = currentTick.awayTeam.id === p.teamId ? currentTick.awayTeam : currentTick.homeTeam;
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.fillStyle = team.color;
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = team.color;
-      ctx.arc(p.x * cellSize + (cellSize / 2), p.y * cellSize + (cellSize / 2), cellSize * 0.35, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.shadowBlur = 0;
-      
-      // Label
-      ctx.fillStyle = "white";
-      ctx.font = "10px Inter";
-      ctx.textAlign = "center";
-      ctx.fillText(p.name[0], p.x * cellSize + (cellSize / 2), p.y * cellSize + (cellSize / 2) + 4);
-    });
+      for (let i = 0; i <= gridSize; i++) {
+        ctx.moveTo(i * cellSize, 0); ctx.lineTo(i * cellSize, height);
+        ctx.moveTo(0, i * cellSize); ctx.lineTo(width, i * cellSize);
+      }
+      ctx.stroke();
+
+      // 4. DRAW POINT ZONES (with spawn animation)
+      currentTick.pointZones.forEach(pz => {
+        const wasPresent = prevTick.pointZones.some(opz => opz.x === pz.x && opz.y === pz.y);
+        const scale = wasPresent ? 1 : progress;
+        const opacity = wasPresent ? 1 : progress;
+
+        ctx.save();
+        ctx.translate(pz.x * cellSize + cellSize / 2, pz.y * cellSize + cellSize / 2);
+        ctx.scale(scale, scale);
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = `rgba(239, 191, 4, ${opacity})`;
+        ctx.fillStyle = `rgba(239, 191, 4, ${opacity})`;
+        ctx.fillRect(-cellSize * 0.25, -cellSize * 0.25, cellSize * 0.5, cellSize * 0.5);
+        ctx.restore();
+      });
+
+      // 5. DRAW PINGS
+      pings.forEach(p => {
+        ctx.beginPath();
+        ctx.strokeStyle = hexToRgba(p.color, p.opacity);
+        ctx.lineWidth = 4;
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.strokeStyle = hexToRgba(p.color, p.opacity * 0.5);
+        ctx.lineWidth = 2;
+        ctx.arc(p.x, p.y, p.radius * 1.5, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+
+      // 6. DRAW TRAILS & INTENTS
+      currentTick.players.forEach(p => {
+        const prevP = prevTick.players.find(pp => pp.id === p.id) || p;
+        const interpX = prevP.x + (p.x - prevP.x) * progress;
+        const interpY = prevP.y + (p.y - prevP.y) * progress;
+        const team = currentTick.awayTeam.id === p.teamId ? currentTick.awayTeam : currentTick.homeTeam;
+
+        const centerX = interpX * cellSize + cellSize / 2;
+        const centerY = interpY * cellSize + cellSize / 2;
+        const startX = prevP.x * cellSize + cellSize / 2;
+        const startY = prevP.y * cellSize + cellSize / 2;
+
+        // Trail (Where they came from this tick)
+        if (startX !== centerX || startY !== centerY) {
+          ctx.beginPath();
+          ctx.strokeStyle = hexToRgba(team.color, 0.2);
+          ctx.lineWidth = 3;
+          ctx.moveTo(startX, startY);
+          ctx.lineTo(centerX, centerY);
+          ctx.stroke();
+        }
+
+        // Intent (Where they want to go)
+        if (p.intentX !== undefined && p.intentY !== undefined) {
+          const targetX = p.intentX * cellSize + cellSize / 2;
+          const targetY = p.intentY * cellSize + cellSize / 2;
+
+          if (targetX !== centerX || targetY !== centerY) {
+            ctx.beginPath();
+            ctx.setLineDash([4, 4]);
+            ctx.strokeStyle = hexToRgba(team.color, 0.4);
+            ctx.lineWidth = 2;
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(targetX, targetY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Arrowhead
+            const angle = Math.atan2(targetY - centerY, targetX - centerX);
+            ctx.beginPath();
+            ctx.fillStyle = hexToRgba(team.color, 0.6);
+            ctx.moveTo(targetX, targetY);
+            ctx.lineTo(targetX - 8 * Math.cos(angle - Math.PI / 8), targetY - 8 * Math.sin(angle - Math.PI / 8));
+            ctx.lineTo(targetX - 8 * Math.cos(angle + Math.PI / 8), targetY - 8 * Math.sin(angle + Math.PI / 8));
+            ctx.fill();
+          }
+        }
+      });
+
+      // 7. DRAW PLAYERS (interpolated)
+      currentTick.players.forEach(p => {
+        const prevP = prevTick.players.find(pp => pp.id === p.id) || p;
+        const interpX = prevP.x + (p.x - prevP.x) * progress;
+        const interpY = prevP.y + (p.y - prevP.y) * progress;
+        
+        const team = currentTick.awayTeam.id === p.teamId ? currentTick.awayTeam : currentTick.homeTeam;
+        ctx.beginPath();
+        ctx.fillStyle = team.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = team.color;
+        ctx.arc(interpX * cellSize + (cellSize / 2), interpY * cellSize + (cellSize / 2), cellSize * 0.35, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        
+        ctx.fillStyle = "white";
+        ctx.font = "10px Inter";
+        ctx.textAlign = "center";
+        ctx.fillText(p.name[0], interpX * cellSize + (cellSize / 2), interpY * cellSize + (cellSize / 2) + 4);
+      });
+
+      frame = requestAnimationFrame(render);
+    };
+
+    render();
+    return () => cancelAnimationFrame(frame);
   });
 
   function hexToRgba(hex: string, opacity: number) {

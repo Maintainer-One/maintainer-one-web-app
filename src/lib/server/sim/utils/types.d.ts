@@ -14,6 +14,8 @@ export type Player = {
   y: number;
   targetX?: number;
   targetY?: number;
+  intentX?: number;
+  intentY?: number;
 };
 
 export type Intent = {
