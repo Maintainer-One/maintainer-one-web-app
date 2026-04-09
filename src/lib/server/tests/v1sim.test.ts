@@ -1,11 +1,11 @@
 /// <reference lib="deno.ns" />
 import { assertEquals, assertNotEquals } from "@std/assert";
-import { runGame } from "./v1sim.ts";
+import { runGame } from "../sim/v1sim.ts";
 
 Deno.test("runGame execution should produce the correct number of ticks", () => {
   const replay = runGame("Crimson", "Denim");
-  // runGame uses GAME_LENGTH = 10, so it produces 10 ticks (1 initial + 9 ticks)
-  assertEquals(replay.ticks.length, 10);
+  // runGame uses GAME_LENGTH = 100
+  assertEquals(replay.ticks.length, 100);
 });
 
 Deno.test("teams should be initialized correctly", () => {

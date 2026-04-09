@@ -1,9 +1,9 @@
 import { GameConfig } from "./gameConfig.ts";
-import type { Player, PointZone, Team, Tick, Intent, TeamIntentGenerator } from "./types.d.ts";
-import { randomSeeded } from "@std/random";
+import type { Player, PointZone, Team, Tick, Intent, TeamIntentGenerator } from "./utils/types";
+import { MatchPCG } from "./utils/random.ts";
 
 export class GameEngine {
-  private prng: () => number;
+  private prng: MatchPCG;
   public pointZoneCoolDown: number;
   public pointZones: PointZone[] = [];
   public players: Player[];
@@ -17,7 +17,7 @@ export class GameEngine {
     public awayIntentGenerator: TeamIntentGenerator,
     seed: bigint = 1067780n
   ) {
-    this.prng = randomSeeded(seed);
+    this.prng = new MatchPCG(seed);
     this.pointZoneCoolDown = GameConfig.INITIAL_POINT_ZONE_COOL_DOWN;
     this.players = [...this.homePlayers, ...this.awayPlayers];
   }
@@ -33,8 +33,8 @@ export class GameEngine {
     // POINT ZONE LOGIC
     if (this.pointZoneCoolDown === 0) {
       this.pointZones.push({
-        x: Math.floor(this.prng() * GameConfig.GRID_WIDTH),
-        y: Math.floor(this.prng() * GameConfig.GRID_HEIGHT),
+        x: Math.floor(this.prng.nextFloat() * GameConfig.GRID_WIDTH),
+        y: Math.floor(this.prng.nextFloat() * GameConfig.GRID_HEIGHT),
       });
       this.pointZoneCoolDown = -1;
     } else if (this.pointZoneCoolDown > 0) {

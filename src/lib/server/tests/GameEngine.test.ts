@@ -1,8 +1,8 @@
 /// <reference lib="deno.ns" />
 import { assertEquals } from "@std/assert";
-import { GameEngine } from "./GameEngine.ts";
-import type { Player, Team, Intent } from "./types.d.ts";
-import { GameConfig } from "./gameConfig.ts";
+import { GameEngine } from "../sim/GameEngine.ts";
+import type { Player, Team, Intent } from "../sim/utils/types";
+import { GameConfig } from "../sim/gameConfig.ts";
 
 function createDummyTeam(id: number, name: string): Team {
   return { id, name, color: "#000", score: 0 };

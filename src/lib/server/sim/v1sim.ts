@@ -1,15 +1,13 @@
-import { loadBeigeTeam } from "./beigeTeam.ts";
-import { loadAmberTeam } from "./amberTeam.ts";
-import { loadCrimsonTeam } from "./crimsonTeam.ts";
-import { loadDenimTeam } from "./denimTeam.ts";
+import { loadBeigeTeam } from "../teamLogic/beigeTeam.ts";
+import { loadAmberTeam } from "../teamLogic/amberTeam.ts";
+import { loadCrimsonTeam } from "../teamLogic/crimsonTeam.ts";
+import { loadDenimTeam } from "../teamLogic/denimTeam.ts";
 import type {
-  Player,
-  PointZone,
   Replay,
   TeamLoadFunction,
-  Tick,
-} from "./types.d.ts";
-import { randomSeeded } from "@std/random";
+} from "./utils/types";
+import { GameConfig } from "./gameConfig.ts";
+import { GameEngine } from "./GameEngine.ts";
 
 let teamMap: Record<string, TeamLoadFunction> = {
   Amber: loadAmberTeam,
@@ -17,9 +15,6 @@ let teamMap: Record<string, TeamLoadFunction> = {
   Crimson: loadCrimsonTeam,
   Denim: loadDenimTeam,
 };
-
-import { GameConfig } from "./gameConfig.ts";
-import { GameEngine } from "./GameEngine.ts";
 
 export function runGame(homeTeamName: string, awayTeamName: string): Replay {
   let [homeTeam, homePlayers, homeIntentGenerator] = teamMap[homeTeamName]();
