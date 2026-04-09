@@ -5,6 +5,7 @@ import { loadDenimTeam } from "../teamLogic/denimTeam.ts";
 import type {
   Replay,
   TeamLoadFunction,
+  TeamIntentGenerator
 } from "./utils/types";
 import { GameConfig } from "./gameConfig.ts";
 import { GameEngine } from "./GameEngine.ts";
@@ -16,9 +17,30 @@ let teamMap: Record<string, TeamLoadFunction> = {
   Denim: loadDenimTeam,
 };
 
-export function runGame(homeTeamName: string, awayTeamName: string): Replay {
+export async function runGame(
+  homeTeamName: string, 
+  awayTeamName: string,
+  homeCode?: string,
+  awayCode?: string
+): Promise<Replay> {
   let [homeTeam, homePlayers, homeIntentGenerator] = teamMap[homeTeamName]();
   let [awayTeam, awayPlayers, awayIntentGenerator] = teamMap[awayTeamName]();
+
+  if (homeCode) {
+    const b64 = btoa(homeCode);
+    const mod = await import(`data:application/javascript;base64,${b64}`);
+    if (mod.generateIntents) {
+      homeIntentGenerator = mod.generateIntents;
+    }
+  }
+
+  if (awayCode) {
+    const b64 = btoa(awayCode);
+    const mod = await import(`data:application/javascript;base64,${b64}`);
+    if (mod.generateIntents) {
+      awayIntentGenerator = mod.generateIntents;
+    }
+  }
 
   let seed = BigInt(Math.floor(Math.random() * 10000000));
 

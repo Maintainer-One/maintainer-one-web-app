@@ -1,7 +1,7 @@
-/// <reference lib="deno.ns" />
+/// <reference path="../../../../deno.d.ts" />
 import { assertEquals } from "@std/assert";
 import { GameEngine } from "../sim/GameEngine.ts";
-import type { Player, Team, Intent } from "../sim/utils/types";
+import type { Player, Team, Intent } from "../sim/utils/types.d.ts";
 import { GameConfig } from "../sim/gameConfig.ts";
 
 function createDummyTeam(id: number, name: string): Team {
@@ -27,7 +27,7 @@ Deno.test("GameEngine should execute a tick correctly and spawn a point zone", (
     awayTeam, awayPlayers, awayGenerator
   );
 
-  let ticks = [];
+  const ticks = [];
   for (let i = 0; i <= GameConfig.INITIAL_POINT_ZONE_COOL_DOWN; i++) {
     ticks.push(engine.executeTick());
   }
@@ -52,7 +52,7 @@ Deno.test("GameEngine players can capture a point zone", () => {
   // Inject a point zone manually at 5,5
   engine.pointZones = [{ x: 5, y: 5 }];
   
-  const tick = engine.executeTick();
+  const _tick = engine.executeTick();
   assertEquals(engine.homeTeam.score, 1, "Engine home team should have score 1");
   assertEquals(engine.pointZones.length, 0, "Point zone should be removed after capture");
 });

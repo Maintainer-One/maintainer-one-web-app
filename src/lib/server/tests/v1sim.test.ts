@@ -1,15 +1,15 @@
-/// <reference lib="deno.ns" />
+/// <reference path="../../../../deno.d.ts" />
 import { assertEquals, assertNotEquals } from "@std/assert";
 import { runGame } from "../sim/v1sim.ts";
 
-Deno.test("runGame execution should produce the correct number of ticks", () => {
-  const replay = runGame("Crimson", "Denim");
+Deno.test("runGame execution should produce the correct number of ticks", async () => {
+  const replay = await runGame("Crimson", "Denim");
   // runGame uses GAME_LENGTH = 100
   assertEquals(replay.ticks.length, 100);
 });
 
-Deno.test("teams should be initialized correctly", () => {
-  const replay = runGame("Crimson", "Denim");
+Deno.test("teams should be initialized correctly", async () => {
+  const replay = await runGame("Crimson", "Denim");
   const firstTick = replay.ticks[0];
   
   assertEquals(firstTick.homeTeam.name, "Crimson");
@@ -17,8 +17,8 @@ Deno.test("teams should be initialized correctly", () => {
   assertEquals(firstTick.players.length, 6); // 3 per team
 });
 
-Deno.test("players should move over time", () => {
-  const replay = runGame("Crimson", "Denim");
+Deno.test("players should move over time", async () => {
+  const replay = await runGame("Crimson", "Denim");
   const firstTick = replay.ticks[0];
   const lastTick = replay.ticks[replay.ticks.length - 1];
 
