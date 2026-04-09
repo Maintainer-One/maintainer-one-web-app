@@ -339,7 +339,7 @@
   <title>Maintainer One</title>
   <meta
     name="description"
-    content="Competitive Engineering. Open Source Strategy. Protocol One launches Q1 2026."
+    content="Competitive Engineering. Open Source Strategy. Alpha Release estimated for Q3 2026."
   />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
@@ -396,7 +396,7 @@
       </div>
 
       <p class="text-sm text-gray-500 tracking-wide uppercase pt-4">
-        Coming Q1 2026
+        Alpha Release Q3 2026 (Est.)
       </p>
     </div>
   </section>
