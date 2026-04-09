@@ -16,6 +16,7 @@ export type Player = {
   targetY?: number;
   intentX?: number;
   intentY?: number;
+  intentStatus?: 'success' | 'illegal' | 'collision' | 'none';
 };
 
 export type Intent = {

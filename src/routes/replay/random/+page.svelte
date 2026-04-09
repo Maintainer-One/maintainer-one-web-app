@@ -320,15 +320,28 @@ export function generateIntents(team: any, opponent: any, players: any[], pointZ
         }
 
         // Intent (Where they want to go)
-        if (p.intentX !== undefined && p.intentY !== undefined) {
+        if (p.intentX !== undefined && p.intentY !== undefined && p.intentStatus !== 'none') {
           const targetX = p.intentX * cellSize + cellSize / 2;
           const targetY = p.intentY * cellSize + cellSize / 2;
 
           if (targetX !== centerX || targetY !== centerY) {
+            let color = team.color;
+            let opacity = 0.4;
+            let dash = [4, 4];
+
+            if (p.intentStatus === 'illegal') {
+              color = "#ff4444";
+              opacity = 0.8;
+              dash = []; // Solid for illegal
+            } else if (p.intentStatus === 'collision') {
+              color = "#ffaa00";
+              opacity = 0.7;
+            }
+
             ctx.beginPath();
-            ctx.setLineDash([4, 4]);
-            ctx.strokeStyle = hexToRgba(team.color, 0.4);
-            ctx.lineWidth = 2;
+            ctx.setLineDash(dash);
+            ctx.strokeStyle = hexToRgba(color, opacity);
+            ctx.lineWidth = p.intentStatus === 'illegal' ? 3 : 2;
             ctx.moveTo(centerX, centerY);
             ctx.lineTo(targetX, targetY);
             ctx.stroke();
@@ -337,11 +350,27 @@ export function generateIntents(team: any, opponent: any, players: any[], pointZ
             // Arrowhead
             const angle = Math.atan2(targetY - centerY, targetX - centerX);
             ctx.beginPath();
-            ctx.fillStyle = hexToRgba(team.color, 0.6);
+            ctx.fillStyle = hexToRgba(color, opacity + 0.2);
             ctx.moveTo(targetX, targetY);
             ctx.lineTo(targetX - 8 * Math.cos(angle - Math.PI / 8), targetY - 8 * Math.sin(angle - Math.PI / 8));
             ctx.lineTo(targetX - 8 * Math.cos(angle + Math.PI / 8), targetY - 8 * Math.sin(angle + Math.PI / 8));
             ctx.fill();
+
+            // Collision Indicator
+            if (p.intentStatus === 'collision' && progress > 0.5) {
+              ctx.beginPath();
+              ctx.fillStyle = "#ffaa00";
+              ctx.arc(targetX, targetY, 3, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            
+            // Illegal Indicator
+            if (p.intentStatus === 'illegal') {
+              ctx.font = "bold 14px Inter";
+              ctx.fillStyle = "#ff4444";
+              ctx.textAlign = "center";
+              ctx.fillText("!", targetX, targetY - 10);
+            }
           }
         }
       });

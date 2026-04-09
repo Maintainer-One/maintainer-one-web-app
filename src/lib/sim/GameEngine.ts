@@ -47,14 +47,25 @@ export class GameEngine {
       player.targetY = player.y;
       player.intentX = player.x;
       player.intentY = player.y;
+      player.intentStatus = 'none';
 
       if (intent !== undefined) {
         player.intentX = intent.x;
         player.intentY = intent.y;
         
-        if (intent.x >= 0 && intent.x < GameConfig.GRID_WIDTH && intent.y >= 0 && intent.y < GameConfig.GRID_HEIGHT) {
-          player.targetX = intent.x;
-          player.targetY = intent.y;
+        const dx = Math.abs(intent.x - player.x);
+        const dy = Math.abs(intent.y - player.y);
+
+        if (dx + dy <= 1) { // 4-way movement only
+          if (intent.x >= 0 && intent.x < GameConfig.GRID_WIDTH && intent.y >= 0 && intent.y < GameConfig.GRID_HEIGHT) {
+            player.targetX = intent.x;
+            player.targetY = intent.y;
+            player.intentStatus = 'success'; // Tentative success
+          } else {
+            player.intentStatus = 'illegal'; // Out of bounds
+          }
+        } else {
+          player.intentStatus = 'illegal'; // Too far
         }
       }
     }
@@ -84,8 +95,11 @@ export class GameEngine {
             
             playerA.targetX = playerA.x;
             playerA.targetY = playerA.y;
+            playerA.intentStatus = 'collision';
+            
             playerB.targetX = playerB.x;
             playerB.targetY = playerB.y;
+            playerB.intentStatus = 'collision';
             resolving = true;
           }
         }
@@ -97,6 +111,7 @@ export class GameEngine {
             if (p.targetX !== p.x || p.targetY !== p.y) {
               p.targetX = p.x;
               p.targetY = p.y;
+              p.intentStatus = 'collision';
               resolving = true;
             }
           }

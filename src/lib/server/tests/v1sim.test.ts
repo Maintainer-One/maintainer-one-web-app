@@ -56,3 +56,71 @@ Deno.test("custom code returning undefined should be handled gracefully", async 
   const replay = await runGame("Amber", "Beige", code);
   assertEquals(replay.ticks.length, 100);
 });
+
+Deno.test("teleportation should be rejected", async () => {
+  const code = `
+    export function generateIntents(team, opponent, players, pointZones) {
+      const p = players.find(p => p.teamId === team.id);
+      return [{ playerId: p.id, x: p.x + 5, y: p.y }]; // Move 5 squares
+    }
+  `;
+  const replay = await runGame("Amber", "Beige", code);
+  const firstTick = replay.ticks[0];
+  const secondTick = replay.ticks[1];
+  
+  const p1 = firstTick.players.find(p => p.teamId === firstTick.homeTeam.id)!;
+  const p2 = secondTick.players.find(p => p.id === p1.id)!;
+  
+  // Player should not have moved
+  assertEquals(p2.x, p1.x);
+  assertEquals(p2.y, p1.y);
+  assertEquals(p2.intentStatus, 'illegal');
+});
+
+Deno.test("diagonal movement should be rejected", async () => {
+  const code = `
+    export function generateIntents(team, opponent, players, pointZones) {
+      const p = players.find(p => p.teamId === team.id);
+      return [{ playerId: p.id, x: p.x + 1, y: p.y + 1 }]; // Diagonal
+    }
+  `;
+  const replay = await runGame("Amber", "Beige", code);
+  const firstTick = replay.ticks[0];
+  const secondTick = replay.ticks[1];
+  
+  const p1 = firstTick.players.find(p => p.teamId === firstTick.homeTeam.id)!;
+  const p2 = secondTick.players.find(p => p.id === p1.id)!;
+  
+  // Player should not have moved
+  assertEquals(p2.x, p1.x);
+  assertEquals(p2.y, p1.y);
+  assertEquals(p2.intentStatus, 'illegal');
+});
+
+Deno.test("collision should be flagged", async () => {
+  // Setup two players trying to move into the same square
+  const homeCode = `
+    export function generateIntents(team, opponent, players, pointZones) {
+      const p = players.find(p => p.teamId === team.id);
+      return [{ playerId: p.id, x: 1, y: 1 }];
+    }
+  `;
+  const awayCode = `
+    export function generateIntents(team, opponent, players, pointZones) {
+      const p = players.find(p => p.teamId === team.id);
+      return [{ playerId: p.id, x: 1, y: 1 }];
+    }
+  `;
+  
+  // Note: We need to make sure they can reach [1,1] in 1 tick.
+  // Home starts at [0, 2], [0, 4], [0, 7].
+  // Away starts at [9, 2], [9, 4], [9, 7].
+  // Let's use custom players starting adjacent to [1,1].
+  
+  const replay = await runGame("Amber", "Beige", homeCode, awayCode);
+  const secondTick = replay.ticks[1];
+  
+  // Check if any player has 'collision' status
+  const hasCollision = secondTick.players.some(p => p.intentStatus === 'collision');
+  assertEquals(hasCollision, true);
+});
