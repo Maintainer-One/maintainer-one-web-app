@@ -34,10 +34,10 @@ INSERT INTO public.leagues (name) VALUES ('Maintainer One');
 CREATE TABLE public.seasons (
   id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
   league_id uuid REFERENCES public.leagues(id) ON DELETE CASCADE,
-  season_number integer NOT NULL,
-  is_active boolean DEFAULT false NOT NULL,
+  name text NOT NULL,
+  status text NOT NULL DEFAULT 'scheduled', -- 'scheduled', 'ongoing', 'completed'
   created_at timestamp with time zone DEFAULT now() NOT NULL,
-  UNIQUE(league_id, season_number)
+  UNIQUE(league_id, name)
 );
 
 ALTER TABLE public.seasons ENABLE ROW LEVEL SECURITY;
@@ -48,6 +48,7 @@ CREATE TABLE public.teams (
   id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
   league_id uuid REFERENCES public.leagues(id) ON DELETE CASCADE,
   name text NOT NULL,
+  color text, -- Hex color for the team
   owner_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
   created_at timestamp with time zone DEFAULT now() NOT NULL
 );

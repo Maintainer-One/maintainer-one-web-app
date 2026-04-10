@@ -1,7 +1,7 @@
 export type Team = {
   id: number;
   name: string;
-  status?: 'Home' | 'Away';
+  status?: "Home" | "Away";
   color: string;
   score: number;
 };
@@ -16,7 +16,7 @@ export type Player = {
   targetY?: number;
   intentX?: number;
   intentY?: number;
-  intentStatus?: 'success' | 'illegal' | 'collision' | 'none';
+  intentStatus?: "success" | "illegal" | "collision" | "none";
 };
 
 export type Intent = {
@@ -40,7 +40,12 @@ export type Tick = {
   homeTeam: Team;
   awayTeam: Team;
   players: Player[];
-  pointZones: PointZone[];
+  pointZones: (PointZone & { lifespan: number; spawnProbabilities?: Record<string, number> })[];
+  fieldControl?: {
+    home: number;
+    away: number;
+    none: number;
+  };
 };
 
 export type PointZone = {

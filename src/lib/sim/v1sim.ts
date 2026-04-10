@@ -27,6 +27,7 @@ export async function runGame(
   awayTeamName: string,
   homeCode?: string,
   awayCode?: string,
+  seed?: bigint,
 ): Promise<Replay> {
   const [homeTeam, homePlayers, defaultHomeIntentGenerator] = teamMap[homeTeamName]();
   let homeIntentGenerator = defaultHomeIntentGenerator;
@@ -57,7 +58,7 @@ export async function runGame(
     }
   }
 
-  const seed = BigInt(Math.floor(Math.random() * 10000000));
+  const finalSeed = seed ?? BigInt(Math.floor(Math.random() * 10000000));
 
   homeTeam.status = 'Home';
   awayTeam.status = 'Away';
@@ -77,7 +78,7 @@ export async function runGame(
     awayTeam,
     awayPlayers,
     awayIntentGenerator,
-    seed,
+    finalSeed,
   );
 
   const gameReplay: Replay = {
