@@ -401,6 +401,15 @@
       <p class="text-sm text-gray-500 tracking-wide uppercase pt-4">
         Alpha Release Q3 2026 (Est.)
       </p>
+
+      <div class="mt-8 pointer-events-auto" data-component="try-it-now-container">
+        <a 
+          href="/trial" 
+          class="inline-block px-8 py-3 bg-red-700/20 hover:bg-red-700/40 text-red-50 font-bold uppercase tracking-widest transition-all duration-300 border border-red-700/50 hover:border-red-500 shadow-lg shadow-red-900/20 hover:shadow-red-900/40 transform hover:-translate-y-0.5"
+        >
+          Try It Now
+        </a>
+      </div>
     </div>
   </section>
 
