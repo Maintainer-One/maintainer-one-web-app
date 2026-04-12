@@ -6,12 +6,18 @@
   import { oneDark } from "@codemirror/theme-one-dark";
   import { transform } from "sucrase";
   import { runGame } from "$lib/sim/v1sim";
+  import { generateGameRecap } from "$lib/sim/AnalyticsUtils";
+  import { supabase } from "$lib/supabaseClient";
 
   let { data, form }: PageProps = $props();
   
   // Local state for the game replay to allow client-side updates
   let game = $state(form?.game ?? data.game);
   let isSimulating = $state(false);
+  let session = $state<import('@supabase/supabase-js').Session | null>(null);
+
+  // Analytics
+  let recap = $derived(generateGameRecap(game));
 
   let canvas: HTMLCanvasElement;
   let width = 600;
@@ -209,6 +215,12 @@ export function generateIntents(team: any, opponent: any, players: any[], pointZ
   });
 
   onMount(() => {
+    // Auth check
+    (async () => {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      session = currentSession;
+    })();
+
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -410,195 +422,261 @@ export function generateIntents(team: any, opponent: any, players: any[], pointZ
   }
 </script>
 
-<div data-component="replay-container" class="h-screen flex bg-[#0a0a0c] text-slate-200 overflow-hidden font-sans">
-  <!-- Left Side: Tabs and Code -->
-  <div data-component="sidebar" class="w-1/2 flex flex-col border-r border-slate-800/50 bg-[#0d0d11]">
-    <div class="flex border-b border-slate-800/50 p-2 bg-[#121218]">
-      <button 
-        data-component="tab-button-info"
-        class="px-4 py-2 rounded-lg text-sm transition-colors {activeTab === 'info' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-slate-200'}"
-        onclick={() => activeTab = 'info'}
-      >
-        Game Info
-      </button>
-      <button 
-        data-component="tab-button-home"
-        class="px-4 py-2 rounded-lg text-sm transition-colors {activeTab === 'home' ? 'bg-amber-900/30 text-amber-400' : 'text-slate-400 hover:text-slate-200'}"
-        onclick={() => activeTab = 'home'}
-      >
-        Home Logic
-      </button>
-      <button 
-        data-component="tab-button-away"
-        class="px-4 py-2 rounded-lg text-sm transition-colors {activeTab === 'away' ? 'bg-blue-900/30 text-blue-400' : 'text-slate-400 hover:text-slate-200'}"
-        onclick={() => activeTab = 'away'}
-      >
-        Away Logic
-      </button>
-      
-      <div class="ml-auto">
+<svelte:head>
+  <title>Logic Trial | Maintainer One</title>
+</svelte:head>
+
+<div class="max-w-7xl mx-auto space-y-6 flex flex-col h-[calc(100vh-2rem)] py-4 font-mono text-gray-400">
+  <header class="flex justify-between items-end border-b border-gray-800 pb-4">
+    <a class="group hover:opacity-80 transition-opacity" href="/">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-red-600 flex items-center justify-center font-bold text-black text-xl">M1</div>
+        <div>
+          <h1 class="text-2xl font-bold tracking-tighter text-white uppercase">
+            Logic Trial
+          </h1>
+          <p class="text-[8px] text-gray-500 uppercase tracking-widest">Maintainer One Protocol Alpha</p>
+        </div>
+      </div>
+    </a>
+    
+    <div class="flex gap-6 items-center">
+      {#if session}
+        <nav class="hidden md:flex gap-4 text-[10px] uppercase tracking-widest text-gray-500">
+          <a class="hover:text-stone-200 transition-colors" href="/dashboard">Dashboard</a>
+          <a class="hover:text-stone-200 transition-colors" href="/sandbox">Sandbox</a>
+        </nav>
+      {:else}
+        <a class="text-[10px] uppercase tracking-widest text-gray-600 hover:text-stone-400 transition-colors" href="/">Return to Home</a>
+      {/if}
+
+      <div class="flex gap-4 items-center bg-gray-900/40 p-2 border border-gray-800">
         <button 
-          data-component="run-simulation-button"
-          class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:text-slate-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-lg shadow-indigo-500/20 active:scale-95 flex items-center gap-2"
+          class="bg-red-900/20 hover:bg-red-900/40 text-red-500 border border-red-900/50 px-4 py-2 text-xs font-bold uppercase tracking-widest transition-all disabled:opacity-50 flex items-center gap-2"
           disabled={isSimulating}
           onclick={runSimulation}
-          type="button"
         >
           {#if isSimulating}
-            <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg class="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
             </svg>
-            Simulating...
+            Processing...
           {:else}
-            Run Simulation
+            Execute Logic
           {/if}
         </button>
       </div>
     </div>
+  </header>
 
-    <div class="flex-grow relative overflow-hidden">
-      {#if activeTab === 'info'}
-        <div data-component="info-tab-content" class="p-6 space-y-8 animate-in fade-in slide-in-from-left-4 duration-300">
-          <div class="grid grid-cols-2 gap-4">
-            <div class="bg-[#16161e] p-4 rounded-xl border border-slate-800">
-              <div class="text-xs text-slate-500 uppercase tracking-widest mb-1">Home Team</div>
-              <div class="text-2xl font-bold" style="color: {game.ticks[tick].homeTeam.color}">{game.ticks[tick].homeTeam.name}</div>
-              <div class="text-4xl font-black mt-2">{game.ticks[tick].homeTeam.score}</div>
-            </div>
-            <div class="bg-[#16161e] p-4 rounded-xl border border-slate-800">
-              <div class="text-xs text-slate-500 uppercase tracking-widest mb-1">Away Team</div>
-              <div class="text-2xl font-bold" style="color: {game.ticks[tick].awayTeam.color}">{game.ticks[tick].awayTeam.name}</div>
-              <div class="text-4xl font-black mt-2">{game.ticks[tick].awayTeam.score}</div>
-            </div>
+  <div class="grid grid-cols-12 gap-6 grow overflow-hidden">
+    <!-- Left Column: Code Logic -->
+    <div class="col-span-4 flex flex-col gap-4 overflow-hidden">
+      <div class="grow flex flex-col border border-gray-800 bg-gray-900/20 overflow-hidden">
+        <div class="flex border-b border-gray-800 bg-black/20">
+          <button 
+            class="px-4 py-2 text-[10px] uppercase tracking-widest font-bold border-b-2 transition-colors {activeTab === 'home' ? 'border-red-600 text-white' : 'border-transparent text-gray-500 hover:text-stone-300'}"
+            onclick={() => activeTab = 'home'}
+          >
+            Home Logic
+          </button>
+          <button 
+            class="px-4 py-2 text-[10px] uppercase tracking-widest font-bold border-b-2 transition-colors {activeTab === 'away' ? 'border-red-600 text-white' : 'border-transparent text-gray-500 hover:text-stone-300'}"
+            onclick={() => activeTab = 'away'}
+          >
+            Away Logic
+          </button>
+        </div>
+        
+        <div class="grow overflow-hidden relative">
+          {#if activeTab === 'home'}
+            <div class="h-full w-full" use:createEditor={{ value: homeCode, onUpdate: (v) => homeCode = v }}></div>
+          {:else if activeTab === 'away'}
+            <div class="h-full w-full" use:createEditor={{ value: awayCode, onUpdate: (v) => awayCode = v }}></div>
+          {/if}
+        </div>
+      </div>
+
+      <div class="p-4 border border-gray-800 bg-gray-900/10">
+        <h3 class="text-[10px] uppercase tracking-widest text-gray-600 mb-2">Team Parameters</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="p-2 border border-gray-800 bg-black/40">
+            <div class="text-[8px] text-gray-600 uppercase mb-1">Home Team</div>
+            <div class="text-xs font-bold text-stone-300">{game.ticks[tick].homeTeam.name}</div>
           </div>
+          <div class="p-2 border border-gray-800 bg-black/40">
+            <div class="text-[8px] text-gray-600 uppercase mb-1">Away Team</div>
+            <div class="text-xs font-bold text-stone-300">{game.ticks[tick].awayTeam.name}</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-          <div>
-            <div class="flex justify-between text-sm mb-2">
-              <span class="text-slate-400">Field Control</span>
+    <!-- Middle Column: Viewer -->
+    <div class="col-span-5 flex flex-col items-center justify-center p-4 bg-black/40 border border-gray-800 relative">
+      <div class="relative group">
+        <div class="absolute -inset-1 bg-red-600/10 rounded-lg blur-sm opacity-25 group-hover:opacity-40 transition duration-1000"></div>
+        <canvas 
+          class="relative bg-[#050505] shadow-2xl border border-gray-900 rounded-sm" 
+          bind:this={canvas} 
+          {height}
+          {width}
+        ></canvas>
+      </div>
+
+      <div class="mt-8 w-full px-4 space-y-4">
+        <div class="flex items-center gap-4">
+          <button 
+            class="p-2 bg-white text-black rounded-full hover:scale-110 active:scale-95 transition-all shadow-lg"
+            aria-label={isPlaying ? "Pause" : "Play"}
+            onclick={() => isPlaying = !isPlaying} 
+          >
+            {#if isPlaying}
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+            {:else}
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            {/if}
+          </button>
+          
+          <div class="grow flex flex-col gap-1">
+            <div class="flex justify-between text-[10px] text-gray-600 font-mono">
+              <span>TICK {tick}</span>
+              <span>{game.ticks.length} TOTAL</span>
             </div>
-            <div class="flex h-4 w-full rounded-full overflow-hidden bg-slate-800 border border-slate-700">
+            <input 
+              class="w-full h-1 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-red-600" 
+              bind:value={tick} 
+              max={game.ticks.length - 1} 
+              min="0" 
+              type="range" 
+            />
+          </div>
+        </div>
+
+        <div class="flex justify-center gap-2">
+          {#each [2000, 1000, 500, 200] as speed}
+            <button 
+              class="text-[9px] px-2 py-0.5 rounded border transition-colors uppercase tracking-tighter {playbackSpeed === speed ? 'bg-red-900/20 border-red-500/50 text-red-500' : 'border-gray-800 text-gray-600 hover:border-gray-700'}"
+              onclick={() => playbackSpeed = speed}
+            >
+              {speed === 2000 ? '0.5x' : speed === 1000 ? '1x' : speed === 500 ? '2x' : '5x'}
+            </button>
+          {/each}
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Metrics -->
+    <div class="col-span-3 flex flex-col gap-4">
+      <div class="p-6 border border-gray-800 bg-gray-900/30">
+        <h3 class="text-[10px] uppercase tracking-widest text-gray-600 mb-4 border-b border-gray-800 pb-2">Real-time Metrics</h3>
+        <div class="space-y-6">
+          <div>
+            <div class="flex justify-between text-[10px] uppercase mb-1">
+              <span class="text-stone-300">Field Control</span>
+            </div>
+            <div class="h-1 w-full bg-gray-800 flex rounded-full overflow-hidden">
               <div class="h-full transition-all duration-500" style="width: {controlStats.left}%; background-color: {game.ticks[tick].homeTeam.color};"></div>
-              <div class="h-full bg-transparent" style="width: {controlStats.none}%;"></div>
               <div class="h-full transition-all duration-500" style="width: {controlStats.right}%; background-color: {game.ticks[tick].awayTeam.color};"></div>
             </div>
-            <div class="flex justify-between text-[10px] mt-1 text-slate-500 font-mono">
+            <div class="flex justify-between text-[8px] mt-1 text-gray-600 font-mono">
               <span>{controlStats.left}%</span>
-              <span>UNCONTROLLED</span>
               <span>{controlStats.right}%</span>
             </div>
           </div>
 
-          <div class="bg-[#16161e] p-6 rounded-xl border border-slate-800">
-            <h3 class="text-slate-400 text-xs uppercase tracking-widest mb-4">Players</h3>
-            <div class="space-y-4">
-              {#each game.ticks[tick].players as p}
-                <div class="flex items-center gap-3">
-                  <div class="w-2 h-2 rounded-full" style="background-color: {game.ticks[tick].awayTeam.id === p.teamId ? game.ticks[tick].awayTeam.color : game.ticks[tick].homeTeam.color}"></div>
-                  <span class="text-sm font-medium">{p.name}</span>
-                  <span class="ml-auto text-xs text-slate-500 font-mono">[{p.x}, {p.y}]</span>
-                </div>
-              {/each}
+          <div class="grid grid-cols-2 gap-4">
+            <div class="p-3 bg-black/40 border border-gray-800">
+              <div class="text-[8px] text-gray-600 uppercase mb-1">Fortune Delta</div>
+              <div class="text-xl font-bold font-mono {recap.home.fortune >= 0 ? 'text-green-500' : 'text-red-500'}">
+                {recap.home.fortune >= 0 ? '+' : ''}{recap.home.fortune.toFixed(1)}
+              </div>
+            </div>
+            <div class="p-3 bg-black/40 border border-gray-800">
+              <div class="text-[8px] text-gray-600 uppercase mb-1">Avg Control</div>
+              <div class="text-xl font-bold font-mono text-stone-200">{recap.home.controlAvg.toFixed(0)}%</div>
+            </div>
+          </div>
+
+          <div class="space-y-2 pt-2 border-t border-gray-800/50">
+            <div class="flex justify-between items-center text-[10px]">
+              <span class="text-gray-500 uppercase tracking-tighter">Expected Captures</span>
+              <span class="text-stone-300 font-mono">{recap.home.expectedCaptures}</span>
+            </div>
+            <div class="flex justify-between items-center text-[10px]">
+              <span class="text-gray-500 uppercase tracking-tighter">Stolen Captures</span>
+              <span class="text-red-500 font-mono">{recap.home.stolenCaptures}</span>
             </div>
           </div>
         </div>
-      {:else if activeTab === 'home'}
-        <div data-component="code-editor-home" class="h-full w-full" use:createEditor={{ value: homeCode, onUpdate: (v) => homeCode = v }}></div>
-      {:else if activeTab === 'away'}
-        <div data-component="code-editor-away" class="h-full w-full" use:createEditor={{ value: awayCode, onUpdate: (v) => awayCode = v }}></div>
-      {/if}
-    </div>
-  </div>
-
-  <!-- Right Side: Viewer and Controls -->
-  <div data-component="viewer-section" class="w-1/2 flex flex-col items-center justify-center p-8 bg-[#0a0a0c]">
-    <div class="relative group">
-      <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-      <canvas 
-        data-component="replay-canvas" 
-        class="relative bg-[#0d0d11] rounded-lg border border-slate-800 shadow-2xl" 
-        bind:this={canvas} 
-        {height}
-        {width}
-      ></canvas>
-    </div>
-
-    <div data-component="playback-controls" class="mt-12 w-full max-w-xl space-y-6">
-      <div class="flex items-center gap-6">
-        <button 
-          class="p-2 text-slate-400 hover:text-white transition-colors"
-          aria-label="Previous Tick"
-          onclick={() => tick = Math.max(0, tick - 1)}
-        >
-          <svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" x2="5" y1="19" y2="5"/></svg>
-        </button>
-
-        <button 
-          class="w-16 h-16 flex items-center justify-center rounded-full bg-white text-black hover:scale-105 active:scale-95 transition-all shadow-xl shadow-white/10"
-          aria-label={isPlaying ? "Pause" : "Play"}
-          onclick={() => isPlaying = !isPlaying}
-        >
-          {#if isPlaying}
-            <svg fill="currentColor" height="32" viewBox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg"><rect height="16" width="4" x="6" y="4"/><rect height="16" width="4" x="14" y="4"/></svg>
-          {:else}
-            <svg class="ml-1" fill="currentColor" height="32" viewBox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          {/if}
-        </button>
-
-        <button 
-          class="p-2 text-slate-400 hover:text-white transition-colors"
-          aria-label="Next Tick"
-          onclick={() => tick = Math.min(game.ticks.length - 1, tick + 1)}
-        >
-          <svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" x2="19" y1="5" y2="19"/></svg>
-        </button>
-
-        <div class="flex-grow flex flex-col gap-1">
-          <div class="flex justify-between text-[10px] text-slate-500 font-mono">
-            <span>TICK {tick}</span>
-            <span>{game.ticks.length} TOTAL</span>
-          </div>
-          <input 
-            class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500" 
-            bind:value={tick} 
-            max={game.ticks.length - 1} 
-            min="0"
-            type="range"
-          />
-        </div>
       </div>
-
-      <div class="flex justify-center gap-4">
-        {#each [2000, 1000, 500, 200] as speed}
-          <button 
-            class="text-[10px] px-3 py-1 rounded border border-slate-800 transition-colors {playbackSpeed === speed ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-400' : 'text-slate-500 hover:border-slate-700'}"
-            onclick={() => playbackSpeed = speed}
-          >
-            {speed === 2000 ? '0.5x' : speed === 1000 ? '1x' : speed === 500 ? '2x' : '5x'}
-          </button>
-        {/each}
+      
+      <div class="grow p-6 border border-gray-800 bg-gray-900/10">
+        <h3 class="text-[10px] uppercase tracking-widest text-gray-600 mb-4 border-b border-gray-800 pb-2">Active Entities</h3>
+        <div class="space-y-3">
+          {#each game.ticks[tick].players as p}
+            <div class="flex items-center gap-2">
+              <div class="w-1 h-3 rounded-full" style="background-color: {game.ticks[tick].awayTeam.id === p.teamId ? game.ticks[tick].awayTeam.color : game.ticks[tick].homeTeam.color}"></div>
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">{p.name}</span>
+              <span class="ml-auto text-[10px] text-gray-600 font-mono">[{p.x},{p.y}]</span>
+            </div>
+          {/each}
+        </div>
+        
+        <div class="mt-8">
+          <p class="text-[10px] text-gray-700 italic border-l border-gray-800 pl-2">Evaluation mode active. Real-time telemetry streaming from protocol alpha nodes...</p>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <style>
+  :global(body) {
+    background-color: #050505;
+    background-image: 
+      radial-gradient(circle at 50% 50%, rgba(20, 20, 25, 1) 0%, rgba(5, 5, 5, 1) 100%),
+      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 30px 30px, 30px 30px;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #222;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #333;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+    border: 2px solid #dc2626;
+  }
+
   :global(.cm-editor) {
     height: 100%;
+    font-size: 12px;
+    background-color: transparent !important;
   }
+
   :global(.cm-scroller) {
     font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
-  }
-  
-  /* Custom Range Input Styling for a more premium look */
-  input[type=range]::-webkit-slider-thumb {
-    appearance: none;
-    height: 12px;
-    width: 12px;
-    border-radius: 99px;
-    background: #6366f1;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
   }
 </style>
 
